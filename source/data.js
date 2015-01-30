@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt');
 
 /* istanbul ignore next */
 var level = require('levelup')(
-  process.env.LEVEL_DB_PATH || '.leveldb',
+  '.commonform',
   {
     keyEncoding: 'utf8',
     valueEncoding: 'json',

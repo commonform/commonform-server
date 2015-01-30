@@ -1,24 +1,28 @@
 {
-  "name": "commonform-server",
-  "description": "Common Form library server",
-  "version": "0.0.1",
-  "main": "./source/server.js",
-  "license": "Apache-2.0",
   "author": {
     "name": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
     "url": "http://kemitchell.com/"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/commonform/commonform-server.git"
+  "bin": {
+    "commonform-server": "./bin/commonform-server"
   },
-  "homepage": "https://github.com/commonform/commonform-server",
   "bugs": "https://github.com/commonform/commonform-server/issues",
-  "engines": {
-    "node": "0.10.x",
-    "npm": "2.3.x"
+  "dependencies": {
+    "JSONStream": "^0.10.0",
+    "async": "^0.9.0",
+    "basic-auth": "^1.0.0",
+    "bcrypt": "^0.8.1",
+    "bunyan": "^1.3.2",
+    "commonform": "0.0.9",
+    "docopt": "^0.4.1",
+    "glob": "^4.3.5",
+    "leveldown": "^1.0.1",
+    "levelup": "^0.19.0",
+    "routes": "^2.0.0",
+    "through2": "^0.6.3"
   },
+  "description": "Common Form library server",
   "devDependencies": {
     "chai": "^1.10.0",
     "istanbul": "^0.3.5",
@@ -29,25 +33,26 @@
     "sinon": "^1.12.2",
     "supertest": "^0.15.0"
   },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.3.x"
+  },
+  "homepage": "https://github.com/commonform/commonform-server",
+  "license": "Apache-2.0",
+  "main": "./source/server.js",
+  "name": "commonform-server",
+  "preferGlobal": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commonform/commonform-server.git"
+  },
   "scripts": {
     "coverage": "NODE_ENV=test istanbul cover _mocha && istanbul check-coverage coverage/coverage.json",
     "lint": "jscs source test && jshint source test",
     "pre-commit": "npm run lint && npm run coverage",
     "test": "NODE_ENV=test mocha --bail",
-    "start": "node source/server.js",
+    "start": "./bin/commonform-server",
     "travis-ci": "npm run pre-commit"
   },
-  "dependencies": {
-    "JSONStream": "^0.10.0",
-    "async": "^0.9.0",
-    "basic-auth": "^1.0.0",
-    "bcrypt": "^0.8.1",
-    "bunyan": "^1.3.2",
-    "commonform": "0.0.9",
-    "glob": "^4.3.5",
-    "leveldown": "^1.0.1",
-    "levelup": "^0.19.0",
-    "routes": "^2.0.0",
-    "through2": "^0.6.3"
-  }
+  "version": "0.0.1"
 }

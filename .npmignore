@@ -1,4 +1,6 @@
 *.tgz
+.commonform/
+.commonform/
 .editorconfig
 .gitattributes
 .gitignore
@@ -6,7 +8,6 @@
 .jscsrc
 .jshintignore
 .jshintrc
-.leveldb/
 .npmignore
 .travis.yml
 coverage/

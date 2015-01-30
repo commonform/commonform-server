@@ -1,0 +1,9 @@
+Common Form library server
+
+Usage:
+  commonform-server [-p PORT]
+  commonform-server -h | --help
+  commonform-server --version
+
+Options:
+  -p PORT, --port PORT  Server port [default: 8080]
