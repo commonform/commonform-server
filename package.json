@@ -1,6 +1,6 @@
 {
   "name": "commonform-server",
-  "description": "Common Form service registry",
+  "description": "Common Form library server",
   "version": "0.0.1",
   "main": "./source/server.js",
   "license": "Apache-2.0",
@@ -11,12 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/commonform/server.git"
+    "url": "https://github.com/commonform/commonform-server.git"
   },
-  "homepage": "https://github.com/commonform/server",
-  "bugs": "https://github.com/commonform/server/issues",
+  "homepage": "https://github.com/commonform/commonform-server",
+  "bugs": "https://github.com/commonform/commonform-server/issues",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": "0.10.x",
+    "npm": "2.3.x"
   },
   "devDependencies": {
     "chai": "^1.10.0",
@@ -47,7 +48,6 @@
     "leveldown": "^1.0.1",
     "levelup": "^0.19.0",
     "routes": "^2.0.0",
-    "semver": "^4.2.0",
     "through2": "^0.6.3"
   }
 }
