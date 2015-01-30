@@ -1,0 +1,4 @@
+*.tgz
+.leveldb/
+coverage/
+node_modules/
