@@ -16,7 +16,7 @@ module.exports = function(type, predicate, component) {
     response.statusCode = 404;
 
     data.tripleReadStream(triple)
-      .on('data', function() {
+      .once('data', function() {
         response.statusCode = 200;
         sendingJSON(response);
       })

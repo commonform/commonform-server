@@ -4,7 +4,7 @@ var sendingJSON = require('./json-headers');
 module.exports = function(stream, response) {
   response.statusCode = 404;
   stream
-    .on('data', function() {
+    .once('data', function() {
       response.statusCode = 200;
       sendingJSON(response);
     })

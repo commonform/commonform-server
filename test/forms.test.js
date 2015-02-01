@@ -99,27 +99,38 @@ describe(PATH, function() {
     user.mock(['mirror', 'write']);
 
     it('round trips', function(done) {
-      var form = {content:['Hello']};
+      var first = {content:['first']};
+      var second = {content:['second']};
       async.series([
         function(next) {
           server.post(PATH)
-            .send([form])
+            .send([first])
             .auth(user.name, user.password)
             .expect([{
-              status: 'created', location: '/forms/' + hash(form)
+              status: 'created', location: '/forms/' + hash(first)
             }])
             .end(next);
         },
         function(next) {
-          server.post(PATH).send([form])
+          server.post(PATH)
+            .send([first])
             .auth(user.name, user.password)
-            .expect([{status: 'conflict', form: form}])
+            .expect([{status: 'conflict', form: first}])
+            .end(next);
+        },
+        function(next) {
+          server.post(PATH)
+            .send([second])
+            .auth(user.name, user.password)
+            .expect([{
+              status: 'created', location: '/forms/' + hash(second)
+            }])
             .end(next);
         },
         function(next) {
           server.get(PATH)
             .auth(user.name, user.password)
-            .expect([form])
+            .expect([first, second])
             .end(next);
         }
       ], done);
