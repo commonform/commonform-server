@@ -3,7 +3,7 @@ var through = require('through2');
 
 var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
-var hashPassword = require('../hash-password');
+var hashPassword = require('bcrypt-password').hash;
 var validUser = require('../valid-user');
 var sendingJSON = require('../json-headers');
 

@@ -1,5 +1,5 @@
-var bcrypt = require('bcrypt');
 var semver = require('semver');
+var checkPassword = require('bcrypt-password').check;
 
 /* istanbul ignore next */
 var level = require('levelup')(
@@ -104,7 +104,7 @@ exports.authenticate = function(name, password, callback) {
     if (error) {
       callback(error);
     } else {
-      bcrypt.compare(password, user.password, function(error, match) {
+      checkPassword(password, user.password, function(error, match) {
         if (match) {
           callback(null, user);
         } else {

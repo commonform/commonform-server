@@ -1,7 +1,7 @@
 var data = require('./data');
 var randomishPassword = require('./randomish-password');
 var sendingJSON = require('./json-headers');
-var hashPassword = require('./hash-password');
+var hashPassword = require('bcrypt-password').hash;
 
 module.exports = function(request, response) {
   data.get('user', 'owner', function(error) {
