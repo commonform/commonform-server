@@ -29,7 +29,9 @@ exports.POST = function(request, response) {
               return {data: instruction};
             })
             .forEach(push);
-          push({json: {status: 'created'}});
+          push({
+            json: {status: 'created', location: '/forms/' + digest}
+          });
           callback();
         } else {
           callback(null, {json: {status: status, form: form}});

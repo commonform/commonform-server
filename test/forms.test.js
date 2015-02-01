@@ -4,6 +4,7 @@ var async = require('async');
 var commonform = require('commonform');
 var server = require('supertest')(require('..'));
 
+var hash = commonform.hash.bind(commonform);
 var PATH = '/forms';
 
 describe(PATH, function() {
@@ -79,13 +80,16 @@ describe(PATH, function() {
 
       it('accepts forms preceded by dependencies', function(done) {
         var subForm = {content:['Test']};
-        var digest = commonform.hash(subForm);
-        var form = {content:[{summary: 'Tax', form: digest}]};
-        var created = {status: 'created'};
+        var subFormDigest = commonform.hash(subForm);
+        var form = {content:[{summary: 'Tax', form: subFormDigest}]};
+        var formDigest = hash(form);
         server.post(PATH)
           .auth(user.name, user.password)
           .send([subForm, form])
-          .expect(200).expect([created, created])
+          .expect(200).expect([
+            {status: 'created', location: '/forms/' + subFormDigest},
+            {status: 'created', location: '/forms/' + formDigest}
+          ])
           .end(done);
       });
     });
@@ -101,7 +105,9 @@ describe(PATH, function() {
           server.post(PATH)
             .send([form])
             .auth(user.name, user.password)
-            .expect([{status: 'created'}])
+            .expect([{
+              status: 'created', location: '/forms/' + hash(form)
+            }])
             .end(next);
         },
         function(next) {

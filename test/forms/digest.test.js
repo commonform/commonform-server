@@ -3,6 +3,7 @@ var user = require('../user');
 var commonform = require('commonform');
 var server = require('supertest')(require('../..'));
 
+var hash = commonform.hash.bind(commonform);
 var form = {content:['Some text']};
 var digest = commonform.hash(form);
 var PATH = '/forms/' + digest;
@@ -45,12 +46,14 @@ describe('/forms/:digest', function() {
       describe('?denormalize=true', function() {
         beforeEach(function(done) {
           var grandchild = {content:['grandchild']};
+          var grandchildDigest = hash(grandchild);
           var child = {
             content: [{
               summary: 'Grandchild',
               form: commonform.hash(grandchild)
             }]
           };
+          var childDigest = hash(child);
           var parent = {
             content: [{
               summary: 'Child',
@@ -68,12 +71,18 @@ describe('/forms/:digest', function() {
               }
             }]
           };
-          this.digest = commonform.hash(parent);
-          var created = {status:'created'};
+          this.digest = hash(parent);
           server.post('/forms')
             .auth(user.name, user.password)
             .send([grandchild, child, parent])
-            .expect([created, created, created])
+            .expect([
+              {
+                status: 'created',
+                location: '/forms/' + grandchildDigest
+              },
+              {status: 'created', location: '/forms/' + childDigest},
+              {status: 'created', location: '/forms/' + this.digest}
+            ])
             .end(done);
         });
 

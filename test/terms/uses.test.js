@@ -24,7 +24,10 @@ describe('/terms/:term/uses', function() {
         server.post('/forms')
           .auth(user.name, user.password)
           .send([form])
-          .expect([{status: 'created'}])
+          .expect([{
+            status: 'created',
+            location: '/forms/' + commonform.hash(form)
+          }])
           .end(done);
       });
 

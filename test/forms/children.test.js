@@ -3,16 +3,17 @@ var user = require('../user');
 var commonform = require('commonform');
 var server = require('supertest')(require('../..'));
 
+var hash = commonform.hash.bind(commonform);
 var SUMMARY = 'Indemnification';
 var firstChild = {content:['First']};
-var firstChildDigest = commonform.hash(firstChild);
+var firstChildDigest = hash(firstChild);
 var secondChild = {content:['Second']};
-var secondChildDigest = commonform.hash(secondChild);
+var secondChildDigest = hash(secondChild);
 var parent = {content: [
   {summary: SUMMARY, form: firstChildDigest},
   {summary: SUMMARY, form: secondChildDigest}
 ]};
-var parentDigest = commonform.hash(parent);
+var parentDigest = hash(parent);
 
 var PATH = '/forms/' + parentDigest + '/children';
 
@@ -30,11 +31,17 @@ describe('/forms/:summary/children', function() {
       user.mock(['write', 'search']);
 
       beforeEach(function(done) {
-        var created = {status: 'created'};
         server.post('/forms')
           .auth(user.name, user.password)
           .send([firstChild, secondChild, parent])
-          .expect([created, created, created])
+          .expect([
+            {status: 'created', location: '/forms/' + firstChildDigest},
+            {
+              status: 'created',
+              location: '/forms/' + secondChildDigest
+            },
+            {status: 'created', location: '/forms/' + parentDigest}
+          ])
           .end(done);
       });
 

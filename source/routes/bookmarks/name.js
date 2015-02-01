@@ -23,7 +23,6 @@ exports.GET = function(request, response, parameters) {
           response.end();
         }
       } else {
-        console.error(bookmark);
         response.statusCode = 301;
         response.setHeader('Location', '/forms/' + bookmark.form);
         response.end();

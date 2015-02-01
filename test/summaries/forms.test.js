@@ -3,6 +3,7 @@ var user = require('../user');
 var commonform = require('commonform');
 var server = require('supertest')(require('../..'));
 
+var hash = commonform.hash.bind(commonform);
 var SUMMARY = 'Indemnification';
 var subForm = {content:['Test']};
 var form = {
@@ -27,7 +28,10 @@ describe('/summaries/:summary/forms', function() {
         server.post('/forms')
           .send([subForm, form])
           .auth(user.name, user.password)
-          .expect([{status: 'created'}, {status: 'created'}])
+          .expect([
+            {status: 'created', location: '/forms/' + hash(subForm)},
+            {status: 'created', location: '/forms/' + hash(form)}
+          ])
           .end(done);
       });
 

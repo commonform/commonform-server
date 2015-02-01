@@ -91,7 +91,9 @@ describe(PATH, function() {
             .auth(user.name, user.password)
             .send([this.form])
             .expect(200)
-            .expect([{status: 'created'}])
+            .expect([
+              {status: 'created', location: '/forms/' + this.digest}
+            ])
             .end(done);
         });
 
@@ -163,7 +165,9 @@ describe(PATH, function() {
           server.post('/forms')
             .auth(user.name, user.password)
             .send([form])
-            .expect([{status: 'created'}])
+            .expect([
+              {status: 'created', location: '/forms/' + digest}
+            ])
             .end(next);
         },
         function(next) {

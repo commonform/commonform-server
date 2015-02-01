@@ -30,7 +30,9 @@ describe('/bookmarks/:name', function() {
               .auth(user.name, user.password)
               .send([form])
               .expect(200)
-              .expect([{status: 'created'}])
+              .expect([
+                {status: 'created', location: '/forms/' + digest}
+              ])
               .end(next);
           },
           function(next) {
@@ -74,7 +76,7 @@ describe('/bookmarks/:name@version', function() {
           .auth(user.name, user.password)
           .send([form])
           .expect(200)
-          .expect([{status: 'created'}])
+          .expect([{status: 'created', location: '/forms/' + digest}])
           .end(next);
       },
       function(next) {
@@ -112,7 +114,9 @@ describe('/bookmarks/:name@latest', function() {
           .auth(user.name, user.password)
           .send([form])
           .expect(200)
-          .expect([{status: 'created'}])
+          .expect([
+            {status: 'created', location: '/forms/' + digest}
+          ])
           .end(next);
       },
       function(next) {

@@ -25,11 +25,13 @@ describe('/forms/:summary/parents', function() {
       user.mock(['write', 'search']);
 
       beforeEach(function(done) {
-        var created = {status: 'created'};
         server.post('/forms')
           .auth(user.name, user.password)
           .send([child, parent])
-          .expect([created, created])
+          .expect([
+            {status: 'created', location: '/forms/' + childDigest},
+            {status: 'created', location: '/forms/' + parentDigest}
+          ])
           .end(done);
       });
 
