@@ -14,7 +14,9 @@ describe('/summaries/:summary/forms', function() {
   describe('GET', function() {
     describe('without authorization', function() {
       it('responds 401', function(done) {
-        server.get(PATH).expect(401).end(done);
+        server.get(PATH)
+          .expect(401)
+          .end(done);
       });
     });
 

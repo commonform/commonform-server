@@ -9,12 +9,17 @@ module.exports = function(type, predicate, component) {
 
   exports.GET = function(request, response, parameters) {
     var key = parameters[type];
-    sendingJSON(response);
     var triple = {predicate: predicate};
     var target = component === 'subject' ? 'object' : 'subject';
     triple[component] = key;
+    response.statusCode = 404;
 
     data.tripleReadStream(triple)
+      .on('data', function() {
+        response.statusCode = 200;
+        sendingJSON(response);
+      })
+
       // Fetch the forms.
       .pipe(through.obj(function(key, encoding, callback) {
         var transform = this;

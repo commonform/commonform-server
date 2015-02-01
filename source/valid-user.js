@@ -1,4 +1,4 @@
-var toString = Object.prototype.toString;
+var isObject = require('isobject');
 
 var AUTHORIZATIONS = [
   'administer', 'mirror', 'read', 'search', 'write'
@@ -15,7 +15,7 @@ var nonEmptyString = function(argument) {
 };
 
 module.exports = function(argument) {
-  if (toString.call(argument) !== '[object Object]') {
+  if (!isObject(argument)) {
     return false;
   }
   var keys = Object.keys(argument);

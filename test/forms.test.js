@@ -33,7 +33,7 @@ describe(PATH, function() {
       it('responds 200', function(done) {
         server.get(PATH)
           .auth(user.name, user.password)
-          .expect(200)
+          .expect(404)
           .end(done);
       });
     });
@@ -107,7 +107,7 @@ describe(PATH, function() {
         function(next) {
           server.post(PATH).send([form])
             .auth(user.name, user.password)
-            .expect([{status: 'conflict'}])
+            .expect([{status: 'conflict', form: form}])
             .end(next);
         },
         function(next) {

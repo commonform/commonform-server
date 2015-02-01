@@ -11,7 +11,9 @@ describe('/forms/:digest', function() {
   describe('GET', function() {
     describe('without authorization', function() {
       it('responds 401', function(done) {
-        server.get(PATH).expect(401).end(done);
+        server.get(PATH)
+          .expect(401)
+          .end(done);
       });
     });
 
@@ -22,7 +24,8 @@ describe('/forms/:digest', function() {
         server.post('/forms')
           .auth(user.name, user.password)
           .send([form])
-          .expect(200).end(done);
+          .expect(200)
+          .end(done);
       });
 
       it('responds 200', function(done) {
@@ -89,7 +92,9 @@ describe('/forms/:nonexistent', function() {
   describe('GET', function() {
     describe('without authorization', function() {
       it('responds 401', function(done) {
-        server.get('/forms/x').expect(401).end(done);
+        server.get('/forms/x')
+          .expect(401)
+          .end(done);
       });
     });
 
@@ -99,7 +104,8 @@ describe('/forms/:nonexistent', function() {
       it('responds 404', function(done) {
         server.get('/forms/x')
           .auth(user.name, user.password)
-          .expect(404).end(done);
+          .expect(404)
+          .end(done);
       });
     });
   });

@@ -123,7 +123,7 @@ describe(PATH, function() {
         function(next) {
           server.get('/forms')
             .auth(validUser.name, validUser.password)
-            .expect(200)
+            .expect(404)
             .end(next);
         }
       ], done);

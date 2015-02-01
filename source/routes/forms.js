@@ -3,34 +3,41 @@ var async = require('async');
 var commonform = require('commonform');
 var through = require('through2');
 
+var amplify = require('../amplify-form');
 var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
 var sendingJSON = require('../json-headers');
 
 exports.path = '/forms';
 
-var SIMPLE = {
-  definition: 'defines',
-  use: 'uses',
-  reference: 'references',
-  field: 'inserts'
-};
-
 var isTrue = function(argument) {
   return argument === true;
 };
 
 exports.POST = function(request, response) {
-  sendingJSON(response);
-  var responseJSON = new JSONArrayTransform();
-  responseJSON.pipe(response);
-
-  request
+  var input = request
     .pipe(JSONStream.parse('*'))
     .pipe(through.obj(function(form, encoding, callback) {
-      var transform = this;
+      var digest;
+      var push = this.push.bind(this);
+      var write = function(status) {
+        if (status === 'created') {
+          var key = data.valueKey('form', digest);
+          push({data: {type: 'put', key: key, value: form}});
+          amplify(form, digest)
+            .map(function(instruction) {
+              return {data: instruction};
+            })
+            .forEach(push);
+          push({json: {status: 'created'}});
+          callback();
+        } else {
+          callback(null, {json: {status: status, form: form}});
+        }
+      };
+
       if (commonform.form(form)) {
-        var digest = commonform.hash(form);
+        digest = commonform.hash(form);
         // Is a form with this digest already in storage?
         data.get('form', digest, function(error) {
           if (error) {
@@ -60,83 +67,60 @@ exports.POST = function(request, response) {
               }, function(error, dependencies) {
                 /* istanbul ignore if */
                 if (error) {
-                  responseJSON.write({status: 'error'});
+                  write('error');
                 } else {
                   if (!dependencies.every(isTrue)) {
-                    responseJSON.write({status: 'missing', form: form});
+                    write('missing');
                   } else {
-                    responseJSON.write({status: 'created'});
-                    var key = data.valueKey('form', digest);
-                    transform.push({key: key, value: form});
+                    write('created');
                   }
                 }
-                callback();
               });
             } else {
-              responseJSON.write({status: 'error'});
-              callback();
+              write('error');
             }
           } else {
-            responseJSON.write({status: 'conflict'});
-            callback();
+            write('conflict');
           }
         });
       } else {
-        responseJSON.write({status: 'invalid', form: form});
+        write('invalid');
+      }
+    }));
+
+  sendingJSON(response);
+
+  input
+    .pipe(through.obj(function(object, encoding, callback) {
+      if (object.hasOwnProperty('json')) {
+        callback(null, object.json);
+      } else {
         callback();
       }
-    }, function(callback) {
-      responseJSON.end();
-      callback();
     }))
-    // Amplify
-    .pipe(through.obj(
-      function(instruction, encoding, callback) {
-        var transform = this;
-        var form = instruction.value;
-        var digest = data.parseValueKey(instruction.key).digest;
-        transform.push(instruction);
+    .pipe(new JSONArrayTransform())
+    .pipe(response);
 
-        var pushPermutations = function() {
-          var triple = data.triple.apply(data, arguments);
-          data.permute(triple).forEach(function(permutation) {
-            transform.push({
-              key: data.tripleKey(permutation),
-              value: true
-            });
-          });
-        };
-
-        form.content.forEach(function(element) {
-          if (typeof element === 'string') {
-            return;
-          }
-          Object.keys(SIMPLE).some(function(key) {
-            if (commonform[key](element)) {
-              pushPermutations(digest, SIMPLE[key], element[key]);
-              return true;
-            }
-          });
-          if (commonform.subForm(element)) {
-            var summary = element.summary;
-            var subForm = element.form;
-            pushPermutations(digest, 'includes', summary);
-            pushPermutations(digest, 'incorporates', subForm);
-            pushPermutations(summary, 'summarizes', subForm);
-          }
-        });
+  input
+    .pipe(through.obj(function(object, encoding, callback) {
+      if (object.hasOwnProperty('data')) {
+        callback(null, object.data);
+      } else {
         callback();
       }
-    ))
-    .pipe(data.writeStream())
-    .on('end', responseJSON.end.bind(responseJSON));
+    }))
+    .pipe(data.writeStream());
 };
 
 exports.POST.authorization = 'write';
 
 exports.GET = function(request, response) {
-  sendingJSON(response);
+  response.statusCode = 404;
   data.formReadStream()
+    .on('data', function() {
+      response.statusCode = 200;
+      sendingJSON(response);
+    })
     .pipe(new JSONArrayTransform())
     .pipe(response);
 };

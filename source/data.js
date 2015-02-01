@@ -1,4 +1,5 @@
 var bcrypt = require('bcrypt');
+var semver = require('semver');
 
 /* istanbul ignore next */
 var level = require('levelup')(
@@ -27,8 +28,57 @@ var tripleKey = exports.tripleKey = function(components) {
   return compoundKey.apply(this, ['triple'].concat(components));
 };
 
+var bookmarkKey = exports.bookmarkKey = function(name, version) {
+  return compoundKey('value', 'bookmark', name, version);
+};
+
 var get = exports.get = function(type, digest, callback) {
   level.get(valueKey(type, digest), callback);
+};
+
+exports.getBookmark = function(name, version, callback) {
+  level.get(bookmarkKey(name, version), callback);
+};
+
+exports.bookmarksStream = function(name) {
+  var keyPrefix = bookmarkKey(name, '');
+  return level.createReadStream({
+    gte: keyPrefix,
+    lte: keyPrefix + SEPARATOR,
+    keys: false,
+    values: true
+  });
+};
+
+exports.getLatestBookmark = function(name, callback) {
+  var latest = null;
+  var keyPrefix = bookmarkKey(name, '');
+  var readStream = level.createReadStream({
+    gte: keyPrefix,
+    lte: keyPrefix + SEPARATOR,
+    keys: false,
+    values: true
+  });
+  /* istanbul ignore next */
+  readStream.on('error', function(error) {
+    readStream.pause();
+    callback(error);
+  });
+  readStream.on('data', function(bookmark) {
+    if (
+      latest === null ||
+      semver.gt(bookmark.version, latest.version)
+    ) {
+      latest = bookmark;
+    }
+  });
+  readStream.on('end', function() {
+    if (latest) {
+      callback(null, latest);
+    } else {
+      callback({notFound: true});
+    }
+  });
 };
 
 exports.writeStream = function() {
@@ -47,6 +97,7 @@ var valueReadStream = function(type) {
 
 exports.formReadStream = valueReadStream.bind(this, 'form');
 exports.userReadStream = valueReadStream.bind(this, 'user');
+exports.bookmarkReadStream = valueReadStream.bind(this, 'bookmark');
 
 exports.authenticate = function(name, password, callback) {
   get('user', name, function(error, user) {
@@ -100,14 +151,6 @@ exports.permute = function(triple) {
       return array.concat(key, triple[key]);
     }, []);
   });
-};
-
-exports.parseValueKey = function(key) {
-  var split = key.split(SEPARATOR);
-  return {
-    type: split[1],
-    digest: split[2]
-  };
 };
 
 exports.parseTripleKey = function(key) {

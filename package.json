@@ -17,9 +17,11 @@
     "commonform": "0.0.9",
     "docopt": "^0.4.1",
     "glob": "^4.3.5",
+    "isobject": "^0.2.0",
     "leveldown": "^1.0.1",
     "levelup": "^0.19.0",
     "routes": "^2.0.0",
+    "semver": "^4.2.0",
     "through2": "^0.6.3"
   },
   "description": "Common Form library server",

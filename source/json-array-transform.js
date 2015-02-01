@@ -6,10 +6,7 @@ function JSONArrayTransform() {
   this._readableState.objectMode = false;
   this._writableState.objectMode = true;
   this.setEncoding('utf8');
-
   this.first = true;
-
-  this.push('[');
 }
 
 util.inherits(JSONArrayTransform, Transform);
@@ -18,6 +15,7 @@ var prototype = JSONArrayTransform.prototype;
 
 prototype._transform = function(object, encoding, callback) {
   if (this.first) {
+    this.push('[');
     this.first = false;
   } else {
     this.push(',');
@@ -27,7 +25,9 @@ prototype._transform = function(object, encoding, callback) {
 };
 
 prototype._flush = function(callback) {
-  this.push(']');
+  if (!this.first) {
+    this.push(']');
+  }
   callback();
 };
 
