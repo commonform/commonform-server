@@ -7,6 +7,7 @@ var through = require('through2');
 var amplify = require('../amplify-form');
 var data = require('../data');
 var sendingJSON = require('../json-headers');
+var serveStream = require('../serve-stream');
 
 exports.path = '/forms';
 
@@ -115,14 +116,7 @@ exports.POST = function(request, response) {
 exports.POST.authorization = 'write';
 
 exports.GET = function(request, response) {
-  response.statusCode = 404;
-  data.formReadStream()
-    .on('data', function() {
-      response.statusCode = 200;
-      sendingJSON(response);
-    })
-    .pipe(new ArrayTransform())
-    .pipe(response);
+  serveStream(data.formReadStream(), response);
 };
 
 exports.GET.authorization = 'mirror';

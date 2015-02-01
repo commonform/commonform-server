@@ -1,6 +1,5 @@
-var ArrayTransform = require('stringify-array-transform');
 var data = require('../../data');
-var sendingJSON = require('../../json-headers');
+var serveStream = require('../../serve-stream');
 
 exports.path = '/bookmarks/:name';
 
@@ -31,14 +30,7 @@ exports.GET = function(request, response, parameters) {
       }
     });
   } else {
-    response.statusCode = 404;
-    data.bookmarksStream(name)
-      .on('data', function() {
-        sendingJSON(response);
-        response.statusCode = 200;
-      })
-      .pipe(new ArrayTransform())
-      .pipe(response);
+    serveStream(data.bookmarksStream(name), response);
   }
 };
 

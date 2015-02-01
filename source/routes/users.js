@@ -6,14 +6,12 @@ var through = require('through2');
 var data = require('../data');
 var hashPassword = require('bcrypt-password').hash;
 var sendingJSON = require('../json-headers');
+var serveStream = require('../serve-stream');
 
 exports.path = '/users';
 
 exports.GET = function(request, response) {
-  sendingJSON(response);
-  data.userReadStream()
-    .pipe(new ArrayTransform())
-    .pipe(response);
+  serveStream(data.userReadStream(), response);
 };
 
 exports.GET.authorization = 'administer';

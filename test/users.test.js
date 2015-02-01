@@ -21,7 +21,7 @@ describe(PATH, function() {
       it('responds 200', function(done) {
         server.get(PATH)
           .auth(user.name, user.password)
-          .expect(200)
+          .expect(404)
           .end(done);
       });
     });
