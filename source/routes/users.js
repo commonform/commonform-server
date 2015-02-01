@@ -1,10 +1,10 @@
 var JSONStream = require('JSONStream');
+var commonform = require('commonform');
 var through = require('through2');
 
 var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
 var hashPassword = require('bcrypt-password').hash;
-var validUser = require('../valid-user');
 var sendingJSON = require('../json-headers');
 
 exports.path = '/users';
@@ -27,7 +27,7 @@ exports.POST = function(request, response) {
   request.pipe(JSONStream.parse('*'))
     .pipe(through.obj(function(object, encoding, callback) {
       var transform = this;
-      if (!validUser(object)) {
+      if (!commonform.user(object)) {
         responseJSON.write({status: 'invalid', user: object});
         callback();
       } else {

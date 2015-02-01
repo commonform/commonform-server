@@ -1,11 +1,11 @@
 var JSONStream = require('JSONStream');
+var commonform = require('commonform');
 var semver = require('semver');
 var through = require('through2');
 
 var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
 var sendingJSON = require('../json-headers');
-var validBookmark = require('../valid-bookmark');
 
 exports.path = '/bookmarks';
 
@@ -48,7 +48,13 @@ exports.POST = function(request, response) {
         }
       };
 
-      if (!validBookmark(bookmark)) {
+      var withVersion = JSON.parse(JSON.stringify(bookmark));
+      withVersion.version = '1.0.0';
+
+      if (
+        !commonform.bookmark(bookmark) &&
+        !commonform.bookmark(withVersion)
+      ) {
         write('invalid');
       } else {
         if (bookmark.version) {
