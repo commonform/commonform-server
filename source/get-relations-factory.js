@@ -1,3 +1,4 @@
+var StringifyObjectTransform = require('stringify-object-transform');
 var commonform = require('commonform');
 var through = require('through2');
 
@@ -29,38 +30,12 @@ module.exports = function(type, predicate, component) {
           if (error) {
             transform.emit('error', error);
           } else {
-            transform.push(value);
+            transform.push([commonform.hash(value), value]);
           }
           callback();
         });
       }))
-
-      // Create results object.
-      .pipe(through.obj(
-        function(object, encoding, callback) {
-          if (this.notFirst) {
-            this.push(',');
-          } else {
-            this.alreadyWritten = [];
-            this.setEncoding('utf8');
-            this.first = true;
-            this.push('{');
-            this.notFirst = true;
-          }
-          var digest = commonform.hash(object);
-          /* istanbul ignore else */
-          if (this.alreadyWritten.indexOf(digest) < 0) {
-            this.push(JSON.stringify(commonform.hash(object)) + ':');
-            this.push(JSON.stringify(object));
-            this.alreadyWritten.push(digest);
-          }
-          callback();
-        },
-        function(callback) {
-          this.push('}');
-          callback();
-        }
-      ))
+      .pipe(new StringifyObjectTransform())
       .pipe(response);
   };
 

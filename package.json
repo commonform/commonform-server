@@ -25,6 +25,7 @@
     "semver": "^4.2.0",
     "simple-random": "^0.3.3",
     "stringify-array-transform": "^1.0.0",
+    "stringify-object-transform": "^1.0.0",
     "through2": "^0.6.3"
   },
   "description": "Common Form library server",
