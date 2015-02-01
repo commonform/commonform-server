@@ -1,18 +1,16 @@
-var ArrayTransform = require('stringify-array-transform');
 var JSONStream = require('JSONStream');
-var commonform = require('commonform');
+var validBookmark = require('commonform').bookmark;
 var semver = require('semver');
 var through = require('through2');
 
 var data = require('../data');
-var sendingJSON = require('../json-headers');
 var serveStream = require('../serve-stream');
+var postResponse = require('../post-response');
 
 exports.path = '/bookmarks';
 
 exports.POST = function(request, response) {
-  var input = request
-    .pipe(JSONStream.parse('*'))
+  postResponse(request.pipe(JSONStream.parse('*'))
     .pipe(through.obj(function(bookmark, encoding, callback) {
       var push = this.push.bind(this);
       var name = bookmark.name;
@@ -21,26 +19,13 @@ exports.POST = function(request, response) {
         if (status === 'created') {
           data.get('form', bookmark.form, function(error) {
             if (error) {
-              /* istanbul ignore else */
-              if (error.notFound) {
-                write('missing');
-              } else {
-                write('error');
-              }
+              /* istanbul ignore next */
+              write(error.notFound ? 'missing' : 'error');
             } else {
-              push({
-                data: {
-                  type: 'put',
-                  key: data.bookmarkKey(name, bookmark.version),
-                  value: bookmark
-                }
-              });
-              push({
-                json: {
-                  status: 'created',
-                  location: bookmark.name + '@' + bookmark.version
-                }
-              });
+              var key = data.bookmarkKey(name, bookmark.version);
+              push({data: {type: 'put', key: key, value: bookmark}});
+              var location = bookmark.name + '@' + bookmark.version;
+              push({json: {status: 'created', location: location}});
               callback();
             }
           });
@@ -52,21 +37,14 @@ exports.POST = function(request, response) {
       var withVersion = JSON.parse(JSON.stringify(bookmark));
       withVersion.version = '1.0.0';
 
-      if (
-        !commonform.bookmark(bookmark) &&
-        !commonform.bookmark(withVersion)
-      ) {
+      if (!validBookmark(bookmark) && !validBookmark(withVersion)) {
         write('invalid');
       } else {
         if (bookmark.version) {
           data.getBookmark(name, bookmark.version, function(error) {
             if (error) {
-              /* istanbul ignore else */
-              if (error.notFound) {
-                write('created');
-              } else {
-                write('error');
-              }
+              /* istanbul ignore next */
+              write(error.notFound ? 'created' : 'error');
             } else {
               write('conflict');
             }
@@ -88,30 +66,9 @@ exports.POST = function(request, response) {
           });
         }
       }
-    }));
-
-  sendingJSON(response);
-
-  input
-    .pipe(through.obj(function(object, encoding, callback) {
-      if (object.hasOwnProperty('json')) {
-        callback(null, object.json);
-      } else {
-        callback();
-      }
-    }))
-    .pipe(new ArrayTransform())
-    .pipe(response);
-
-  input
-    .pipe(through.obj(function(object, encoding, callback) {
-      if (object.hasOwnProperty('data')) {
-        callback(null, object.data);
-      } else {
-        callback();
-      }
-    }))
-    .pipe(data.writeStream());
+    })),
+    response
+  );
 };
 
 exports.POST.authorization = 'write';

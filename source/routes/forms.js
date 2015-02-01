@@ -1,4 +1,3 @@
-var ArrayTransform = require('stringify-array-transform');
 var JSONStream = require('JSONStream');
 var async = require('async');
 var commonform = require('commonform');
@@ -6,7 +5,7 @@ var through = require('through2');
 
 var amplify = require('../amplify-form');
 var data = require('../data');
-var sendingJSON = require('../json-headers');
+var postResponse = require('../post-response');
 var serveStream = require('../serve-stream');
 
 exports.path = '/forms';
@@ -16,7 +15,7 @@ var isTrue = function(argument) {
 };
 
 exports.POST = function(request, response) {
-  var input = request
+  postResponse(request
     .pipe(JSONStream.parse('*'))
     .pipe(through.obj(function(form, encoding, callback) {
       var digest;
@@ -87,30 +86,9 @@ exports.POST = function(request, response) {
       } else {
         write('invalid');
       }
-    }));
-
-  sendingJSON(response);
-
-  input
-    .pipe(through.obj(function(object, encoding, callback) {
-      if (object.hasOwnProperty('json')) {
-        callback(null, object.json);
-      } else {
-        callback();
-      }
-    }))
-    .pipe(new ArrayTransform())
-    .pipe(response);
-
-  input
-    .pipe(through.obj(function(object, encoding, callback) {
-      if (object.hasOwnProperty('data')) {
-        callback(null, object.data);
-      } else {
-        callback();
-      }
-    }))
-    .pipe(data.writeStream());
+    })),
+    response
+  );
 };
 
 exports.POST.authorization = 'write';
