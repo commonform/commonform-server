@@ -1,10 +1,10 @@
+var ArrayTransform = require('stringify-array-transform');
 var JSONStream = require('JSONStream');
 var async = require('async');
 var commonform = require('commonform');
 var through = require('through2');
 
 var amplify = require('../amplify-form');
-var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
 var sendingJSON = require('../json-headers');
 
@@ -98,7 +98,7 @@ exports.POST = function(request, response) {
         callback();
       }
     }))
-    .pipe(new JSONArrayTransform())
+    .pipe(new ArrayTransform())
     .pipe(response);
 
   input
@@ -121,7 +121,7 @@ exports.GET = function(request, response) {
       response.statusCode = 200;
       sendingJSON(response);
     })
-    .pipe(new JSONArrayTransform())
+    .pipe(new ArrayTransform())
     .pipe(response);
 };
 

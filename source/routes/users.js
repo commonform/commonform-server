@@ -1,8 +1,8 @@
+var ArrayTransform = require('stringify-array-transform');
 var JSONStream = require('JSONStream');
 var commonform = require('commonform');
 var through = require('through2');
 
-var JSONArrayTransform = require('../json-array-transform');
 var data = require('../data');
 var hashPassword = require('bcrypt-password').hash;
 var sendingJSON = require('../json-headers');
@@ -12,7 +12,7 @@ exports.path = '/users';
 exports.GET = function(request, response) {
   sendingJSON(response);
   data.userReadStream()
-    .pipe(new JSONArrayTransform())
+    .pipe(new ArrayTransform())
     .pipe(response);
 };
 
@@ -21,7 +21,7 @@ exports.GET.authorization = 'administer';
 exports.POST = function(request, response) {
   sendingJSON(response);
 
-  var responseJSON = new JSONArrayTransform();
+  var responseJSON = new ArrayTransform();
   responseJSON.pipe(response);
 
   request.pipe(JSONStream.parse('*'))
