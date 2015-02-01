@@ -56,5 +56,5 @@
     "start": "./bin/commonform-server",
     "travis-ci": "npm run pre-commit"
   },
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
