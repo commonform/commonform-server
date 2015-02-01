@@ -1,5 +1,5 @@
 var data = require('./data');
-var randomishPassword = require('./randomish-password');
+var randomPassword = require('simple-random');
 var sendingJSON = require('./json-headers');
 var hashPassword = require('bcrypt-password').hash;
 
@@ -8,7 +8,7 @@ module.exports = function(request, response) {
     if (error) {
       /* istanbul ignore else */
       if (error.notFound) {
-        var password = randomishPassword();
+        var password = randomPassword();
         hashPassword(password, function(error, digest) {
           var value = {
             name: 'owner',

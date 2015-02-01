@@ -23,6 +23,7 @@
     "levelup": "^0.19.0",
     "routes": "^2.0.0",
     "semver": "^4.2.0",
+    "simple-random": "^0.3.3",
     "through2": "^0.6.3"
   },
   "description": "Common Form library server",
