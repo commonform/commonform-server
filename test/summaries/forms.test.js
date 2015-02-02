@@ -1,13 +1,13 @@
 /* jshint mocha: true */
+var hashing = require('commonform-hashing');
+var hash = hashing.hash.bind(hashing);
 var user = require('../user');
-var commonform = require('commonform');
 var server = require('supertest')(require('../..'));
 
-var hash = commonform.hash.bind(commonform);
 var SUMMARY = 'Indemnification';
 var subForm = {content:['Test']};
 var form = {
-  content: [{summary: SUMMARY, form: commonform.hash(subForm)}]
+  content: [{summary: SUMMARY, form: hash(subForm)}]
 };
 var PATH = '/summaries/' + SUMMARY + '/forms';
 
@@ -44,7 +44,7 @@ describe('/summaries/:summary/forms', function() {
 
       it('serves forms summarized by the summary', function(done) {
         var result = {};
-        result[commonform.hash(subForm)] = subForm;
+        result[hash(subForm)] = subForm;
         server.get(PATH)
           .auth(user.name, user.password)
           .expect(result)

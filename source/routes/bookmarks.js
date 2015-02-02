@@ -1,5 +1,5 @@
 var JSONStream = require('JSONStream');
-var validBookmark = require('commonform').bookmark;
+var validation = require('commonform-validation');
 var semver = require('semver');
 var through = require('through2');
 
@@ -37,7 +37,10 @@ exports.POST = function(request, response) {
       var withVersion = JSON.parse(JSON.stringify(bookmark));
       withVersion.version = '1.0.0';
 
-      if (!validBookmark(bookmark) && !validBookmark(withVersion)) {
+      if (
+        !validation.isBookmark(bookmark) &&
+        !validation.isBookmark(withVersion)
+      ) {
         write('invalid');
       } else {
         if (bookmark.version) {

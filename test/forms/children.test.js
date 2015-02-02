@@ -1,9 +1,9 @@
 /* jshint mocha: true */
 var user = require('../user');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
+var hash = hashing.hash.bind(hashing);
 var server = require('supertest')(require('../..'));
 
-var hash = commonform.hash.bind(commonform);
 var SUMMARY = 'Indemnification';
 var firstChild = {content:['First']};
 var firstChildDigest = hash(firstChild);

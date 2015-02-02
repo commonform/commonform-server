@@ -1,7 +1,8 @@
 var JSONStream = require('JSONStream');
 var async = require('async');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
 var through = require('through2');
+var validation = require('commonform-validation');
 
 var amplify = require('../amplify-form');
 var data = require('../data');
@@ -38,8 +39,8 @@ exports.POST = function(request, response) {
         }
       };
 
-      if (commonform.form(form)) {
-        digest = commonform.hash(form);
+      if (validation.isForm(form)) {
+        digest = hashing.hash(form);
         // Is a form with this digest already in storage?
         data.get('form', digest, function(error) {
           if (error) {
@@ -50,7 +51,7 @@ exports.POST = function(request, response) {
               // Check to make sure all of this form's sub-forms are
               // already in storage.
               var subForms = form.content.reduce(function(mem, element) {
-                return commonform.subForm(element) ?
+                return validation.isSubForm(element) ?
                   mem.concat(element.form) : mem;
               }, []);
               async.map(subForms, function(subFormDigest, done) {

@@ -1,12 +1,16 @@
-var commonform = require('commonform');
+var validation = require('commonform-validation');
 var data = require('./data');
 
-var SIMPLE = {
-  definition: 'defines',
-  use: 'uses',
-  reference: 'references',
-  field: 'inserts'
-};
+var SIMPLE = [
+  ['definition', 'isDefinition', 'defines'],
+  ['use', 'isUse', 'uses'],
+  ['reference', 'isReference', 'references'],
+  ['field', 'isField', 'inserts']
+].map(function(element) {
+  return [
+    element[0], validation[element[1]].bind(validation), element[2]
+  ];
+});
 
 module.exports = function(form, digest) {
   var result = [];
@@ -25,13 +29,16 @@ module.exports = function(form, digest) {
     if (typeof element === 'string') {
       return;
     }
-    Object.keys(SIMPLE).some(function(key) {
-      if (commonform[key](element)) {
-        pushPermutations(digest, SIMPLE[key], element[key]);
+    SIMPLE.some(function(array) {
+      var key = array[0];
+      var predicate = array[1];
+      var verb = array[2];
+      if (predicate(element)) {
+        pushPermutations(digest, verb, element[key]);
         return true;
       }
     });
-    if (commonform.subForm(element)) {
+    if (validation.isSubForm(element)) {
       var summary = element.summary;
       var subForm = element.form;
       pushPermutations(digest, 'includes', summary);

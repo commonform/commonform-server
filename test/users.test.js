@@ -61,7 +61,7 @@ describe(PATH, function() {
 
       it('accepts valid objects', function(done) {
         var validUser = {
-          name: 'kyle',
+          name: 'kemitchell',
           password: 'password',
           authorizations: ['read', 'write', 'administer', 'search']
         };
@@ -80,7 +80,7 @@ describe(PATH, function() {
 
     it('succeeds', function(done) {
       var validUser = {
-        name: 'other',
+        name: 'someone else',
         password: 'password',
         authorizations: ['mirror']
       };

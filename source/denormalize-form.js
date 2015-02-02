@@ -1,12 +1,13 @@
 var async = require('async');
-var commonform = require('commonform');
+var validation = require('commonform-validation');
+
 var data = require('./data');
 
 module.exports = function denormalize(form, callback) {
   async.map(
     form.content,
     function(element, next) {
-      if (commonform.subForm(element)) {
+      if (validation.isSubForm(element)) {
         async.waterfall([
           data.get.bind(data, 'form', element.form),
           denormalize

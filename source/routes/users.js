@@ -1,5 +1,5 @@
 var JSONStream = require('JSONStream');
-var validUser = require('commonform').user;
+var validation = require('commonform-validation');
 var through = require('through2');
 
 var data = require('../data');
@@ -20,7 +20,7 @@ exports.POST = function(request, response) {
     .pipe(JSONStream.parse('*'))
     .pipe(through.obj(function(object, encoding, callback) {
       var transform = this;
-      if (!validUser(object)) {
+      if (!validation.isUser(object)) {
         callback(null, {json: {status: 'invalid', user: object}});
       } else {
         var password = object.password;

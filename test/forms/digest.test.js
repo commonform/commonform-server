@@ -1,11 +1,11 @@
 /* jshint mocha: true */
 var user = require('../user');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
+var hash = hashing.hash.bind(hashing);
 var server = require('supertest')(require('../..'));
 
-var hash = commonform.hash.bind(commonform);
 var form = {content:['Some text']};
-var digest = commonform.hash(form);
+var digest = hash(form);
 var PATH = '/forms/' + digest;
 
 describe('/forms/:digest', function() {
@@ -48,26 +48,17 @@ describe('/forms/:digest', function() {
           var grandchild = {content:['grandchild']};
           var grandchildDigest = hash(grandchild);
           var child = {
-            content: [{
-              summary: 'Grandchild',
-              form: commonform.hash(grandchild)
-            }]
+            content: [{summary: 'Grandchild', form: hash(grandchild)}]
           };
           var childDigest = hash(child);
           var parent = {
-            content: [{
-              summary: 'Child',
-              form: commonform.hash(child)
-            }]
+            content: [{summary: 'Child', form: hash(child)}]
           };
           this.form = {
             content: [{
               summary: 'Child',
               form: {
-                content: [{
-                  summary: 'Grandchild',
-                  form: grandchild
-                }]
+                content: [{summary: 'Grandchild', form: grandchild}]
               }
             }]
           };

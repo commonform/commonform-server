@@ -1,11 +1,10 @@
 var glob = require('glob');
 var path = require('path');
 
-var commonform = require('commonform');
-
+var validation = require('commonform-validation');
 var router = module.exports = require('routes')();
-var authenticate = require('./authenticate');
 
+var authenticate = require('./authenticate');
 var routes = path.join(__dirname, 'routes', '**/*.js');
 
 glob.sync(routes).forEach(function(file) {
@@ -22,7 +21,7 @@ glob.sync(routes).forEach(function(file) {
         throw new Error(
           'Missing authorizations for ' + method + ' ' + path
         );
-      } else if (commonform.AUTHORIZATIONS.indexOf(authorization) < 0) {
+      } else if (!validation.isAuthorization(authorization)) {
         throw new Error(
           'Invalid authorization "' + authorization + '"'
         );

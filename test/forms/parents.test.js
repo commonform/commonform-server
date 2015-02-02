@@ -1,13 +1,14 @@
 /* jshint mocha: true */
 var user = require('../user');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
+var hash = hashing.hash.bind(hashing);
 var server = require('supertest')(require('../..'));
 
 var SUMMARY = 'Indemnification';
 var child = {content:['Test']};
-var childDigest = commonform.hash(child);
+var childDigest = hash(child);
 var parent = {content: [{summary: SUMMARY, form: childDigest}]};
-var parentDigest = commonform.hash(parent);
+var parentDigest = hash(parent);
 
 var PATH = '/forms/' + childDigest + '/parents';
 

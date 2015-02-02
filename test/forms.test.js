@@ -1,10 +1,10 @@
 /* jshint mocha: true */
-var user = require('./user');
 var async = require('async');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
+
+var user = require('./user');
 var server = require('supertest')(require('..'));
 
-var hash = commonform.hash.bind(commonform);
 var PATH = '/forms';
 
 describe(PATH, function() {
@@ -80,9 +80,9 @@ describe(PATH, function() {
 
       it('accepts forms preceded by dependencies', function(done) {
         var subForm = {content:['Test']};
-        var subFormDigest = commonform.hash(subForm);
+        var subFormDigest = hashing.hash(subForm);
         var form = {content:[{summary: 'Tax', form: subFormDigest}]};
-        var formDigest = hash(form);
+        var formDigest = hashing.hash(form);
         server.post(PATH)
           .auth(user.name, user.password)
           .send([subForm, form])
@@ -107,7 +107,8 @@ describe(PATH, function() {
             .send([first])
             .auth(user.name, user.password)
             .expect([{
-              status: 'created', location: '/forms/' + hash(first)
+              status: 'created',
+              location: '/forms/' + hashing.hash(first)
             }])
             .end(next);
         },
@@ -123,7 +124,8 @@ describe(PATH, function() {
             .send([second])
             .auth(user.name, user.password)
             .expect([{
-              status: 'created', location: '/forms/' + hash(second)
+              status: 'created',
+              location: '/forms/' + hashing.hash(second)
             }])
             .end(next);
         },

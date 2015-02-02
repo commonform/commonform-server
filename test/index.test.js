@@ -1,6 +1,5 @@
 /* jshint mocha: true */
 var user = require('./user');
-var commonform = require('commonform');
 var package = require('../package.json');
 var server = require('supertest')(require('..'));
 
@@ -31,8 +30,7 @@ describe(PATH, function() {
           .auth(user.name, user.password)
           .expect({
             name: package.name,
-            version: package.version,
-            schema: commonform.version
+            version: package.version
           })
           .end(done);
       });

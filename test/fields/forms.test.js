@@ -1,6 +1,7 @@
 /* jshint mocha: true */
+var hashing = require('commonform-hashing');
+
 var user = require('../user');
-var commonform = require('commonform');
 var server = require('supertest')(require('../..'));
 
 var FIELD = 'Interest Rate';
@@ -37,7 +38,7 @@ describe('/fields/:field/forms', function() {
 
       it('serves forms that insert the field', function(done) {
         var result = {};
-        result[commonform.hash(form)] = form;
+        result[hashing.hash(form)] = form;
         server.get(PATH)
           .auth(user.name, user.password)
           .expect(result)

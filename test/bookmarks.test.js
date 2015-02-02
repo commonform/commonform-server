@@ -1,8 +1,8 @@
 /* jshint mocha: true */
-var user = require('./user');
 var async = require('async');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
 var server = require('supertest')(require('..'));
+var user = require('./user');
 
 var PATH = '/bookmarks';
 
@@ -86,7 +86,7 @@ describe(PATH, function() {
       describe('with a preexisting form', function() {
         beforeEach(function(done) {
           this.form = {content: ['bookmarked']};
-          this.digest = commonform.hash(this.form);
+          this.digest = hashing.hash(this.form);
           server.post('/forms')
             .auth(user.name, user.password)
             .send([this.form])
@@ -158,7 +158,7 @@ describe(PATH, function() {
 
     it('round trips', function(done) {
       var form = {content:['Hello']};
-      var digest = commonform.hash(form);
+      var digest = hashing.hash(form);
       var bookmark = {form: digest, name: 'test', version: '1.0.0'};
       async.series([
         function(next) {

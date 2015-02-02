@@ -1,5 +1,5 @@
 var StringifyObjectTransform = require('stringify-object-transform');
-var commonform = require('commonform');
+var hashing = require('commonform-hashing');
 var through = require('through2');
 
 var data = require('./data');
@@ -30,7 +30,7 @@ module.exports = function(type, predicate, component) {
           if (error) {
             transform.emit('error', error);
           } else {
-            transform.push([commonform.hash(value), value]);
+            transform.push([hashing.hash(value), value]);
           }
           callback();
         });

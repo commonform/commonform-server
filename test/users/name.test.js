@@ -4,7 +4,7 @@ var user = require('../user');
 var server = require('supertest')(require('../..'));
 
 var newUser = {
-  name: 'kyle',
+  name: 'kemitchell',
   password: 'password',
   authorizations: ['mirror']
 };
