@@ -39,11 +39,13 @@ module.exports = function(form, digest) {
       }
     });
     if (validation.isSubForm(element)) {
-      var summary = element.summary;
       var subForm = element.form;
-      pushPermutations(digest, 'includes', summary);
       pushPermutations(digest, 'incorporates', subForm);
-      pushPermutations(summary, 'summarizes', subForm);
+      if (element.hasOwnProperty('summary')) {
+        var summary = element.summary;
+        pushPermutations(digest, 'includes', summary);
+        pushPermutations(summary, 'summarizes', subForm);
+      }
     }
   });
 

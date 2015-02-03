@@ -9,6 +9,9 @@ var subForm = {content:['Test']};
 var form = {
   content: [{summary: SUMMARY, form: hash(subForm)}]
 };
+var otherForm = {
+  content: [{form: hash(form)}]
+};
 var PATH = '/summaries/' + SUMMARY + '/forms';
 
 describe('/summaries/:summary/forms', function() {
@@ -26,11 +29,12 @@ describe('/summaries/:summary/forms', function() {
 
       beforeEach(function(done) {
         server.post('/forms')
-          .send([subForm, form])
+          .send([subForm, form, otherForm])
           .auth(user.name, user.password)
           .expect([
             {status: 'created', location: '/forms/' + hash(subForm)},
-            {status: 'created', location: '/forms/' + hash(form)}
+            {status: 'created', location: '/forms/' + hash(form)},
+            {status: 'created', location: '/forms/' + hash(otherForm)}
           ])
           .end(done);
       });
