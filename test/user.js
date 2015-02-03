@@ -3,7 +3,7 @@ var sinon = require('sinon');
 var data = require('../source/data');
 
 exports.name = 'tester';
-exports.password = 'password';
+exports.password = 'ocelot margarine othellow wakpassworde';
 
 exports.mock = function(authorizations) {
   authorizations = authorizations || ['read'];

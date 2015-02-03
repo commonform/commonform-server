@@ -62,7 +62,7 @@ describe(PATH, function() {
       it('accepts valid objects', function(done) {
         var validUser = {
           name: 'kemitchell',
-          password: 'password',
+          password: 'humpty dumpty rick moranis special',
           authorizations: ['read', 'write', 'administer', 'search']
         };
         server.post(PATH)
@@ -81,7 +81,7 @@ describe(PATH, function() {
     it('succeeds', function(done) {
       var validUser = {
         name: 'someone else',
-        password: 'password',
+        password: 'humpty dumpty rick moranis special',
         authorizations: ['mirror']
       };
       var sandbox = this.sandbox;
