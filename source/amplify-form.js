@@ -1,14 +1,14 @@
-var validation = require('commonform-validation');
+var validate = require('commonform-validate');
 var data = require('./data');
 
 var SIMPLE = [
-  ['definition', 'isDefinition', 'defines'],
-  ['use', 'isUse', 'uses'],
-  ['reference', 'isReference', 'references'],
-  ['field', 'isField', 'inserts']
+  ['definition', 'definition', 'defines'],
+  ['use', 'use', 'uses'],
+  ['reference', 'reference', 'references'],
+  ['field', 'field', 'inserts']
 ].map(function(element) {
   return [
-    element[0], validation[element[1]].bind(validation), element[2]
+    element[0], validate[element[1]].bind(validate), element[2]
   ];
 });
 
@@ -38,7 +38,7 @@ module.exports = function(form, digest) {
         return true;
       }
     });
-    if (validation.isSubForm(element)) {
+    if (validate.subForm(element)) {
       var subForm = element.form;
       pushPermutations(digest, 'incorporates', subForm);
       if (element.hasOwnProperty('summary')) {

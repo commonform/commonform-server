@@ -1,5 +1,5 @@
 /* jshint mocha: true */
-var hashing = require('commonform-hashing');
+var hash = require('commonform-hash');
 
 var user = require('../user');
 var server = require('supertest')(require('../..'));
@@ -38,7 +38,7 @@ describe('/fields/:field/forms', function() {
 
       it('serves forms that insert the field', function(done) {
         var result = {};
-        result[hashing.hash(form)] = form;
+        result[hash.hash(form)] = form;
         server.get(PATH)
           .auth(user.name, user.password)
           .expect(result)

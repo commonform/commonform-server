@@ -1,7 +1,6 @@
 /* jshint mocha: true */
 var user = require('../user');
-var hashing = require('commonform-hashing');
-var hash = hashing.hash.bind(hashing);
+var hash = require('commonform-hash').hash;
 var server = require('supertest')(require('../..'));
 
 var form = {content:['Some text']};

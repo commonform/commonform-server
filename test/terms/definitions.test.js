@@ -1,5 +1,5 @@
 /* jshint mocha: true */
-var hashing = require('commonform-hashing');
+var hash = require('commonform-hash');
 var user = require('../user');
 var server = require('supertest')(require('../..'));
 
@@ -26,7 +26,7 @@ describe('/terms/:term/definitions', function() {
           .send([form])
           .expect([{
             status: 'created',
-            location: '/forms/' + hashing.hash(form)
+            location: '/forms/' + hash.hash(form)
           }])
           .end(done);
       });
@@ -39,7 +39,7 @@ describe('/terms/:term/definitions', function() {
       });
 
       it('serves forms that define the term', function(done) {
-        var digest = hashing.hash(form);
+        var digest = hash.hash(form);
         var result = {};
         result[digest] = form;
         server.get(PATH)

@@ -1,11 +1,11 @@
 /* jshint mocha: true */
 var async = require('async');
-var hashing = require('commonform-hashing');
+var hash = require('commonform-hash');
 var user = require('../user');
 var server = require('supertest')(require('../..'));
 
 var form = {content:['Some text']};
-var digest = hashing.hash(form);
+var digest = hash.hash(form);
 var bookmark = {name: 'test', version: '9.0.0', form: digest};
 
 var PATH = '/bookmarks/' + bookmark.name;

@@ -1,5 +1,5 @@
 /* jshint mocha: true */
-var hashing = require('commonform-hashing');
+var hash = require('commonform-hash');
 var server = require('supertest')(require('../..'));
 var user = require('../user');
 
@@ -26,7 +26,7 @@ describe('/terms/:term/uses', function() {
           .send([form])
           .expect([{
             status: 'created',
-            location: '/forms/' + hashing.hash(form)
+            location: '/forms/' + hash.hash(form)
           }])
           .end(done);
       });
@@ -40,7 +40,7 @@ describe('/terms/:term/uses', function() {
 
       it('serves forms that use the term', function(done) {
         var result = {};
-        result[hashing.hash(form)] = form;
+        result[hash.hash(form)] = form;
         server.get(PATH)
           .auth(user.name, user.password)
           .expect(result)

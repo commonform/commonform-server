@@ -1,6 +1,5 @@
 /* jshint mocha: true */
-var hashing = require('commonform-hashing');
-var hash = hashing.hash.bind(hashing);
+var hash = require('commonform-hash').hash;
 var user = require('../user');
 var server = require('supertest')(require('../..'));
 

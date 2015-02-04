@@ -1,6 +1,6 @@
 /* jshint mocha: true */
 var async = require('async');
-var hashing = require('commonform-hashing');
+var hash = require('commonform-hash');
 
 var user = require('./user');
 var server = require('supertest')(require('..'));
@@ -80,9 +80,9 @@ describe(PATH, function() {
 
       it('accepts forms preceded by dependencies', function(done) {
         var subForm = {content:['Test']};
-        var subFormDigest = hashing.hash(subForm);
+        var subFormDigest = hash.hash(subForm);
         var form = {content:[{summary: 'Tax', form: subFormDigest}]};
-        var formDigest = hashing.hash(form);
+        var formDigest = hash.hash(form);
         server.post(PATH)
           .auth(user.name, user.password)
           .send([subForm, form])
@@ -108,7 +108,7 @@ describe(PATH, function() {
             .auth(user.name, user.password)
             .expect([{
               status: 'created',
-              location: '/forms/' + hashing.hash(first)
+              location: '/forms/' + hash.hash(first)
             }])
             .end(next);
         },
@@ -125,7 +125,7 @@ describe(PATH, function() {
             .auth(user.name, user.password)
             .expect([{
               status: 'created',
-              location: '/forms/' + hashing.hash(second)
+              location: '/forms/' + hash.hash(second)
             }])
             .end(next);
         },
