@@ -42,7 +42,7 @@ describe('/forms/:digest', function() {
           .end(done);
       });
 
-      describe('?denormalize=true', function() {
+      describe('?denormalized=true', function() {
         beforeEach(function(done) {
           var grandchild = {content:['grandchild']};
           var grandchildDigest = hash(grandchild);
