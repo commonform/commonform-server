@@ -82,6 +82,9 @@ tape('GET /forms/$posted', function(test) {
         test.equal(response.statusCode, 201, 'responds 201')
         var get = { path: ( '/forms/' + root ), port: port }
         http.get(get, function(response) {
+          test.equal(
+            response.headers['content-type'], 'application/json',
+            'sets Content-Type')
           response.pipe(concat(function(buffer) {
             test.same(JSON.parse(buffer), form, 'serves the posted form')
             done() ; test.end() })) }) })
@@ -98,6 +101,9 @@ tape('GET /forms/$child_of_posted', function(test) {
         test.equal(response.statusCode, 201, 'responds 201')
         var get = { path: ( '/forms/' + childDigest ), port: port }
         http.get(get, function(response) {
+          test.equal(
+            response.headers['content-type'], 'application/json',
+            'sets Content-Type')
           response.pipe(concat(function(buffer) {
             test.same(JSON.parse(buffer), child, 'serves the child form')
             done() ; test.end() })) }) })
@@ -118,6 +124,9 @@ tape('GET /forms/$great_grandchild_of_posted', function(test) {
           function checkGetRequest() {
             var get = { path: ( '/forms/' + digest ), port: port }
             http.get(get, function(response) {
+              test.equal(
+                response.headers['content-type'], 'application/json',
+                'sets Content-Type')
               response.pipe(concat(function(buffer) {
                 test.same(
                   JSON.parse(buffer), greatgrandchild,
