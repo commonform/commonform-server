@@ -50,7 +50,7 @@ tape('GET /forms/$not_a_digest', function(test) {
     var digest = 'blah'
     var request = { path: ( '/forms/' + digest ), port: port }
     http.get(request, function(response) {
-      test.equal(response.statusCode, 404, 'responds 404')
+      test.equal(response.statusCode, 400, 'responds 404')
       done() ; test.end() }) }) })
 
 tape('GET /forms/$nonexistent', function(test) {
