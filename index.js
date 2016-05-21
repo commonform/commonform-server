@@ -53,6 +53,9 @@ function handleHTTPRequest(bole, level) {
                 setImmediate(function recurse() {
                   emit('form', child, childDigest, normalized, seen) }) } }) } }) } })
 
+  // Limit the request body size.
+  var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
+
   return function(request, response) {
     // Create a Bole sub-log for this HTTP response, marked with a
     // random UUID.
@@ -72,31 +75,24 @@ function handleHTTPRequest(bole, level) {
     else if (pathname === '/forms') {
       // POST /forms
       if (method === 'POST') {
-        var buffers = [ ]
-        request
-          .on('data', function(buffer) {
-            buffers.push(buffer) })
-          .on('end', function() {
-            parseJSON(Buffer.concat(buffers), function(error, form) {
-              if (error) { badRequest(response, 'invalid JSON') }
+        readJSONBody(request, response, LIMIT, function(form) {
+          if (!validForm(form)) { badRequest(response, 'invalid form') }
+          else {
+            var normalized = normalize(form)
+            var digest = normalized.root
+            response.log.info({ digest: digest })
+            putForm(level, digest, form, true, function(error) {
+              /* istanbul ignore if */
+              if (error) { internalError(response, error) }
               else {
-                if (!validForm(form)) { badRequest(response, 'invalid form') }
-                else {
-                  var normalized = normalize(form)
-                  var digest = normalized.root
-                  response.log.info({ digest: digest })
-                  putForm(level, digest, form, true, function(error) {
-                    /* istanbul ignore if */
-                    if (error) { internalError(response, error) }
-                    else {
-                      response.log.info({ event: 'form' })
-                      response.statusCode = 201
-                      response.setHeader('Location', ( '/forms/' + digest ))
-                      response.end()
-                      // Emit an event for the new form. This will trigger
-                      // indexing and other processing by event handlers
-                      // on the event emitter.
-                      emit('form', form, digest, normalized, [ ]) } }) } } }) }) }
+                response.log.info({ event: 'form' })
+                response.statusCode = 201
+                response.setHeader('Location', ( '/forms/' + digest ))
+                response.end()
+                // Emit an event for the new form. This will trigger
+                // indexing and other processing by event handlers
+                // on the event emitter.
+                emit('form', form, digest, normalized, [ ]) } }) } }) }
       else { methodNotAllowed(response) } }
 
     else if (pathname.startsWith('/forms/')) {
@@ -137,6 +133,57 @@ function justEnd(status, response) {
 
 var notFound = justEnd.bind(this, 404)
 var methodNotAllowed = justEnd.bind(this, 405)
+var requestEntityTooLarge = justEnd.bind(this, 413)
+
+function readJSONBody(request, response, limit, callback) {
+  var buffer
+  var finished = false
+  var bytesReceived = 0
+  var lengthHeader = request.headers['content-length']
+  var tooLarge = ( lengthHeader && ( parseInt(lengthHeader) > limit ) )
+  if (tooLarge) {
+    requestEntityTooLarge(response) }
+  else {
+    buffer = [ ]
+    request.addListener('aborted', onAborted)
+    request.addListener('close', finish)
+    request.addListener('data', onData)
+    request.addListener('end', onEnd)
+    request.addListener('error', onEnd) }
+  function onData(chunk) {
+    if (!finished) {
+      buffer.push(chunk)
+      bytesReceived += chunk.length
+      if (bytesReceived > limit) { requestEntityTooLarge(response) } } }
+  function onAborted() {
+    if (!finished) {
+      finish()
+      badRequest(response, 'request aborted') } }
+  function onEnd(error) {
+    if (!finished) {
+      if (error) {
+        request.pause()
+        finish()
+        internalError(response, error) }
+      else {
+        var inaccurateHeader = (
+          lengthHeader && ( parseInt(lengthHeader) !== bytesReceived ) )
+        if (inaccurateHeader) {
+          finish()
+          badRequest(response, 'inaccurate Content-Length') }
+        else {
+          parseJSON(Buffer.concat(buffer), function(error, object) {
+            finish()
+            if (error) { badRequest(response, 'invalid JSON') }
+            else { callback(object) } }) } } } }
+  function finish() {
+    finished = true
+    buffer = null
+    request.removeListener('aborted', onAborted)
+    request.removeListener('close', finish)
+    request.removeListener('data', onData)
+    request.removeListener('end', onEnd)
+    request.removeListener('error', onEnd) } }
 
 // Helper functions for reading and writing from LevelUP:
 
