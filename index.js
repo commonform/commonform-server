@@ -42,7 +42,7 @@ function handleHTTPRequest(bole, level) {
             var child = element.form
             // The normalized object, which has the digests of any child forms.
             var childDigest = normalized[digest].content[index].digest
-            putForm(level, childDigest, child, function(error) {
+            putForm(level, childDigest, child, false, function(error) {
               /* istanbul ignore if */
               if (error) { eventLog.error(error) }
               else {
@@ -84,7 +84,7 @@ function handleHTTPRequest(bole, level) {
                   var normalized = normalize(form)
                   var digest = normalized.root
                   response.log.info({ digest: digest })
-                  putForm(level, digest, form, function(error) {
+                  putForm(level, digest, form, true, function(error) {
                     /* istanbul ignore if */
                     if (error) { internalError(response, error) }
                     else {
@@ -139,8 +139,11 @@ var methodNotAllowed = justEnd.bind(this, 405)
 
 // Helper functions for reading and writing from LevelUP:
 
-function putForm(level, digest, form, callback) {
-  var value = JSON.stringify({ version: VERSION, form: form })
+function putForm(level, digest, form, posted, callback) {
+  var value = JSON.stringify(
+    { version: VERSION,
+      form: form,
+      posted: posted })
   var put = level.put.bind(level, formKey(digest), value)
   thrice(put, callback) }
 
