@@ -67,13 +67,15 @@ function handler(bole, level) {
       var digest = pathname.substring('/forms/'.length)
       if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
       else {
-        var key = encode([ 'forms', digest ])
-        level.get(key, function(error, value) {
-          /* istanbul ignore if */
-          if (error) {
-            if (error.notFound) { notFound(response) }
-            else { internalDBError(response, error) } }
-          else { sendJSON(response, JSON.parse(value).form) } }) } }
+        if (method === 'GET') {
+          var key = encode([ 'forms', digest ])
+          level.get(key, function(error, value) {
+            /* istanbul ignore if */
+            if (error) {
+              if (error.notFound) { notFound(response) }
+              else { internalDBError(response, error) } }
+            else { sendJSON(response, JSON.parse(value).form) } }) }
+        else { methodNotAllowed(response) } } }
     else { notFound(response) } } }
 
 function badRequest(response, message) {

@@ -61,6 +61,17 @@ tape('GET /forms/$nonexistent', function(test) {
       test.equal(response.statusCode, 404, 'responds 404')
       done() ; test.end() }) }) })
 
+tape('POST /forms/$digest', function(test) {
+  server(function(port, done) {
+    var digest = 'a'.repeat(64)
+    var request =
+      { method: 'POST',
+        path: ( '/forms/' + digest ),
+        port: port }
+    http.get(request, function(response) {
+      test.equal(response.statusCode, 405, 'responds 405')
+      done() ; test.end() }) }) })
+
 tape('GET /forms/$posted', function(test) {
   server(function(port, done) {
     var form = { content: [ 'Test form' ] }
