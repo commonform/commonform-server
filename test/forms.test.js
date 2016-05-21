@@ -31,7 +31,7 @@ tape('POST /forms with form', function(test) {
           done() ; test.end() })
       .end(JSON.stringify(form)) }) })
 
-tape('POST /forms with form', function(test) {
+tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
     var form = { invalid: 'form' }
     var request = { method: 'POST', path: '/forms', port: port }
