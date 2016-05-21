@@ -67,10 +67,7 @@ function handler(bole, level) {
       else { methodNotAllowed(response) } }
     else if (pathname.startsWith('/forms/')) {
       var digest = pathname.substring('/forms/'.length)
-      if (!isDigest(digest)) {
-        response.log.info({ event: 'invalid digest' })
-        response.statusCode = 404
-        response.end() }
+      if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
       else {
         var key = encode([ 'forms', digest ])
         level.get(key, function(error, value) {
