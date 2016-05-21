@@ -114,14 +114,16 @@ tape('GET /forms/$great_grandchild_of_posted', function(test) {
     http
       .request(post, function(response) {
         test.equal(response.statusCode, 201, 'responds 201')
-        setImmediate(function checkGetRequest() {
-          var get = { path: ( '/forms/' + digest ), port: port }
-          http.get(get, function(response) {
-            response.pipe(concat(function(buffer) {
-              test.same(
-                JSON.parse(buffer), greatgrandchild,
-                'serves the great granchild form')
-              done() ; test.end() })) }) }) })
+        setTimeout(
+          function checkGetRequest() {
+            var get = { path: ( '/forms/' + digest ), port: port }
+            http.get(get, function(response) {
+              response.pipe(concat(function(buffer) {
+                test.same(
+                  JSON.parse(buffer), greatgrandchild,
+                  'serves the great granchild form')
+                done() ; test.end() })) }) },
+          200) })
       .end(JSON.stringify(parent)) }) })
 
 tape('PUT /forms', function(test) {
