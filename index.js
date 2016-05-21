@@ -40,9 +40,7 @@ function handler(bole, level) {
     var parsed = url.parse(request.url)
     var pathname = parsed.pathname
     if (pathname === '/') {
-      if (method === 'GET') {
-        response.setHeader('content-type', 'application/json')
-        response.end(METADATA) }
+      if (method === 'GET') { sendJSON(response, METADATA) }
       else { methodNotAllowed(response) } }
     if (pathname === '/forms') {
       if (method === 'POST') {
@@ -75,10 +73,7 @@ function handler(bole, level) {
           if (error) {
             if (error.notFound) { notFound(response) }
             else { internalDBError(response, error) } }
-          else {
-            var form = JSON.parse(value).form
-            response.setHeader('content-type', 'application/json')
-            response.end(JSON.stringify(form)) } }) } }
+          else { sendJSON(response, JSON.parse(value).form) } }) } }
     else { notFound(response) } } }
 
 function badRequest(response, message) {
@@ -104,3 +99,7 @@ function putForm(level, form, digest, callback) {
   var key = encode([ 'forms', digest ])
   var value = JSON.stringify({ version: VERSION, form: form })
   level.put(key, value, callback) }
+
+function sendJSON(response, body) {
+  response.setHeader('content-type', 'application/json')
+  response.end(( typeof body === 'string' ) ? body : JSON.stringify(body)) }
