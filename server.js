@@ -27,16 +27,21 @@ fs.stat(directory, function(error, stat) {
       if (module.parent) {
         module.exports = server }
       else {
-        var trap = function() {
-          log.info({ event: 'signal' })
+        var cleanup = function() {
           level.close(function() {
             log.info({ event: 'closed level' })
             server.close(function() {
               log.info({ event: 'closed server' })
               process.exit(0) }) }) }
+        var trap = function() {
+          log.info({ event: 'signal' })
+          cleanup() }
         process.on('SIGTERM', trap)
         process.on('SIGQUIT', trap)
         process.on('SIGINT', trap)
+        process.on('uncaughtException', function(exception) {
+          log.error({ exception: exception })
+          cleanup() })
         var port = ( process.env.PORT || 0 )
         server.listen(port, function() {
           var boundPort = this.address().port
