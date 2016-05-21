@@ -139,6 +139,8 @@ var methodNotAllowed = justEnd.bind(this, 405)
 
 // Helper functions for reading and writing from LevelUP:
 
+// TODO Check for hash collisions
+// TODO Do not overwrite existing forms
 function putForm(level, digest, form, posted, callback) {
   var value = JSON.stringify(
     { version: VERSION,
