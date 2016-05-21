@@ -99,8 +99,29 @@ tape('GET /forms/$child_of_posted', function(test) {
         var get = { path: ( '/forms/' + childDigest ), port: port }
         http.get(get, function(response) {
           response.pipe(concat(function(buffer) {
-            test.same(JSON.parse(buffer), child, 'serves the posted form')
+            test.same(JSON.parse(buffer), child, 'serves the child form')
             done() ; test.end() })) }) })
+      .end(JSON.stringify(parent)) }) })
+
+tape('GET /forms/$great_grandchild_of_posted', function(test) {
+  server(function(port, done) {
+    var greatgrandchild = { content: [ 'Great Grandchild' ] }
+    var grandchild = { content: [ { form: greatgrandchild } ] }
+    var child = { content: [ { form: grandchild } ] }
+    var parent = { content: [ { form: child } ] }
+    var digest = normalize(greatgrandchild).root
+    var post = { method: 'POST', path: '/forms', port: port }
+    http
+      .request(post, function(response) {
+        test.equal(response.statusCode, 201, 'responds 201')
+        setImmediate(function checkGetRequest() {
+          var get = { path: ( '/forms/' + digest ), port: port }
+          http.get(get, function(response) {
+            response.pipe(concat(function(buffer) {
+              test.same(
+                JSON.parse(buffer), greatgrandchild,
+                'serves the great granchild form')
+              done() ; test.end() })) }) }) })
       .end(JSON.stringify(parent)) }) })
 
 tape('PUT /forms', function(test) {
