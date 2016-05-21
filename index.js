@@ -90,7 +90,7 @@ function handleHTTPRequest(bole, level) {
                     else {
                       response.log.info({ event: 'form' })
                       response.statusCode = 201
-                      response.setHeader('location', ( '/forms/' + digest ))
+                      response.setHeader('Location', ( '/forms/' + digest ))
                       response.end()
                       // Emit an event for the new form. This will trigger
                       // indexing and other processing by event handlers
@@ -117,7 +117,7 @@ function handleHTTPRequest(bole, level) {
 // Shorthand handlers for various response types:
 
 function sendJSON(response, body) {
-  response.setHeader('content-type', 'application/json')
+  response.setHeader('Content-Type', 'application/json')
   response.end(( typeof body === 'string' ) ? body : JSON.stringify(body)) }
 
 function badRequest(response, message) {
