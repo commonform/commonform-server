@@ -3,7 +3,6 @@ module.exports = handleHTTPRequest
 // EventEmitter2 supports wildcard event handlers and `.onAny()`, which
 // is used for logging.
 var EventEmitter = require('eventemitter2').EventEmitter2
-var concat = require('concat-stream')
 var formKey = require('./form-key')
 var isDigest = require('is-sha-256-hex-digest')
 var normalize = require('commonform-normalize')
@@ -69,27 +68,31 @@ function handleHTTPRequest(bole, level) {
     else if (pathname === '/forms') {
       // POST /forms
       if (method === 'POST') {
-        request.pipe(concat(function(buffer) {
-          parseJSON(buffer, function(error, form) {
-            if (error) { badRequest(response, 'invalid JSON') }
-            else {
-              if (!validForm(form)) { badRequest(response, 'invalid form') }
+        var buffers = [ ]
+        request
+          .on('data', function(buffer) {
+            buffers.push(buffer) })
+          .on('end', function() {
+            parseJSON(Buffer.concat(buffers), function(error, form) {
+              if (error) { badRequest(response, 'invalid JSON') }
               else {
-                var normalized = normalize(form)
-                var digest = normalized.root
-                response.log.info({ digest: digest })
-                putForm(level, digest, form, function(error) {
-                  /* istanbul ignore if */
-                  if (error) { internalError(response, error) }
-                  else {
-                    response.log.info({ event: 'form' })
-                    response.statusCode = 201
-                    response.setHeader('location', ( '/forms/' + digest ))
-                    response.end()
-                    // Emit an event for the new form. This will trigger
-                    // indexing and other processing by event handlers
-                    // on the event emitter.
-                    emit('form', form, digest, normalized) } }) } } }) })) }
+                if (!validForm(form)) { badRequest(response, 'invalid form') }
+                else {
+                  var normalized = normalize(form)
+                  var digest = normalized.root
+                  response.log.info({ digest: digest })
+                  putForm(level, digest, form, function(error) {
+                    /* istanbul ignore if */
+                    if (error) { internalError(response, error) }
+                    else {
+                      response.log.info({ event: 'form' })
+                      response.statusCode = 201
+                      response.setHeader('location', ( '/forms/' + digest ))
+                      response.end()
+                      // Emit an event for the new form. This will trigger
+                      // indexing and other processing by event handlers
+                      // on the event emitter.
+                      emit('form', form, digest, normalized) } }) } } }) }) }
       else { methodNotAllowed(response) } }
 
     else if (pathname.startsWith('/forms/')) {
