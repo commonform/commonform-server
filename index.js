@@ -28,6 +28,7 @@ function handler(bole, level) {
           var child = element.form
           var childRoot = normalized[root].content[index].digest
           putForm(level, child, childRoot, function(error) {
+            /* istanbul ignore if */
             if (error) { eventLog.error(error) }
             else {
               setImmediate(function recurse() {
