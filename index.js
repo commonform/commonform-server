@@ -3,6 +3,7 @@ module.exports = handleHTTPRequest
 // EventEmitter2 supports wildcard event handlers and `.onAny()`, which
 // is used for logging.
 var EventEmitter = require('eventemitter2').EventEmitter2
+var body = require('body/json')
 var formKey = require('./form-key')
 var isDigest = require('is-sha-256-hex-digest')
 var normalize = require('commonform-normalize')
@@ -136,69 +137,16 @@ var methodNotAllowed = justEnd.bind(this, 405)
 var requestEntityTooLarge = justEnd.bind(this, 413)
 
 function readJSONBody(request, response, limit, callback) {
-  var buffer
-  var finished = false
-  var bytesReceived = 0
-  var lengthHeader = request.headers['content-length']
-  var tooLarge = ( lengthHeader && ( parseInt(lengthHeader) > limit ) )
-  var bindings =
-    { aborted: onAborted,
-      close: finish,
-      data: onData,
-      end: onEnd,
-      error: onEnd }
-  if (tooLarge) {
-    requestEntityTooLarge(response) }
-  else {
-    buffer = [ ]
-    Object.keys(bindings).forEach(function(event) {
-      request.on(event, bindings[event]) }) }
-  function onData(chunk) {
-    console.log('onData')
-    if (!finished) {
-      buffer.push(chunk)
-      bytesReceived += chunk.length
-      if (bytesReceived > limit) {
-        finish()
-        requestEntityTooLarge(response) } } }
-  function onAborted() {
-    console.log('aborted')
-    if (!finished) {
-      finish()
-      badRequest(response, 'request aborted') } }
-  function onEnd(error) {
-    console.log('end')
-    if (!finished) {
-      if (error) {
-        console.log('error', error)
-        request.pause()
-        finish()
-        internalError(response, error) }
+  body(request, response, { limit: limit }, function(error, json) {
+    if (error) {
+      if (error.message === 'request entity too large') {
+        requestEntityTooLarge(response) }
+      else if (error instanceof SyntaxError) {
+        badRequest(response, 'invalid JSON') }
       else {
-        console.log('lengthHeader', parseInt(lengthHeader))
-        console.log('bytesReceived', bytesReceived)
-        var inaccurateHeader = (
-          lengthHeader && ( parseInt(lengthHeader) !== bytesReceived ) )
-        if (inaccurateHeader) {
-          finish()
-          console.log('report inaccurate header')
-          badRequest(response, 'inaccurate Content-Length') }
-        else {
-          console.log('buffer', Buffer.concat(buffer).toString())
-          parseJSON(Buffer.concat(buffer), function(error, object) {
-            finish()
-            if (error) {
-              console.log('error', error)
-              badRequest(response, 'invalid JSON') }
-            else {
-              console.log('parsed')
-              callback(object) } }) } } } }
-  function finish() {
-    console.log('finish')
-    finished = true
-    buffer = null
-    Object.keys(bindings).forEach(function(event) {
-      request.removeListener(event, bindings[event]) }) }}
+        badRequest(response, error.message) } }
+    else {
+      callback(json) } }) }
 
 // Helper functions for reading and writing from LevelUP:
 

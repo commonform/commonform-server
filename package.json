@@ -6,6 +6,7 @@
   "repository": "kemitchell/commonform-server",
   "license": "Apache-2.0",
   "dependencies": {
+    "body": "^5.1.0",
     "bole": "^2.0.0",
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
