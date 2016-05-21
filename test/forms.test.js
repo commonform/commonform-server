@@ -76,6 +76,22 @@ tape('GET /forms/$posted', function(test) {
             done() ; test.end() })) }) })
       .end(JSON.stringify(form)) }) })
 
+tape('GET /forms/$child_of_posted', function(test) {
+  server(function(port, done) {
+    var child = { content: [ 'Child Form' ] }
+    var parent = { content: [ { form: child } ] }
+    var childDigest = normalize(child).root
+    var post = { method: 'POST', path: '/forms', port: port }
+    http
+      .request(post, function(response) {
+        test.equal(response.statusCode, 201, 'responds 201')
+        var get = { path: ( '/forms/' + childDigest ), port: port }
+        http.get(get, function(response) {
+          response.pipe(concat(function(buffer) {
+            test.same(JSON.parse(buffer), child, 'serves the posted form')
+            done() ; test.end() })) }) })
+      .end(JSON.stringify(parent)) }) })
+
 tape('PUT /forms', function(test) {
   server(function(port, done) {
     var request = { method: 'PUT', path: '/forms', port: port }

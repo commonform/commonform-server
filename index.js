@@ -18,8 +18,20 @@ var METADATA = JSON.stringify(
 function handler(bole, level) {
   var eventLog = bole('events')
   var eventBus = new EventEmitter
-  eventBus.onAny(function(event) {
-    eventLog.info({ event: 'emit', name: event }) })
+  var emit = eventBus.emit.bind(eventBus)
+  eventBus
+    .onAny(function(event) {
+      eventLog.info({ event: 'emit', name: event }) })
+    .on('form', function(form, root, normalized) {
+      form.content.forEach(function(element, index) {
+        if (element.hasOwnProperty('form')) {
+          var child = element.form
+          var childRoot = normalized[root].content[index].digest
+          putForm(level, child, childRoot, function(error) {
+            if (error) { eventLog.error(error) }
+            else {
+              setImmediate(function recurse() {
+                emit('form', child, childRoot, normalized) }) } }) } }) })
 
   return function(request, response) {
     request.log = bole(uuid.v4())
@@ -48,12 +60,10 @@ function handler(bole, level) {
                 response.statusCode = 400
                 response.end('invalid form') }
               else {
-                var root = normalize(form).root
+                var normalized = normalize(form)
+                var root = normalized.root
                 request.log.info({ digest: root })
-                var key = encode([ 'forms', root ])
-                request.log({ key: key })
-                var value = JSON.stringify({ version: VERSION, form: form })
-                level.put(key, value, function(error) {
+                putForm(level, form, root, function(error) {
                   /* istanbul ignore if */
                   if (error) {
                     request.log.error(error)
@@ -64,7 +74,7 @@ function handler(bole, level) {
                     response.statusCode = 201
                     response.setHeader('location', ( '/forms/' + root ))
                     response.end()
-                    eventBus.emit('form', form) } }) } } }) })) }
+                    emit('form', form, root, normalized) } }) } } }) })) }
       else {
         response.statusCode = 405
         response.end() } }
@@ -94,3 +104,8 @@ function handler(bole, level) {
     else {
       response.statusCode = 404
       response.end() } } }
+
+function putForm(level, form, digest, callback) {
+  var key = encode([ 'forms', digest ])
+  var value = JSON.stringify({ version: VERSION, form: form })
+  level.put(key, value, callback) }
