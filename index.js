@@ -86,6 +86,7 @@ function badRequest(response, message) {
   response.statusCode = 400
   response.end(message) }
 
+/* istanbul ignore next */
 function internalDBError(response, error) {
   response.log.error(error)
   response.statusCode = 500
