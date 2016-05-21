@@ -40,6 +40,53 @@ tape('POST /forms with infinite request body', function(test) {
         test.equal(response.statusCode, 413, 'responds 413')
         done() ; test.end() })) }) })
 
+tape('POST /forms without request body', function(test) {
+  server(function(port, done) {
+    var request = { method: 'POST', path: '/forms', port: port }
+    http
+      .request(request, function(response) {
+        test.equal(response.statusCode, 400, 'responds 400')
+        done() ; test.end() })
+      .end() }) })
+
+// The following two tests do not work correctly.
+
+// This test errors out on the client side. The response handler is
+// never called. There is no such problem when the Cotnent-Length header
+// is either omitted or correct.
+
+// tape('POST /forms with low Content-Length', function(test) {
+//   server(function(port, done) {
+//     var form = { content: [ 'Just a test' ] }
+//     var json = JSON.stringify(form)
+//     var request =
+//       { method: 'POST',
+//         path: '/forms',
+//         headers: { 'Content-Length': ( Buffer.byteLength(json) - 1 ) },
+//         port: port }
+//     http
+//       .request(request, function(response) {
+//         test.equal(response.statusCode, 408, 'responds 408')
+//         done() ; test.end() })
+//     .end(json) }) })
+
+// This test's request eventually times out on the server side.
+
+// tape('POST /forms with high Content-Length', function(test) {
+//   server(function(port, done) {
+//     var form = { content: [ 'Just a test' ] }
+//     var json = JSON.stringify(form)
+//     var request =
+//       { method: 'POST',
+//         path: '/forms',
+//         headers: { 'Content-Length': ( Buffer.byteLength(json) + 1 ) },
+//         port: port }
+//     http
+//       .request(request, function(response) {
+//         test.equal(response.statusCode, 408, 'responds 408')
+//         done() ; test.end() })
+//     .end(json) }) })
+
 tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
     var form = { invalid: 'form' }

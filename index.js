@@ -55,12 +55,19 @@ function handleHTTPRequest(bole, level) {
 
   // Limit the request body size.
   var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
+  var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
 
   return function(request, response) {
     // Create a Bole sub-log for this HTTP response, marked with a
     // random UUID.
     response.log = bole(uuid.v4())
     response.log.info(request)
+
+    response.setTimeout(TIMEOUT, function() {
+      response.log.error({ event: 'timeout' })
+      response.statusCode = 408
+      response.removeAllListeners()
+      response.end() })
 
     // Route the request.
     var method = request.method
@@ -145,17 +152,19 @@ function readJSONBody(request, response, limit, callback) {
     requestEntityTooLarge(response) }
   else {
     buffer = [ ]
-    request.addListener('aborted', onAborted)
-    request.addListener('close', finish)
-    request.addListener('data', onData)
-    request.addListener('end', onEnd)
-    request.addListener('error', onEnd) }
+    request.on('data', onData)
+    request.once('abort', onAbort)
+    request.once('close', finish)
+    request.once('end', onEnd)
+    request.once('error', onEnd) }
   function onData(chunk) {
     if (!finished) {
       buffer.push(chunk)
       bytesReceived += chunk.length
-      if (bytesReceived > limit) { requestEntityTooLarge(response) } } }
-  function onAborted() {
+      if (bytesReceived > limit) {
+        finish()
+        requestEntityTooLarge(response) } } }
+  function onAbort() {
     if (!finished) {
       finish()
       badRequest(response, 'request aborted') } }
@@ -177,13 +186,11 @@ function readJSONBody(request, response, limit, callback) {
             if (error) { badRequest(response, 'invalid JSON') }
             else { callback(object) } }) } } } }
   function finish() {
-    finished = true
-    buffer = null
-    request.removeListener('aborted', onAborted)
-    request.removeListener('close', finish)
-    request.removeListener('data', onData)
-    request.removeListener('end', onEnd)
-    request.removeListener('error', onEnd) } }
+    if (!finished) {
+      finished = true
+      buffer = null
+      request.removeAllListeners()
+      request.pause() } } }
 
 // Helper functions for reading and writing from LevelUP:
 
