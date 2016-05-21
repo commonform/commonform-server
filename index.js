@@ -141,49 +141,64 @@ function readJSONBody(request, response, limit, callback) {
   var bytesReceived = 0
   var lengthHeader = request.headers['content-length']
   var tooLarge = ( lengthHeader && ( parseInt(lengthHeader) > limit ) )
+  var bindings =
+    { aborted: onAborted,
+      close: finish,
+      data: onData,
+      end: onEnd,
+      error: onEnd }
   if (tooLarge) {
     requestEntityTooLarge(response) }
   else {
     buffer = [ ]
-    request.addListener('aborted', onAborted)
-    request.addListener('close', finish)
-    request.addListener('data', onData)
-    request.addListener('end', onEnd)
-    request.addListener('error', onEnd) }
+    Object.keys(bindings).forEach(function(event) {
+      request.on(event, bindings[event]) }) }
   function onData(chunk) {
+    console.log('onData')
     if (!finished) {
       buffer.push(chunk)
       bytesReceived += chunk.length
-      if (bytesReceived > limit) { requestEntityTooLarge(response) } } }
+      if (bytesReceived > limit) {
+        finish()
+        requestEntityTooLarge(response) } } }
   function onAborted() {
+    console.log('aborted')
     if (!finished) {
       finish()
       badRequest(response, 'request aborted') } }
   function onEnd(error) {
+    console.log('end')
     if (!finished) {
       if (error) {
+        console.log('error', error)
         request.pause()
         finish()
         internalError(response, error) }
       else {
+        console.log('lengthHeader', parseInt(lengthHeader))
+        console.log('bytesReceived', bytesReceived)
         var inaccurateHeader = (
           lengthHeader && ( parseInt(lengthHeader) !== bytesReceived ) )
         if (inaccurateHeader) {
           finish()
+          console.log('report inaccurate header')
           badRequest(response, 'inaccurate Content-Length') }
         else {
+          console.log('buffer', Buffer.concat(buffer).toString())
           parseJSON(Buffer.concat(buffer), function(error, object) {
             finish()
-            if (error) { badRequest(response, 'invalid JSON') }
-            else { callback(object) } }) } } } }
+            if (error) {
+              console.log('error', error)
+              badRequest(response, 'invalid JSON') }
+            else {
+              console.log('parsed')
+              callback(object) } }) } } } }
   function finish() {
+    console.log('finish')
     finished = true
     buffer = null
-    request.removeListener('aborted', onAborted)
-    request.removeListener('close', finish)
-    request.removeListener('data', onData)
-    request.removeListener('end', onEnd)
-    request.removeListener('error', onEnd) } }
+    Object.keys(bindings).forEach(function(event) {
+      request.removeListener(event, bindings[event]) }) }}
 
 // Helper functions for reading and writing from LevelUP:
 

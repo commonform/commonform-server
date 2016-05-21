@@ -40,6 +40,47 @@ tape('POST /forms with infinite request body', function(test) {
         test.equal(response.statusCode, 413, 'responds 413')
         done() ; test.end() })) }) })
 
+tape('POST /forms without request body', function(test) {
+  server(function(port, done) {
+    var request = { method: 'POST', path: '/forms', port: port }
+    http
+      .request(request, function(response) {
+        test.equal(response.statusCode, 400, 'responds 400')
+        done() ; test.end() })
+      .end() }) })
+
+tape('POST /forms with low Content-Length', function(test) {
+  server(function(port, done) {
+    var form = { content: [ 'Just a test' ] }
+    var json = JSON.stringify(form)
+    var request =
+      { method: 'POST',
+        path: '/forms',
+        headers: { 'Content-Length': ( Buffer.byteLength(json) - 1 ) },
+        port: port }
+    http
+      .request(request, function(response) {
+        test.equal(response.statusCode, 400, 'responds 400')
+        done() ; test.end() })
+      .on('error', function(error) {
+        console.log('client error', error) })
+      .end(json) }) })
+
+tape('POST /forms with high Content-Length', function(test) {
+  server(function(port, done) {
+    var form = { content: [ 'Just a test' ] }
+    var json = JSON.stringify(form)
+    var request =
+      { method: 'POST',
+        path: '/forms',
+        headers: { 'Content-Length': ( Buffer.byteLength(json) + 1 ) },
+        port: port }
+    http
+      .request(request, function(response) {
+        test.equal(response.statusCode, 413, 'responds 413')
+        done() ; test.end() })
+    .end(json) }) })
+
 tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
     var form = { invalid: 'form' }
