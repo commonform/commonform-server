@@ -32,7 +32,7 @@ function handleHTTPRequest(bole, level) {
       eventLog.info({ event: 'emit', name: event }) })
     // A new form has been added to the library.
     .on('form', function emitEventsForChildren(form, digest, normalized, seen) {
-      if (seen.indexOf(digest) !== -1) {
+      if (seen.includes(digest)) {
         eventLog.error({ event: 'collision', digest: digest, seen: seen }) }
       else {
         seen.push(digest)
