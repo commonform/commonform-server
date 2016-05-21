@@ -34,8 +34,8 @@ function handler(bole, level) {
                 emit('form', child, childRoot, normalized) }) } }) } }) })
 
   return function(request, response) {
-    request.log = bole(uuid.v4())
-    request.log.info(request)
+    response.log = bole(uuid.v4())
+    response.log.info(request)
     var method = request.method
     var parsed = url.parse(request.url)
     var pathname = parsed.pathname
@@ -43,45 +43,32 @@ function handler(bole, level) {
       if (method === 'GET') {
         response.setHeader('content-type', 'application/json')
         response.end(METADATA) }
-      else {
-        response.statusCode = 405
-        response.end() } }
+      else { methodNotAllowed(response) } }
     if (pathname === '/forms') {
       if (method === 'POST') {
         request.pipe(concat(function(buffer) {
           parse(buffer, function(error, form) {
-            if (error) {
-              request.log.info({ event: 'invalid JSON' })
-              response.statusCode = 400
-              response.end('invalid JSON') }
+            if (error) { badRequest(response, 'invalid JSON') }
             else {
-              if (!validForm(form)) {
-                request.log.info({ event: 'invalid form' })
-                response.statusCode = 400
-                response.end('invalid form') }
+              if (!validForm(form)) { badRequest(response, 'invalid form') }
               else {
                 var normalized = normalize(form)
                 var root = normalized.root
-                request.log.info({ digest: root })
+                response.log.info({ digest: root })
                 putForm(level, form, root, function(error) {
                   /* istanbul ignore if */
-                  if (error) {
-                    request.log.error(error)
-                    response.statusCode = 500
-                    response.end('database error') }
+                  if (error) { internalDBError(response, error) }
                   else {
-                    request.log.info({ event: 'form' })
+                    response.log.info({ event: 'form' })
                     response.statusCode = 201
                     response.setHeader('location', ( '/forms/' + root ))
                     response.end()
                     emit('form', form, root, normalized) } }) } } }) })) }
-      else {
-        response.statusCode = 405
-        response.end() } }
+      else { methodNotAllowed(response) } }
     else if (pathname.startsWith('/forms/')) {
       var digest = pathname.substring('/forms/'.length)
       if (!isDigest(digest)) {
-        request.log.info({ event: 'invalid digest' })
+        response.log.info({ event: 'invalid digest' })
         response.statusCode = 404
         response.end() }
       else {
@@ -89,21 +76,32 @@ function handler(bole, level) {
         level.get(key, function(error, value) {
           /* istanbul ignore if */
           if (error) {
-            if (error.notFound) {
-              request.log.info({ event: 'not found' })
-              response.statusCode = 404
-              response.end() }
-            else {
-              request.log.error(error)
-              response.statusCode = 500
-              response.end('database error') } }
+            if (error.notFound) { notFound(response) }
+            else { internalDBError(response, error) } }
           else {
             var form = JSON.parse(value).form
             response.setHeader('content-type', 'application/json')
             response.end(JSON.stringify(form)) } }) } }
-    else {
-      response.statusCode = 404
-      response.end() } } }
+    else { notFound(response) } } }
+
+
+function badRequest(response, message) {
+  response.log.info({ event: message })
+  response.statusCode = 400
+  response.end(message) }
+
+function internalDBError(response, error) {
+  response.log.error(error)
+  response.statusCode = 500
+  response.end('database error') }
+
+function notFound(response) {
+  response.statusCode = 404
+  response.end() }
+
+function methodNotAllowed(response) {
+  response.statusCode = 405
+  response.end() }
 
 function putForm(level, form, digest, callback) {
   var key = encode([ 'forms', digest ])
