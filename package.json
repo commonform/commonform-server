@@ -10,7 +10,6 @@
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^0.6.2",
-    "concat-stream": "^1.5.1",
     "eventemitter2": "^1.0.3",
     "is-sha-256-hex-digest": "^1.0.0",
     "json-parse-errback": "^2.0.0",
@@ -20,6 +19,7 @@
     "uuid": "^2.0.2"
   },
   "devDependencies": {
+    "concat-stream": "^1.5.1",
     "istanbul": "^0.4.3",
     "memdown": "^1.1.2",
     "tape": "^4.5.1",
