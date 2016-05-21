@@ -4,7 +4,7 @@ var name = require('../package.json').name
 var path = require('path')
 var spawn = require('child_process').spawn
 var tape = require('tape')
-var node = process.argv[0]
+var node = process.execPath
 
 tape('Bootstrap From Existing LevelDB Data', function(test) {
   var server = path.join(process.cwd(), 'server.js')
