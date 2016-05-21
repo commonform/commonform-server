@@ -70,8 +70,7 @@ function handler(bole, level) {
       if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
       else {
         if (method === 'GET') {
-          var key = encode([ 'forms', digest ])
-          level.get(key, function(error, value) {
+          getForm(level, digest, function(error, value) {
             /* istanbul ignore if */
             if (error) {
               if (error.notFound) { notFound(response) }
@@ -100,20 +99,33 @@ function methodNotAllowed(response) {
   response.end() }
 
 function putForm(level, form, digest, callback) {
-  var key = encode([ 'forms', digest ])
   var value = JSON.stringify({ version: VERSION, form: form })
-  var put = level.put.bind(level, key, value)
+  var put = level.put.bind(level, formKey(digest), value)
   thrice(put, callback) }
+
+function getForm(level, digest, callback) {
+  var key = formKey(digest)
+  var get = level.get.bind(level, key)
+  thrice(get, callback, isNotFoundError) }
+
+function isNotFoundError(error) {
+  return ( error && error.notFound ) }
+
+function formKey(digest) {
+  return encode([ 'forms', digest ]) }
 
 function sendJSON(response, body) {
   response.setHeader('content-type', 'application/json')
   response.end(( typeof body === 'string' ) ? body : JSON.stringify(body)) }
 
-function thrice(asyncFunction, callback) {
+function thrice(asyncFunction, callback, /* optional */ isFinalError) {
   var operation = retry.operation({ retries: 3 })
   operation.attempt(function() {
     asyncFunction(function(error, result) {
-      if (operation.retry(error)) { return }
-      else {
-        if (error) { callback(operation.mainError()) }
-        else { callback(null, result) } } }) }) }
+      var haveFinalError = (
+        ( typeof isFinalError === 'function' && isFinalError(error) ) ||
+        !shouldRetry(error) )
+      /* istanbul ignore else */
+      if (haveFinalError) { callback(error, result) } }) })
+  function shouldRetry(error) {
+    operation.retry(error) } }
