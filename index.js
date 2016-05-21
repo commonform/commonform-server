@@ -6,6 +6,7 @@ var encode = require('bytewise/encoding/hex').encode
 var isDigest = require('is-sha-256-hex-digest')
 var normalize = require('commonform-normalize')
 var parse = require('json-parse-errback')
+var retry = require('retry')
 var url = require('url')
 var uuid = require('uuid')
 var validForm = require('commonform-validate').form
@@ -101,8 +102,18 @@ function methodNotAllowed(response) {
 function putForm(level, form, digest, callback) {
   var key = encode([ 'forms', digest ])
   var value = JSON.stringify({ version: VERSION, form: form })
-  level.put(key, value, callback) }
+  var put = level.put.bind(level, key, value)
+  thrice(put, callback) }
 
 function sendJSON(response, body) {
   response.setHeader('content-type', 'application/json')
   response.end(( typeof body === 'string' ) ? body : JSON.stringify(body)) }
+
+function thrice(asyncFunction, callback) {
+  var operation = retry.operation({ retries: 3 })
+  operation.attempt(function() {
+    asyncFunction(function(error, result) {
+      if (operation.retry(error)) { return }
+      else {
+        if (error) { callback(operation.mainError()) }
+        else { callback(null, result) } } }) }) }
