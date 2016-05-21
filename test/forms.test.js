@@ -3,6 +3,7 @@ var http = require('http')
 var normalize = require('commonform-normalize')
 var server = require('./server')
 var tape = require('tape')
+var makeInfiniteStream = require('./infinite-stream')
 
 tape('POST /forms with invalid JSON', function(test) {
   server(function(port, done) {
@@ -30,6 +31,14 @@ tape('POST /forms with form', function(test) {
           'sets location header')
           done() ; test.end() })
       .end(JSON.stringify(form)) }) })
+
+tape('POST /forms with infinite request body', function(test) {
+  server(function(port, done) {
+    var request = { method: 'POST', path: '/forms', port: port }
+    makeInfiniteStream()
+      .pipe(http.request(request, function(response) {
+        test.equal(response.statusCode, 413, 'responds 413')
+        done() ; test.end() })) }) })
 
 tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
