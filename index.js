@@ -31,23 +31,26 @@ function handleHTTPRequest(bole, level) {
     .onAny(function(event) {
       eventLog.info({ event: 'emit', name: event }) })
     // A new form has been added to the library.
-    // TODO: Cycle checking.  Use a `seen` array parameter with digests.
-    .on('form', function emitEventsForChildren(form, digest, normalized) {
-      form.content.forEach(function(element, index) {
-        if (element.hasOwnProperty('form')) {
-          // The denormalized object, to be stored in LevelUP.
-          var child = element.form
-          // The normalized object, which has the digests of any child forms.
-          var childDigest = normalized[digest].content[index].digest
-          putForm(level, childDigest, child, function(error) {
-            /* istanbul ignore if */
-            if (error) { eventLog.error(error) }
-            else {
-              // Trigger an additional form events for this child form.
-              // This is indirectly recursive, since the event emitter
-              // will trigger this handler for again for the new event.
-              setImmediate(function recurse() {
-                emit('form', child, childDigest, normalized) }) } }) } }) })
+    .on('form', function emitEventsForChildren(form, digest, normalized, seen) {
+      if (seen.indexOf(digest) !== -1) {
+        eventLog.error({ event: 'collision', digest: digest, seen: seen }) }
+      else {
+        seen.push(digest)
+        form.content.forEach(function(element, index) {
+          if (element.hasOwnProperty('form')) {
+            // The denormalized object, to be stored in LevelUP.
+            var child = element.form
+            // The normalized object, which has the digests of any child forms.
+            var childDigest = normalized[digest].content[index].digest
+            putForm(level, childDigest, child, function(error) {
+              /* istanbul ignore if */
+              if (error) { eventLog.error(error) }
+              else {
+                // Trigger an additional form events for this child form.
+                // This is indirectly recursive, since the event emitter
+                // will trigger this handler for again for the new event.
+                setImmediate(function recurse() {
+                  emit('form', child, childDigest, normalized, seen) }) } }) } }) } })
 
   return function(request, response) {
     // Create a Bole sub-log for this HTTP response, marked with a
@@ -92,7 +95,7 @@ function handleHTTPRequest(bole, level) {
                       // Emit an event for the new form. This will trigger
                       // indexing and other processing by event handlers
                       // on the event emitter.
-                      emit('form', form, digest, normalized) } }) } } }) }) }
+                      emit('form', form, digest, normalized, [ ]) } }) } } }) }) }
       else { methodNotAllowed(response) } }
 
     else if (pathname.startsWith('/forms/')) {
