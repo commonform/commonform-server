@@ -59,8 +59,8 @@ function waitOn(process, f) {
     buffers.push(buffer)
     var string = Buffer.concat(buffers).toString()
     var trigger = (
-      string.indexOf('"listening"') !== -1 ||
-      string.indexOf('"closed server"') !== -1 )
+      string.includes('"listening"') ||
+      string.includes('"closed server"') )
     if (trigger) {
       f()
       process.stdout.removeListener('data', listener) } }
