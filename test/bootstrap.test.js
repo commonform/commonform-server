@@ -20,7 +20,7 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
       var process = spawn(node, [ server ], options)
       return process }
     var firstServer = spawnServer()
-    delay(500, function() {
+    waitOn(firstServer, function() {
       var form = { content: [ 'Test form!' ] }
       var post = { method: 'POST', path: '/forms', port: PORT }
       http
@@ -30,9 +30,9 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
             'first server responds 201')
           var location = response.headers.location
           firstServer.kill()
-          delay(500, function() {
+          waitOn(firstServer, function() {
             var secondServer = spawnServer()
-            delay(500, function() {
+            waitOn(secondServer, function() {
               var get = { path: location, port: PORT }
               http
                 .request(get, function(response) {
@@ -53,5 +53,15 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
                 .end() }) }) })
         .end(JSON.stringify(form)) }) }) })
 
-function delay(ms, f) {
-  setTimeout(f, ms) }
+function waitOn(process, f) {
+  var buffers = [ ]
+  var listener = function(buffer) {
+    buffers.push(buffer)
+    var string = Buffer.concat(buffers).toString()
+    var trigger = (
+      string.indexOf('"listening"') !== -1 ||
+      string.indexOf('"closed server"') !== -1 )
+    if (trigger) {
+      f()
+      process.stdout.removeListener('data', listener) } }
+  process.stdout.addListener('data', listener) }
