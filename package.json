@@ -22,7 +22,8 @@
   "devDependencies": {
     "istanbul": "^0.4.3",
     "memdown": "^1.1.2",
-    "tape": "^4.5.1"
+    "tape": "^4.5.1",
+    "temporary-directory": "^1.0.2"
   },
   "scripts": {
     "coverage": "istanbul check-coverage coverage/coverage.json",

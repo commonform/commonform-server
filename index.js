@@ -4,11 +4,11 @@ module.exports = handleHTTPRequest
 // is used for logging.
 var EventEmitter = require('eventemitter2').EventEmitter2
 var concat = require('concat-stream')
-var encode = require('bytewise/encoding/hex').encode
+var formKey = require('./form-key')
 var isDigest = require('is-sha-256-hex-digest')
 var normalize = require('commonform-normalize')
 var parseJSON = require('json-parse-errback')
-var retry = require('retry')
+var thrice = require('./thrice')
 var url = require('url')
 var uuid = require('uuid')
 var validForm = require('commonform-validate').form
@@ -148,24 +148,3 @@ function getForm(level, digest, callback) {
 // call succeeded. This predicate is used with calls to `thrice`.
 function isNotFoundError(error) {
   return ( error && error.notFound ) }
-
-// Create a hex-encoded key for LevelUP. Keys are encoded arrays. The
-// first, string, array element is used to segment the store.
-function formKey(digest) {
-  return encode([ 'forms', digest ]) }
-
-// Try an asynchronous operation, retrying up to three times.
-function thrice(asyncFunction, callback, /* optional */ isFinalError) {
-  var operation = retry.operation({ retries: 3 })
-  operation.attempt(function() {
-    asyncFunction(function(error, result) {
-      // This is the final error if:
-      var haveFinalError = (
-        // The caller passed a predicate to identify errors that
-        // shouldn't prompt a retry, and this is one of them.
-        ( typeof isFinalError === 'function' && isFinalError(error) ) ||
-        // We're out of retries.
-        !shouldRetry(error) )
-      /* istanbul ignore else */
-      if (haveFinalError) { callback(error, result) } }) })
-  function shouldRetry(error) { operation.retry(error) } }
