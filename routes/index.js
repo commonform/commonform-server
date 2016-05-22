@@ -167,16 +167,7 @@ routes.set('/publishers', require('./publishers'))
 
 routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
 
-routes.set(
-  '/forms/:digest/projects',
-  function(request, response, parameters, log, level) {
-    if (request.method === 'GET') {
-      var digest = parameters.digest
-      getProjects(level, digest, function(error, projects) {
-        if (error) { internalError(response, error) }
-        else {
-          response.setHeader('Content-Type', 'application/json')
-          response.end(JSON.stringify(projects)) } }) } })
+routes.set('/forms/:digest/projects', require('./form-projects'))
 
 function justEnd(status, response) {
   response.statusCode = status
