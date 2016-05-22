@@ -8,7 +8,6 @@
   "dependencies": {
     "async-series": "0.0.1",
     "bcrypt-password": "^1.0.2",
-    "bole": "^2.0.0",
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^0.6.2",
@@ -19,6 +18,7 @@
     "level-lock": "^1.0.1",
     "leveldown": "^1.4.6",
     "levelup": "^1.3.2",
+    "pino": "^2.4.2",
     "retry": "^0.9.0",
     "reviewers-edition-compare": "^1.0.4",
     "reviewers-edition-parse": "^2.0.5",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "concat-stream": "^1.5.1",
+    "dev-null": "^0.1.1",
     "istanbul": "^0.4.3",
     "memdown": "^1.1.2",
     "tape": "^4.5.1",

@@ -36,9 +36,9 @@ var SERVICE_AND_VERSION = JSON.stringify(
   { service: require('./package.json').name,
     version: VERSION })
 
-function makeRequestHandler(bole, level) {
-  // Create a Bole sub-log for events.
-  var eventLog = bole('events')
+function makeRequestHandler(log, level) {
+  // Create a Pino child log for events.
+  var eventLog = log.child({ log: 'events' })
   // An event bus. Used to trigger indexing and other processing of form
   // and project data posted by users.
   var eventBus = new EventEmitter
@@ -297,10 +297,11 @@ function makeRequestHandler(bole, level) {
   var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
 
   return function requestHandler(request, response) {
-    // Create a Bole sub-log for this HTTP response, marked with a
+    // Create a Pino child log for this HTTP response, marked with a
     // random UUID.
-    response.log = bole(uuid.v4())
+    response.log = log.child({ log: uuid.v4() })
     response.log.info(request)
+    response.on('end', function() { response.log.info(response) })
 
     response.setTimeout(TIMEOUT, function() {
       response.log.error({ event: 'timeout' })
@@ -312,7 +313,7 @@ function makeRequestHandler(bole, level) {
     var parsed = url.parse(request.url)
     var route = routes.get(parsed.path)
     if (route.handler) {
-      route.handler(request, response, route.params, bole, level) }
+      route.handler(request, response, route.params, log, level) }
     else {
       notFound(response) } } }
 
