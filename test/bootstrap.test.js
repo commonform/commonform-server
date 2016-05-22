@@ -20,7 +20,7 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
       var process = spawn(node, [ server ], options)
       return process }
     var firstServer = spawnServer()
-    waitOn(firstServer, function() {
+    waitOn(firstServer, 'listening', function() {
       var form = { content: [ 'Test form!' ] }
       var post = { method: 'POST', path: '/forms', port: PORT }
       http
@@ -30,21 +30,21 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
             'first server responds 201')
           var location = response.headers.location
           firstServer.kill()
-          waitOn(firstServer, function() {
+          waitOn(firstServer, 'closed server', function() {
             var secondServer = spawnServer()
-            waitOn(secondServer, function() {
+            waitOn(secondServer, 'bootstrapped', function() {
               var get = { path: location, port: PORT }
               http
                 .request(get, function(response) {
                   test.same(
                     response.statusCode, 200,
                     'second server responds 200')
-                  var buffers = [ ]
+                  var buffer = [ ]
                   response
-                    .on('data', function(buffer) {
-                      buffers.push(buffer) })
+                    .on('data', function(chunk) {
+                      buffer.push(chunk) })
                     .on('end', function() {
-                      var responseBody = JSON.parse(Buffer.concat(buffers))
+                      var responseBody = JSON.parse(Buffer.concat(buffer))
                       test.same(
                         form, responseBody,
                         'second server serves the form')
@@ -53,15 +53,12 @@ tape('Bootstrap From Existing LevelDB Data', function(test) {
                 .end() }) }) })
         .end(JSON.stringify(form)) }) }) })
 
-function waitOn(process, f) {
-  var buffers = [ ]
-  var listener = function(buffer) {
-    buffers.push(buffer)
-    var string = Buffer.concat(buffers).toString()
-    var trigger = (
-      string.includes('"listening"') ||
-      string.includes('"closed server"') )
-    if (trigger) {
-      f()
-      process.stdout.removeListener('data', listener) } }
-  process.stdout.addListener('data', listener) }
+function waitOn(child, event, callback) {
+  var buffer = [ ]
+  var listener = function(chunk) {
+    buffer.push(chunk)
+    var string = Buffer.concat(buffer).toString()
+    if (string.includes('"event":"' + event + '"')) {
+      callback()
+      child.stdout.removeListener('data', listener) } }
+  child.stdout.addListener('data', listener) }
