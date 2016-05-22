@@ -1,7 +1,7 @@
 module.exports = getPublishers
 
 var decodeKey = require('bytewise/encoding/hex').decode
-var editionKeyFor = require('./keys/edition')
+var editionKeyFor = require('../keys/edition')
 
 function getPublishers(level, callback) {
   var publishers = [ ]
