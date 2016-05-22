@@ -35,7 +35,7 @@ function bootstrap(level, log, port) {
               { event: 'write',
                 digest: digest }) } }) } })
     .on('end', function() {
-      bootstrapLog.info({ event: 'done' }) }) }
+      bootstrapLog.info({ event: 'bootstrapped' }) }) }
 
 function postForm(level, port, form) {
   return function(callback) {
