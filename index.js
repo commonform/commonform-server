@@ -1,4 +1,4 @@
-module.exports = handleHTTPRequest
+module.exports = makeRequestHandler
 
 // EventEmitter2 supports wildcard event handlers and `.onAny()`, which
 // is used for logging.
@@ -20,7 +20,7 @@ var SERVICE_AND_VERSION = JSON.stringify(
   { service: require('./package.json').name,
     version: VERSION })
 
-function handleHTTPRequest(bole, level) {
+function makeRequestHandler(bole, level) {
   // Create a Bole sub-log for events.
   var eventLog = bole('events')
   // An event bus. Used to trigger indexing and other processing of form
@@ -100,7 +100,7 @@ function handleHTTPRequest(bole, level) {
   var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
   var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
 
-  return function(request, response) {
+  return function requestHandler(request, response) {
     // Create a Bole sub-log for this HTTP response, marked with a
     // random UUID.
     response.log = bole(uuid.v4())
