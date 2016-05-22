@@ -1,5 +1,6 @@
 module.exports = makeRoutes
 
+var badRequest = require('./bad-request')
 var bcrypt = require('bcrypt-password')
 var editionKeyFor = require('../keys/edition')
 var exists = require('../queries/exists')
@@ -16,23 +17,19 @@ var internalError = require('./internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var lock = require('level-lock')
 var methodNotAllowed = require('./method-not-allowed')
-var normalize = require('commonform-normalize')
 var notFound = require('./not-found')
 var parseEdition = require('reviewers-edition-parse')
-var parseJSON = require('json-parse-errback')
 var publisherKey = require('../keys/publisher')
-var putForm = require('../queries/put-form')
+var readJSONBody = require('./read-json-body')
 var sendJSON = require('./send-json')
 var thrice = require('../thrice')
 var unauthorized = require('./unauthorized')
-var validForm = require('commonform-validate').form
 var validProject = require('../validation/project')
 var validPublisher = require('../validation/publisher')
 
 var metadata = require('./metadata')
+var forms = require('./forms')
 
-// Limit the request body size.
-var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
 
 var VERSION = require('../package.json').version
 function makeRoutes(emit, logger, level) {
@@ -40,27 +37,7 @@ function makeRoutes(emit, logger, level) {
 
   routes.set('/', metadata)
 
-  routes.set('/forms', function(request, response) {
-    if (request.method === 'POST') {
-      readJSONBody(request, response, LIMIT, function(form) {
-        if (!validForm(form)) { badRequest(response, 'invalid form') }
-        else {
-          var normalized = normalize(form)
-          var digest = normalized.root
-          response.log.info({ digest: digest })
-          putForm(level, digest, form, true, function(error) {
-            /* istanbul ignore if */
-            if (error) { internalError(response, error) }
-            else {
-              response.log.info({ event: 'form' })
-              response.statusCode = 201
-              response.setHeader('Location', ( '/forms/' + digest ))
-              response.end()
-              // Emit an event for the new form. This will trigger
-              // indexing and other processing by event handlers
-              // on the event emitter.
-              emit('form', form, digest, normalized, [ ]) } }) } }) }
-    else { methodNotAllowed(response) } })
+  routes.set('/forms', forms.bind(this, emit))
 
   routes.set('/forms/:digest', function(request, response, params) {
     var digest = params.digest
@@ -113,7 +90,7 @@ function makeRoutes(emit, logger, level) {
     else if (!validProject(project)) {
       badRequest(response, 'invalid project name') }
     else {
-      readJSONBody(request, response, LIMIT, function(json) {
+      readJSONBody(request, response, function(json) {
         if (json.hasOwnProperty('digest')) {
           var digest = json.digest
           if (!isDigest(digest)) {
@@ -235,67 +212,11 @@ function makeRoutes(emit, logger, level) {
 
   return routes }
 
-function badRequest(response, message) {
-  response.log.info({ event: message })
-  response.statusCode = 400
-  response.end(message) }
-
 function justEnd(status, response) {
   response.statusCode = status
   response.end() }
 
-var requestEntityTooLarge = justEnd.bind(this, 413)
 var conflict = justEnd.bind(this, 409)
-
-function readJSONBody(request, response, limit, callback) {
-  var buffer
-  var finished = false
-  var bytesReceived = 0
-  var lengthHeader = request.headers['content-length']
-  var tooLarge = ( lengthHeader && ( parseInt(lengthHeader) > limit ) )
-  if (tooLarge) {
-    requestEntityTooLarge(response) }
-  else {
-    buffer = [ ]
-    request.on('data', onData)
-    request.once('abort', onAbort)
-    request.once('close', finish)
-    request.once('end', onEnd)
-    request.once('error', onEnd) }
-  function onData(chunk) {
-    if (!finished) {
-      buffer.push(chunk)
-      bytesReceived += chunk.length
-      if (bytesReceived > limit) {
-        finish()
-        requestEntityTooLarge(response) } } }
-  function onAbort() {
-    if (!finished) {
-      finish()
-      badRequest(response, 'request aborted') } }
-  function onEnd(error) {
-    if (!finished) {
-      if (error) {
-        request.pause()
-        finish()
-        internalError(response, error) }
-      else {
-        var inaccurateHeader = (
-          lengthHeader && ( parseInt(lengthHeader) !== bytesReceived ) )
-        if (inaccurateHeader) {
-          finish()
-          badRequest(response, 'inaccurate Content-Length') }
-        else {
-          parseJSON(Buffer.concat(buffer), function(error, object) {
-            finish()
-            if (error) { badRequest(response, 'invalid JSON') }
-            else { callback(object) } }) } } } }
-  function finish() {
-    if (!finished) {
-      finished = true
-      buffer = null
-      request.removeAllListeners()
-      request.pause() } } }
 
 // Helper functions for reading and writing from LevelUP:
 
