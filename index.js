@@ -5,9 +5,9 @@ module.exports = makeRequestHandler
 var EventEmitter = require('eventemitter2').EventEmitter2
 var bcrypt = require('bcrypt-password')
 var editionKeyFor = require('./keys/edition')
-var encode = require('bytewise/encoding/hex').encode
 var exists = require('./queries/exists')
 var formKeyFor = require('./keys/form')
+var formToProjectKey = require('./keys/form-to-project')
 var getCurrentEdition = require('./queries/get-current-edition')
 var getLatestEdition = require('./queries/get-latest-edition')
 var getProject = require('./queries/get-project')
@@ -80,13 +80,13 @@ function makeRequestHandler(log, level) {
       else { recurseChildren(digest, normalized) }
       function recurseChildren(digest, normalized) {
         var root = ( digest === normalized.root )
-        var key = encode([ 'form-to-project', digest, publisher, project, edition, root ])
+        var key = formToProjectKey(digest, publisher, project, edition, root)
         level.put(key, undefined, function(error) {
           if (error) { eventLog.error(error) } })
         normalized[digest].content.forEach(function(element) {
           if (element.hasOwnProperty('digest')) {
             var childDigest = element.digest
-            var childKey = encode([ 'form-to-project', childDigest, publisher, project, edition, false ])
+            var childKey = formToProjectKey(childDigest, publisher, project, edition, false)
             level.put(childKey, undefined, function(error) {
               if (error) { eventLog.error(error) } })
             setImmediate(function() {
