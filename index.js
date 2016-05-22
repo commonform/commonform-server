@@ -4,6 +4,7 @@ module.exports = handleHTTPRequest
 // is used for logging.
 var EventEmitter = require('eventemitter2').EventEmitter2
 var formKey = require('./form-key')
+var hash = require('http-hash')
 var isDigest = require('is-sha-256-hex-digest')
 var normalize = require('commonform-normalize')
 var parseJSON = require('json-parse-errback')
@@ -53,6 +54,48 @@ function handleHTTPRequest(bole, level) {
                 setImmediate(function recurse() {
                   emit('form', child, childDigest, normalized, seen) }) } }) } }) } })
 
+  // Routing
+  var routes = hash()
+
+  routes.set('/', function(request, response) {
+    if (request.method === 'GET') { sendJSON(response, SERVICE_AND_VERSION) }
+    else { methodNotAllowed(response) } })
+
+  routes.set('/forms', function(request, response) {
+    if (request.method === 'POST') {
+      readJSONBody(request, response, LIMIT, function(form) {
+        if (!validForm(form)) { badRequest(response, 'invalid form') }
+        else {
+          var normalized = normalize(form)
+          var digest = normalized.root
+          response.log.info({ digest: digest })
+          putForm(level, digest, form, true, function(error) {
+            /* istanbul ignore if */
+            if (error) { internalError(response, error) }
+            else {
+              response.log.info({ event: 'form' })
+              response.statusCode = 201
+              response.setHeader('Location', ( '/forms/' + digest ))
+              response.end()
+              // Emit an event for the new form. This will trigger
+              // indexing and other processing by event handlers
+              // on the event emitter.
+              emit('form', form, digest, normalized, [ ]) } }) } }) }
+    else { methodNotAllowed(response) } })
+
+  routes.set('/forms/:digest', function(request, response, params) {
+    var digest = params.digest
+    if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
+    else {
+      if (request.method === 'GET') {
+        getForm(level, digest, function(error, value) {
+          if (error) {
+            /* istanbul ignore else */
+            if (error.notFound) { notFound(response) }
+            else { internalError(response, error) } }
+          else { sendJSON(response, JSON.parse(value).form) } }) }
+      else { methodNotAllowed(response) } } })
+
   // Limit the request body size.
   var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
   var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
@@ -70,53 +113,12 @@ function handleHTTPRequest(bole, level) {
       response.end() })
 
     // Route the request.
-    var method = request.method
     var parsed = url.parse(request.url)
-    var pathname = parsed.pathname
-
-    if (pathname === '/') {
-      // GET /
-      if (method === 'GET') { sendJSON(response, SERVICE_AND_VERSION) }
-      else { methodNotAllowed(response) } }
-
-    else if (pathname === '/forms') {
-      // POST /forms
-      if (method === 'POST') {
-        readJSONBody(request, response, LIMIT, function(form) {
-          if (!validForm(form)) { badRequest(response, 'invalid form') }
-          else {
-            var normalized = normalize(form)
-            var digest = normalized.root
-            response.log.info({ digest: digest })
-            putForm(level, digest, form, true, function(error) {
-              /* istanbul ignore if */
-              if (error) { internalError(response, error) }
-              else {
-                response.log.info({ event: 'form' })
-                response.statusCode = 201
-                response.setHeader('Location', ( '/forms/' + digest ))
-                response.end()
-                // Emit an event for the new form. This will trigger
-                // indexing and other processing by event handlers
-                // on the event emitter.
-                emit('form', form, digest, normalized, [ ]) } }) } }) }
-      else { methodNotAllowed(response) } }
-
-    else if (pathname.startsWith('/forms/')) {
-      var digest = pathname.substring('/forms/'.length)
-      if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
-      else {
-        // GET /forms/$digest
-        if (method === 'GET') {
-          getForm(level, digest, function(error, value) {
-            if (error) {
-              /* istanbul ignore else */
-              if (error.notFound) { notFound(response) }
-              else { internalError(response, error) } }
-            else { sendJSON(response, JSON.parse(value).form) } }) }
-        else { methodNotAllowed(response) } } }
-
-    else { notFound(response) } } }
+    var route = routes.get(parsed.path)
+    if (route.handler) {
+      route.handler(request, response, route.params, bole, level) }
+    else {
+      notFound(response) } } }
 
 // Shorthand handlers for various response types:
 
