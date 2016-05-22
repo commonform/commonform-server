@@ -1,16 +1,15 @@
-var bole = require('bole')
+var fs = require('fs')
 var handler = require('./')
 var http = require('http')
-var fs = require('fs')
 var leveldown = require('leveldown')
 var levelup = require('levelup')
 var meta = require('./package.json')
 var path = require('path')
+var pino = require('pino')
 var uuid = require('uuid')
 
 var description = ( meta.name + '@' + meta.version + '#' + uuid.v4() )
-var log = bole(description)
-bole.output({ level: 'debug', stream: process.stdout })
+var log = pino({ name: description })
 
 var directory = path.resolve(
   process.cwd(),
@@ -19,7 +18,7 @@ fs.stat(directory, function(error, stat) {
   var existingData = ( !error && stat.isDirectory() )
   levelup(directory, { db: leveldown }, function(error, level) {
     if (error) {
-      log.error({ event: 'level' }, error)
+      log.fatal({ event: 'level' }, error)
       process.exit(1) }
     else {
       log.info({ event: 'level', directory: directory })

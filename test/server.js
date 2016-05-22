@@ -1,19 +1,21 @@
 module.exports = startTestServer
 
-var bole = require('bole')
 var decode = require('bytewise/encoding/hex').decode
+var devnull = require('dev-null')
 var format = require('util').format
 var handler = require('../')
 var http = require('http')
 var levelup = require('levelup')
 var memdown = require('memdown')
+var pino = require('pino')
 var publisherKeyFor = require('../keys/publisher')
 
 var PUBLSIHERS = require('./publishers.json')
 
 function startTestServer(callback, port) {
   port = ( port || 0 )
-  var log = bole('test')
+  var logStream = ( ( port === 0 ) ? devnull() : process.stdout )
+  var log = pino({ name: 'test' }, logStream)
   var level = levelup('', { db: memdown })
   if (process.env.LOG_PUTS) {
     level.on('put', function(key, value) {
@@ -23,8 +25,6 @@ function startTestServer(callback, port) {
           : JSON.parse(value))
       process.stdout.write(
         format('put %j = %j', decode(key), printable)) }) }
-  if (port !== 0) {
-    bole.output({ level: 'debug', stream: process.stdout }) }
   var batch = PUBLSIHERS.map(function(publisher) {
     return (
       { type: 'put',

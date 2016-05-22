@@ -8,10 +8,10 @@ var thrice = require('./thrice')
 // Read existing forms from LevelUP and post them to a running server.
 function bootstrap(level, log, port) {
   // Create a sub-log for the bootstrap process.
-  var bootstrapLog = log('bootstrap')
+  var bootstrapLog = log.child({ log: 'bootstrap' })
   log.info({ event: 'starting' })
-  // TODO Bootstrap project data. Write a test that GETs a project.
-  // Read all form values.
+  // TODO Bootstrap project data. Write a test that GETs a project Read.
+  // all form values                                                   .
   level.createReadStream(
     { gt: formKey(null),
       lt: formKey(undefined) })
@@ -23,7 +23,7 @@ function bootstrap(level, log, port) {
         bootstrapLog.info(
           { event: 'form',
             digest: digest })
-        var post = postForm(level, log, port, parsed.form)
+        var post = postForm(level, port, parsed.form)
         thrice(post, function(error, status) {
           if (error) {
             bootstrapLog.error(
@@ -37,7 +37,7 @@ function bootstrap(level, log, port) {
     .on('end', function() {
       bootstrapLog.info({ event: 'done' }) }) }
 
-function postForm(level, log, port, form) {
+function postForm(level, port, form) {
   return function(callback) {
     var request =
       { method: 'POST',
