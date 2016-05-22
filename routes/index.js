@@ -1,4 +1,4 @@
-module.exports = makeRoutes
+var routes = module.exports = require('http-hash')()
 
 var badRequest = require('./bad-request')
 var bcrypt = require('bcrypt-password')
@@ -12,7 +12,6 @@ var getProjects = require('../queries/get-projects')
 var getPublisherProjects = require('../queries/get-publisher-projects')
 var getPublishers = require('../queries/get-publishers')
 var getSortedEditions = require('../queries/get-sorted-editions')
-var hash = require('http-hash')
 var internalError = require('./internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var lock = require('level-lock')
@@ -32,174 +31,170 @@ var forms = require('./forms')
 var formsDigest = require('./forms-digest')
 
 var VERSION = require('../package.json').version
-function makeRoutes(emit) {
-  var routes = hash()
 
-  routes.set('/', metadata)
+routes.set('/', metadata)
 
-  routes.set('/forms', forms.bind(this, emit))
+routes.set('/forms', forms)
 
-  routes.set('/forms/:digest', formsDigest)
+routes.set('/forms/:digest', formsDigest)
 
-  routes.set(
-    '/publishers/:publisher/projects/:project/editions/:edition',
-    function(request, response) {
-      var method = request.method
-      if (method === 'GET') { serveProject.apply(this, arguments) }
-      else if (method === 'POST') {
-        requireAuthorization(postEdition).apply(this, arguments) }
-      else { methodNotAllowed(response) } })
+routes.set(
+  '/publishers/:publisher/projects/:project/editions/:edition',
+  function(request, response) {
+    var method = request.method
+    if (method === 'GET') { serveProject.apply(this, arguments) }
+    else if (method === 'POST') {
+      requireAuthorization(postEdition).apply(this, arguments) }
+    else { methodNotAllowed(response) } })
 
-  function serveProject(request, response, parameters, log, level) {
-    var publisher = parameters.publisher
-    var project = parameters.project
-    var edition = parameters.edition
-    var fetch
-    if (edition === 'current') {
-      fetch = getCurrentEdition.bind(this, level, publisher, project) }
-    else if (edition === 'latest') {
-      fetch = getLatestEdition.bind(this, level, publisher, project) }
+function serveProject(request, response, parameters, log, level) {
+  var publisher = parameters.publisher
+  var project = parameters.project
+  var edition = parameters.edition
+  var fetch
+  if (edition === 'current') {
+    fetch = getCurrentEdition.bind(this, level, publisher, project) }
+  else if (edition === 'latest') {
+    fetch = getLatestEdition.bind(this, level, publisher, project) }
+  else {
+    fetch = getProject.bind(this, level, publisher, project, edition) }
+  fetch(function(error, project) {
+    if (error) { internalError(response, error) }
     else {
-      fetch = getProject.bind(this, level, publisher, project, edition) }
-    fetch(function(error, project) {
-      if (error) { internalError(response, error) }
-      else {
-        if (project) { sendJSON(response, project) }
-        else { notFound(response) } } }) }
+      if (project) { sendJSON(response, project) }
+      else { notFound(response) } } }) }
 
-  function postEdition(request, response, parameters, log, level) {
-    var publisher = parameters.publisher
-    var project = parameters.project
-    var edition = parameters.edition
-    var parsedEdition = parseEdition(edition)
-    if (parsedEdition === false) {
-      badRequest(response, 'invalid edition') }
-    else if (!validPublisher(publisher)) {
-      badRequest(response, 'invalid publisher name') }
-    else if (!validProject(project)) {
-      badRequest(response, 'invalid project name') }
-    else {
-      readJSONBody(request, response, function(json) {
-        if (json.hasOwnProperty('digest')) {
-          var digest = json.digest
-          if (!isDigest(digest)) {
-            badRequest(response, 'invalid digest') }
-          else {
-            var editionKey = editionKeyFor(publisher, project, edition)
-            var formKey = formKeyFor(digest)
-            var value = JSON.stringify({ version: VERSION, digest: digest })
-            var unlock = lock(level, editionKey, 'w')
-            if (!unlock) { conflict(response) }
-            else {
-              exists(level, formKey, function(error, formExists) {
-                if (error) {
-                  unlock()
-                  internalError(response, error) }
-                else {
-                  if (!formExists) {
-                    unlock()
-                    badRequest(response, 'unknown form') }
-                  else {
-                    exists(level, editionKey, function(error, editionExists) {
-                      if (error) {
-                        unlock()
-                        internalError(response, error) }
-                      else {
-                        if (editionExists) {
-                          unlock()
-                          conflict(response) }
-                        else {
-                          var put = level.put.bind(level, editionKey, value)
-                          thrice(put, function(error) {
-                            unlock()
-                            if (error) {
-                              internalError(response, error) }
-                            else {
-                              response.statusCode = 201
-                              response.setHeader(
-                                'Location',
-                                ( '/publishers/' + publisher +
-                                  '/projects/' + project +
-                                  '/editions/' + edition ))
-                              response.end()
-                              emit('project', publisher, project, edition, digest) } }) } } }) } } }) } } }
-        else { badRequest(response, 'invalid project') } }) } }
-
-  routes.set(
-    '/publishers/:publisher/projects/:project/editions',
-    function(request, response, parameters, log, level) {
-      if (request.method === 'GET') {
-        var publisher = parameters.publisher
-        var project = parameters.project
-        getSortedEditions(level, publisher, project, function(error, editions) {
-          if (error) { internalError(response, error) }
-          else {
-            var editionNumbers = editions.map(function(object) {
-              return object.edition })
-            sendJSON(response, editionNumbers) } }) }
-      else { methodNotAllowed(response) } })
-
-  routes.set(
-    '/publishers/:publisher/projects/:project/editions/:edition/form',
-    function(request, response, parameters, log, level) {
-      if (request.method === 'GET') {
-        var publisher = parameters.publisher
-        var project = parameters.project
-        var edition = parameters.edition
-        var fetch
-        if (edition === 'current') {
-          fetch = getCurrentEdition.bind(this, level, publisher, project) }
-        else if (edition === 'latest') {
-          fetch = getLatestEdition.bind(this, level, publisher, project) }
+function postEdition(request, response, parameters, log, level, emit) {
+  var publisher = parameters.publisher
+  var project = parameters.project
+  var edition = parameters.edition
+  var parsedEdition = parseEdition(edition)
+  if (parsedEdition === false) {
+    badRequest(response, 'invalid edition') }
+  else if (!validPublisher(publisher)) {
+    badRequest(response, 'invalid publisher name') }
+  else if (!validProject(project)) {
+    badRequest(response, 'invalid project name') }
+  else {
+    readJSONBody(request, response, function(json) {
+      if (json.hasOwnProperty('digest')) {
+        var digest = json.digest
+        if (!isDigest(digest)) {
+          badRequest(response, 'invalid digest') }
         else {
-          fetch = getProject.bind(this, level, publisher, project, edition) }
-        fetch(function(error, project) {
-          if (error) { internalError(response, error) }
+          var editionKey = editionKeyFor(publisher, project, edition)
+          var formKey = formKeyFor(digest)
+          var value = JSON.stringify({ version: VERSION, digest: digest })
+          var unlock = lock(level, editionKey, 'w')
+          if (!unlock) { conflict(response) }
           else {
-            if (project) {
-              response.statusCode = 301
-              response.setHeader(
-                'Location',
-                ( 'https://api.commonform.org/forms/' + project.digest ))
-              response.end() }
-            else {
-              response.statusCode = 404
-              response.end() } } }) }
-      else { methodNotAllowed(response) } })
+            exists(level, formKey, function(error, formExists) {
+              if (error) {
+                unlock()
+                internalError(response, error) }
+              else {
+                if (!formExists) {
+                  unlock()
+                  badRequest(response, 'unknown form') }
+                else {
+                  exists(level, editionKey, function(error, editionExists) {
+                    if (error) {
+                      unlock()
+                      internalError(response, error) }
+                    else {
+                      if (editionExists) {
+                        unlock()
+                        conflict(response) }
+                      else {
+                        var put = level.put.bind(level, editionKey, value)
+                        thrice(put, function(error) {
+                          unlock()
+                          if (error) {
+                            internalError(response, error) }
+                          else {
+                            response.statusCode = 201
+                            response.setHeader(
+                              'Location',
+                              ( '/publishers/' + publisher +
+                                '/projects/' + project +
+                                '/editions/' + edition ))
+                            response.end()
+                            emit('project', publisher, project, edition, digest) } }) } } }) } } }) } } }
+      else { badRequest(response, 'invalid project') } }) } }
 
-  routes.set(
-    '/publishers',
-    function(request, response, parameters, log, level) {
-      if (request.method === 'GET') {
-        getPublishers(level, function(error, publishers) {
-          if (error) { internalError(response, error) }
+routes.set(
+  '/publishers/:publisher/projects/:project/editions',
+  function(request, response, parameters, log, level) {
+    if (request.method === 'GET') {
+      var publisher = parameters.publisher
+      var project = parameters.project
+      getSortedEditions(level, publisher, project, function(error, editions) {
+        if (error) { internalError(response, error) }
+        else {
+          var editionNumbers = editions.map(function(object) {
+            return object.edition })
+          sendJSON(response, editionNumbers) } }) }
+    else { methodNotAllowed(response) } })
+
+routes.set(
+  '/publishers/:publisher/projects/:project/editions/:edition/form',
+  function(request, response, parameters, log, level) {
+    if (request.method === 'GET') {
+      var publisher = parameters.publisher
+      var project = parameters.project
+      var edition = parameters.edition
+      var fetch
+      if (edition === 'current') {
+        fetch = getCurrentEdition.bind(this, level, publisher, project) }
+      else if (edition === 'latest') {
+        fetch = getLatestEdition.bind(this, level, publisher, project) }
+      else {
+        fetch = getProject.bind(this, level, publisher, project, edition) }
+      fetch(function(error, project) {
+        if (error) { internalError(response, error) }
+        else {
+          if (project) {
+            response.statusCode = 301
+            response.setHeader(
+              'Location',
+              ( 'https://api.commonform.org/forms/' + project.digest ))
+            response.end() }
           else {
-            response.setHeader('Content-Type', 'application/json')
-            response.end(JSON.stringify(publishers)) } }) } })
+            response.statusCode = 404
+            response.end() } } }) }
+    else { methodNotAllowed(response) } })
 
-  routes.set(
-    '/publishers/:publisher/projects',
-    function(request, response, parameters, log, level) {
-      if (request.method === 'GET') {
-        var publisher = parameters.publisher
-        getPublisherProjects(level, publisher, function(error, projects) {
-          if (error) { internalError(response, error) }
-          else {
-            response.setHeader('Content-Type', 'application/json')
-            response.end(JSON.stringify(projects)) } }) } })
+routes.set(
+  '/publishers',
+  function(request, response, parameters, log, level) {
+    if (request.method === 'GET') {
+      getPublishers(level, function(error, publishers) {
+        if (error) { internalError(response, error) }
+        else {
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify(publishers)) } }) } })
 
-  routes.set(
-    '/forms/:digest/projects',
-    function(request, response, parameters, log, level) {
-      if (request.method === 'GET') {
-        var digest = parameters.digest
-        getProjects(level, digest, function(error, projects) {
-          if (error) { internalError(response, error) }
-          else {
-            response.setHeader('Content-Type', 'application/json')
-            response.end(JSON.stringify(projects)) } }) } })
+routes.set(
+  '/publishers/:publisher/projects',
+  function(request, response, parameters, log, level) {
+    if (request.method === 'GET') {
+      var publisher = parameters.publisher
+      getPublisherProjects(level, publisher, function(error, projects) {
+        if (error) { internalError(response, error) }
+        else {
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify(projects)) } }) } })
 
-  return routes }
+routes.set(
+  '/forms/:digest/projects',
+  function(request, response, parameters, log, level) {
+    if (request.method === 'GET') {
+      var digest = parameters.digest
+      getProjects(level, digest, function(error, projects) {
+        if (error) { internalError(response, error) }
+        else {
+          response.setHeader('Content-Type', 'application/json')
+          response.end(JSON.stringify(projects)) } }) } })
 
 function justEnd(status, response) {
   response.statusCode = status
