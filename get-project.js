@@ -1,6 +1,6 @@
 module.exports = getProject
 
-var editionKeyFor = require('./edition-key')
+var editionKeyFor = require('./keys/edition')
 
 function getProject(level, publisher, project, edition, callback) {
   var key = editionKeyFor(publisher, project, edition)

@@ -7,7 +7,7 @@ var handler = require('../')
 var http = require('http')
 var levelup = require('levelup')
 var memdown = require('memdown')
-var publisherKeyFor = require('../publisher-key')
+var publisherKeyFor = require('../keys/publisher')
 
 var PUBLSIHERS = require('./publishers.json')
 
