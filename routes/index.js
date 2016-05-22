@@ -15,34 +15,30 @@ var hash = require('http-hash')
 var internalError = require('./internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var lock = require('level-lock')
+var methodNotAllowed = require('./method-not-allowed')
 var normalize = require('commonform-normalize')
 var notFound = require('./not-found')
 var parseEdition = require('reviewers-edition-parse')
 var parseJSON = require('json-parse-errback')
 var publisherKey = require('../keys/publisher')
 var putForm = require('../queries/put-form')
+var sendJSON = require('./send-json')
 var thrice = require('../thrice')
 var unauthorized = require('./unauthorized')
 var validForm = require('commonform-validate').form
 var validProject = require('../validation/project')
 var validPublisher = require('../validation/publisher')
 
+var metadata = require('./metadata')
+
 // Limit the request body size.
 var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
 
 var VERSION = require('../package.json').version
-// Compute the JSON with metadata bout the service for GET /, and just
-// keep it in memory.
-var SERVICE_AND_VERSION = JSON.stringify(
-  { service: require('../package.json').name,
-    version: VERSION })
-
 function makeRoutes(emit, logger, level) {
   var routes = hash()
 
-  routes.set('/', function(request, response) {
-    if (request.method === 'GET') { sendJSON(response, SERVICE_AND_VERSION) }
-    else { methodNotAllowed(response) } })
+  routes.set('/', metadata)
 
   routes.set('/forms', function(request, response) {
     if (request.method === 'POST') {
@@ -239,10 +235,6 @@ function makeRoutes(emit, logger, level) {
 
   return routes }
 
-function sendJSON(response, body) {
-  response.setHeader('Content-Type', 'application/json')
-  response.end(( typeof body === 'string' ) ? body : JSON.stringify(body)) }
-
 function badRequest(response, message) {
   response.log.info({ event: message })
   response.statusCode = 400
@@ -252,7 +244,6 @@ function justEnd(status, response) {
   response.statusCode = status
   response.end() }
 
-var methodNotAllowed = justEnd.bind(this, 405)
 var requestEntityTooLarge = justEnd.bind(this, 413)
 var conflict = justEnd.bind(this, 409)
 
