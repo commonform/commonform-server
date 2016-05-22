@@ -10,6 +10,7 @@ function bootstrap(level, log, port) {
   // Create a sub-log for the bootstrap process.
   var bootstrapLog = log('bootstrap')
   log.info({ event: 'starting' })
+  // TODO Bootstrap project data. Write a test that GETs a project.
   // Read all form values.
   level.createReadStream(
     { gt: formKey(null),
