@@ -29,28 +29,17 @@ var validPublisher = require('../validation/publisher')
 
 var metadata = require('./metadata')
 var forms = require('./forms')
-
+var formsDigest = require('./forms-digest')
 
 var VERSION = require('../package.json').version
-function makeRoutes(emit, logger, level) {
+function makeRoutes(emit) {
   var routes = hash()
 
   routes.set('/', metadata)
 
   routes.set('/forms', forms.bind(this, emit))
 
-  routes.set('/forms/:digest', function(request, response, params) {
-    var digest = params.digest
-    if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
-    else {
-      if (request.method === 'GET') {
-        getForm(level, digest, function(error, value) {
-          if (error) {
-            /* istanbul ignore else */
-            if (error.notFound) { notFound(response) }
-            else { internalError(response, error) } }
-          else { sendJSON(response, JSON.parse(value).form) } }) }
-      else { methodNotAllowed(response) } } })
+  routes.set('/forms/:digest', formsDigest)
 
   routes.set(
     '/publishers/:publisher/projects/:project/editions/:edition',
@@ -220,11 +209,6 @@ var conflict = justEnd.bind(this, 409)
 
 // Helper functions for reading and writing from LevelUP:
 
-function getForm(level, digest, callback) {
-  var key = formKeyFor(digest)
-  var get = level.get.bind(level, key)
-  thrice(get, callback, isNotFoundError) }
-
 // Wrap a request handler function to check authoriztion.
 function requireAuthorization(handler) {
   return function(request, response, parameters, log, level) {
@@ -261,9 +245,3 @@ function parseAuthorization(header) {
   var components = decoded.split(':')
   if (components.length !== 2) { return false }
   else { return { user: components[0], password: components[1] } } }
-
-// LevelUp `get` calls yield an error with `.notFound` set when a key
-// doesn't exist in the store. This isn't an error per se, since the
-// call succeeded. This predicate is used with calls to `thrice`.
-function isNotFoundError(error) {
-  return ( error && error.notFound ) }

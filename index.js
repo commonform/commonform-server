@@ -68,7 +68,7 @@ function makeRequestHandler(log, level) {
               emit('project', publisher, project, edition, childDigest, normalized) }) } }) } })
 
   // Routing
-  var routes = require('./routes')(emit, log, level)
+  var routes = require('./routes')(emit)
 
   var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
 
