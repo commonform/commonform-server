@@ -1,7 +1,7 @@
 module.exports = bootstrap
 
 var decode = require('bytewise/encoding/hex').decode
-var formKey = require('./form-key')
+var formKey = require('./keys/form')
 var http = require('http')
 var thrice = require('./thrice')
 

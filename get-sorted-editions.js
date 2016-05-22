@@ -2,7 +2,7 @@ module.exports = getSortedEditions
 
 var compareEdition = require('reviewers-edition-compare')
 var decode = require('bytewise/encoding/hex').decode
-var editionKey = require('./edition-key')
+var editionKey = require('./keys/edition')
 
 function getSortedEditions(level, publisher, project, callback) {
   var editions = [ ]

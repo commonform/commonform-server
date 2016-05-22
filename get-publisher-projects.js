@@ -1,7 +1,7 @@
 module.exports = getPublisherProjects
 
 var decodeKey = require('bytewise/encoding/hex').decode
-var makeProjectKey = require('./edition-key')
+var makeProjectKey = require('./keys/edition')
 
 function getPublisherProjects(level, publisher, callback) {
   var keys = [ ]
