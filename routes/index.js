@@ -135,33 +135,7 @@ routes.set(
           sendJSON(response, editionNumbers) } }) }
     else { methodNotAllowed(response) } })
 
-routes.set(
-  '/publishers/:publisher/projects/:project/editions/:edition/form',
-  function(request, response, parameters, log, level) {
-    if (request.method === 'GET') {
-      var publisher = parameters.publisher
-      var project = parameters.project
-      var edition = parameters.edition
-      var fetch
-      if (edition === 'current') {
-        fetch = getCurrentEdition.bind(this, level, publisher, project) }
-      else if (edition === 'latest') {
-        fetch = getLatestEdition.bind(this, level, publisher, project) }
-      else {
-        fetch = getProject.bind(this, level, publisher, project, edition) }
-      fetch(function(error, project) {
-        if (error) { internalError(response, error) }
-        else {
-          if (project) {
-            response.statusCode = 301
-            response.setHeader(
-              'Location',
-              ( 'https://api.commonform.org/forms/' + project.digest ))
-            response.end() }
-          else {
-            response.statusCode = 404
-            response.end() } } }) }
-    else { methodNotAllowed(response) } })
+routes.set('/publishers/:publisher/projects/:project/editions/:edition/form', require('./edition-form'))
 
 routes.set('/publishers', require('./publishers'))
 
