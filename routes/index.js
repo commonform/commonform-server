@@ -10,7 +10,6 @@ var getLatestEdition = require('../queries/get-latest-edition')
 var getProject = require('../queries/get-project')
 var getProjects = require('../queries/get-projects')
 var getPublisherProjects = require('../queries/get-publisher-projects')
-var getPublishers = require('../queries/get-publishers')
 var getSortedEditions = require('../queries/get-sorted-editions')
 var internalError = require('./internal-error')
 var isDigest = require('is-sha-256-hex-digest')
@@ -164,26 +163,9 @@ routes.set(
             response.end() } } }) }
     else { methodNotAllowed(response) } })
 
-routes.set(
-  '/publishers',
-  function(request, response, parameters, log, level) {
-    if (request.method === 'GET') {
-      getPublishers(level, function(error, publishers) {
-        if (error) { internalError(response, error) }
-        else {
-          response.setHeader('Content-Type', 'application/json')
-          response.end(JSON.stringify(publishers)) } }) } })
+routes.set('/publishers', require('./publishers'))
 
-routes.set(
-  '/publishers/:publisher/projects',
-  function(request, response, parameters, log, level) {
-    if (request.method === 'GET') {
-      var publisher = parameters.publisher
-      getPublisherProjects(level, publisher, function(error, projects) {
-        if (error) { internalError(response, error) }
-        else {
-          response.setHeader('Content-Type', 'application/json')
-          response.end(JSON.stringify(projects)) } }) } })
+routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
 
 routes.set(
   '/forms/:digest/projects',
