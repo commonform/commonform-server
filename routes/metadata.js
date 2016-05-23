@@ -1,7 +1,8 @@
 module.exports = serverMetadata
 
-var sendJSON = require('./responses/send-json')
+var doNotCache = require('do-not-cache')
 var methodNotAllowed = require('./responses/method-not-allowed')
+var sendJSON = require('./responses/send-json')
 
 var METADATA = (function() {
   var meta = require('../package.json')
@@ -9,8 +10,6 @@ var METADATA = (function() {
 
 function serverMetadata(request, response) {
   if (request.method === 'GET') {
-    response.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
-    response.setHeader('pragma', 'no-cache')
-    response.setHeader('expires', '0')
+    doNotCache(response)
     sendJSON(response, METADATA) }
   else { methodNotAllowed(response) } }

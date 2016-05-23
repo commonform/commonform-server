@@ -11,6 +11,7 @@
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^0.6.2",
+    "do-not-cache": "^1.0.0",
     "eventemitter2": "^1.0.3",
     "http-hash": "^2.0.0",
     "is-sha-256-hex-digest": "^1.0.0",
