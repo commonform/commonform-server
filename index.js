@@ -17,7 +17,7 @@ function makeRequestHandler(log, level) {
     // random UUID.
     response.log = log.child({ log: uuid.v4() })
     response.log.info(request)
-    response.on('end', function() { response.log.info(response) })
+    response.on('finish', function() { response.log.info(response) })
 
     response.setTimeout(TIMEOUT, function() {
       response.log.error({ event: 'timeout' })
