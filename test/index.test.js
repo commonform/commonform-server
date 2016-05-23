@@ -9,6 +9,9 @@ tape('GET /', function(test) {
     var request = { path: '/', port: port }
     http.get(request, function(response) {
       test.equal(response.statusCode, 200, 'responds 200')
+      test.equal(response.headers['cache-control'], 'no-cache, no-store, must-revalidate')
+      test.equal(response.headers['pragma'], 'no-cache')
+      test.equal(response.headers['expires'], '0')
       response.pipe(concat(function (buffer) {
         test.same(
           JSON.parse(buffer),
