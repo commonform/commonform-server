@@ -1,9 +1,9 @@
 module.exports = readJSONBody
 
-var badRequest = require('./bad-request')
+var badRequest = require('./responses/bad-request')
 var parseJSON = require('json-parse-errback')
-var internalError = require('./internal-error')
-var requestEntityTooLarge = require('./request-entity-too-large')
+var internalError = require('./responses/internal-error')
+var requestEntityTooLarge = require('./responses/request-entity-too-large')
 
 var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
 

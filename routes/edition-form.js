@@ -1,8 +1,8 @@
 module.exports = editionForm
 
 var getCurrentEdition = require('../queries/get-current-edition')
-var internalError = require('./internal-error')
-var methodNotAllowed = require('./method-not-allowed')
+var internalError = require('./responses/internal-error')
+var methodNotAllowed = require('./responses/method-not-allowed')
 var getProject = require('../queries/get-project')
 var getLatestEdition = require('../queries/get-latest-edition')
 

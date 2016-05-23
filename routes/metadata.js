@@ -1,7 +1,7 @@
 module.exports = serverMetadata
 
-var sendJSON = require('./send-json')
-var methodNotAllowed = require('./method-not-allowed')
+var sendJSON = require('./responses/send-json')
+var methodNotAllowed = require('./responses/method-not-allowed')
 
 var METADATA = (function() {
   var meta = require('../package.json')

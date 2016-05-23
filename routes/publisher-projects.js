@@ -1,6 +1,6 @@
 module.exports = publisherProjects
 
-var internalError = require('./internal-error')
+var internalError = require('./responses/internal-error')
 var getPublisherProjects = require('../queries/get-publisher-projects')
 
 function publisherProjects(request, response, parameters, log, level) {

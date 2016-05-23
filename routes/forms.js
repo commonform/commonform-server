@@ -1,8 +1,8 @@
 module.exports = forms
 
-var badRequest = require('./bad-request')
-var internalError = require('./internal-error')
-var methodNotAllowed = require('./method-not-allowed')
+var badRequest = require('./responses/bad-request')
+var internalError = require('./responses/internal-error')
+var methodNotAllowed = require('./responses/method-not-allowed')
 var normalize = require('commonform-normalize')
 var putForm = require('../queries/put-form')
 var readJSONBody = require('./read-json-body')

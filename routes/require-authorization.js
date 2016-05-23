@@ -1,10 +1,10 @@
 module.exports = requireAuthorization
 
-var unauthorized = require('./unauthorized')
+var unauthorized = require('./responses/unauthorized')
 var thrice = require('../thrice')
 var bcrypt = require('bcrypt-password')
 var publisherKey = require('../keys/publisher')
-var internalError = require('./internal-error')
+var internalError = require('./responses/internal-error')
 
 function requireAuthorization(handler) {
   return function(request, response, parameters, log, level) {
