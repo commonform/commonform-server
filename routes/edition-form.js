@@ -19,6 +19,7 @@ function editionForm(request, response, parameters, log, level) {
     else {
       fetch = getProject.bind(this, level, publisher, project, edition) }
     fetch(function(error, project) {
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
         if (project) {
