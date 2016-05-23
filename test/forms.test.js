@@ -52,7 +52,7 @@ tape('POST /forms without request body', function(test) {
 // The following two tests do not work correctly.
 
 // This test errors out on the client side. The response handler is
-// never called. There is no such problem when the Cotnent-Length header
+// never called. There is no such problem when the Content-Length header
 // is either omitted or correct.
 
 // tape('POST /forms with low Content-Length', function(test) {
