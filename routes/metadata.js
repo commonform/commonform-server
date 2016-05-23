@@ -8,5 +8,9 @@ var METADATA = (function() {
   return JSON.stringify({ service: meta.name, version: meta.version }) })()
 
 function serverMetadata(request, response) {
-  if (request.method === 'GET') { sendJSON(response, METADATA) }
+  if (request.method === 'GET') {
+    response.setHeader('cache-control', 'no-cache, no-store, must-revalidate')
+    response.setHeader('pragma', 'no-cache')
+    response.setHeader('expires', '0')
+    sendJSON(response, METADATA) }
   else { methodNotAllowed(response) } }
