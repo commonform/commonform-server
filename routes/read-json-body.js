@@ -18,7 +18,7 @@ function readJSONBody(request, response, callback) {
   else {
     buffer = [ ]
     request.on('data', onData)
-    request.once('abort', onAbort)
+    request.once('aborted', onAborted)
     request.once('close', finish)
     request.once('end', onEnd)
     request.once('error', onEnd) }
@@ -29,7 +29,7 @@ function readJSONBody(request, response, callback) {
       if (bytesReceived > LIMIT) {
         finish()
         requestEntityTooLarge(response) } } }
-  function onAbort() {
+  function onAborted() {
     if (!finished) {
       finish()
       badRequest(response, 'request aborted') } }
