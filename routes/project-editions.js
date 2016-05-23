@@ -10,6 +10,7 @@ function projectEditions(request, response, parameters, log, level) {
     var publisher = parameters.publisher
     var project = parameters.project
     getSortedEditions(level, publisher, project, function(error, editions) {
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
         var editionNumbers = editions.map(function(object) {

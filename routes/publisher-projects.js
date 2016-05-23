@@ -7,6 +7,7 @@ function publisherProjects(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     var publisher = parameters.publisher
     getPublisherProjects(level, publisher, function(error, projects) {
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
         response.setHeader('Content-Type', 'application/json')

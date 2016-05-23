@@ -55,6 +55,7 @@ function postEdition(request, response, parameters, log, level, emit) {
           if (!unlock) { conflict(response) }
           else {
             exists(level, formKey, function(error, formExists) {
+              /* istanbul ignore if */
               if (error) {
                 unlock()
                 internalError(response, error) }
@@ -64,6 +65,7 @@ function postEdition(request, response, parameters, log, level, emit) {
                   badRequest(response, 'unknown form') }
                 else {
                   exists(level, editionKey, function(error, editionExists) {
+                    /* istanbul ignore if */
                     if (error) {
                       unlock()
                       internalError(response, error) }
@@ -75,6 +77,7 @@ function postEdition(request, response, parameters, log, level, emit) {
                         var put = level.put.bind(level, editionKey, value)
                         thrice(put, function(error) {
                           unlock()
+                          /* istanbul ignore if */
                           if (error) {
                             internalError(response, error) }
                           else {
@@ -101,6 +104,7 @@ function serveProject(request, response, parameters, log, level) {
   else {
     fetch = getProject.bind(this, level, publisher, project, edition) }
   fetch(function(error, project) {
+    /* istanbul ignore if */
     if (error) { internalError(response, error) }
     else {
       if (project) { sendJSON(response, project) }

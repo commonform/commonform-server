@@ -17,6 +17,7 @@ function requireAuthorization(handler) {
       if (mustLogIn) { unauthorized(response) }
       else {
         checkPassword(level, publisher, parsed.password, function(error, valid) {
+          /* istanbul ignore if */
           if (error) { internalError(response, error) }
           else {
             if (valid) { handler.apply(this, handlerArguments) }
@@ -28,6 +29,7 @@ function checkPassword(level, publisher, password, callback) {
   var get = level.get.bind(level, key)
   thrice(get, function(error, value) {
     if (error) {
+      /* istanbul ignore else */
       if (error.notFound) { callback(null, false) }
       else { callback(error) } }
     else {
