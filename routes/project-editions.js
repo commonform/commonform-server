@@ -1,9 +1,9 @@
 module.exports = projectEditions
 
 var getSortedEditions = require('../queries/get-sorted-editions')
-var internalError = require('./internal-error')
-var methodNotAllowed = require('./method-not-allowed')
-var sendJSON = require('./send-json')
+var internalError = require('./responses/internal-error')
+var methodNotAllowed = require('./responses/method-not-allowed')
+var sendJSON = require('./responses/send-json')
 
 function projectEditions(request, response, parameters, log, level) {
   if (request.method === 'GET') {

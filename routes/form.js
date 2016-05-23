@@ -1,12 +1,12 @@
 module.exports = formsDigest
 
-var badRequest = require('./bad-request')
+var badRequest = require('./responses/bad-request')
 var getForm = require('./get-form')
-var internalError = require('./internal-error')
+var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
-var methodNotAllowed = require('./method-not-allowed')
-var notFound = require('./not-found')
-var sendJSON = require('./send-json')
+var methodNotAllowed = require('./responses/method-not-allowed')
+var notFound = require('./responses/not-found')
+var sendJSON = require('./responses/send-json')
 
 function formsDigest(request, response, params, log, level) {
   var digest = params.digest

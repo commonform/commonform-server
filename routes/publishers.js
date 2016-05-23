@@ -1,7 +1,7 @@
 module.exports = publishers
 
 var getPublishers = require('../queries/get-publishers')
-var internalError = require('./internal-error')
+var internalError = require('./responses/internal-error')
 
 function publishers(request, response, parameters, log, level) {
   if (request.method === 'GET') {
