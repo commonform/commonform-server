@@ -70,22 +70,20 @@ tape('POST /forms without request body', function(test) {
 //         done() ; test.end() })
 //     .end(json) }) })
 
-// This test's request eventually times out on the server side.
-
-// tape('POST /forms with high Content-Length', function(test) {
-//   server(function(port, done) {
-//     var form = { content: [ 'Just a test' ] }
-//     var json = JSON.stringify(form)
-//     var request =
-//       { method: 'POST',
-//         path: '/forms',
-//         headers: { 'Content-Length': ( Buffer.byteLength(json) + 1 ) },
-//         port: port }
-//     http
-//       .request(request, function(response) {
-//         test.equal(response.statusCode, 408, 'responds 408')
-//         done() ; test.end() })
-//     .end(json) }) })
+tape('POST /forms with high Content-Length', function(test) {
+  server(function(port, done) {
+    var form = { content: [ 'Just a test' ] }
+    var json = JSON.stringify(form)
+    var request =
+      { method: 'POST',
+        path: '/forms',
+        headers: { 'Content-Length': ( Buffer.byteLength(json) + 1 ) },
+        port: port }
+    http
+      .request(request, function(response) {
+        test.equal(response.statusCode, 408, 'responds 408')
+        done() ; test.end() })
+    .end(json) }) })
 
 tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
