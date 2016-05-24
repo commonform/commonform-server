@@ -19,7 +19,7 @@ function requireAuthorization(handler) {
       var mustLogIn = ( parsed === false || parsed.user !== publisher)
       if (mustLogIn) { unauthorized(response) }
       else {
-        if (isAdministrator(parsed)) { allow() }
+        if (isAdministrator(log, parsed)) { allow() }
         else {
           checkPassword(
             level, publisher, parsed.password,
