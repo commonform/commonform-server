@@ -1,0 +1,5 @@
+*.leveldb
+.gitignore
+.npmignore
+.travis.yml
+test
