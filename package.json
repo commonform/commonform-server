@@ -5,9 +5,10 @@
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "repository": "kemitchell/commonform-server",
   "license": "Apache-2.0",
+  "preferGlobal": true,
   "bin": {
     "bootstrap-commonform-server": "./bootstrap.js",
-    "commonform-server": "./server.js",
+    "commonform-server": "./server.js"
   },
   "dependencies": {
     "async-each": "^1.0.0",
