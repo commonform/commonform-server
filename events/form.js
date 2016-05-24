@@ -8,7 +8,6 @@ function onForm(emit, level, log, form, digest, normalized, seen) {
   if (seen.includes(digest)) {
     log.error({ event: 'collision', digest: digest, seen: seen }) }
   else {
-    seen.push(digest)
     form.content.forEach(function(element, index) {
       if (element.hasOwnProperty('form')) {
         // The denormalized object, to be stored in LevelUP.
@@ -23,4 +22,4 @@ function onForm(emit, level, log, form, digest, normalized, seen) {
             // This is indirectly recursive, since the event emitter
             // will trigger this handler for again for the new event.
             setImmediate(function recurse() {
-              emit('form', child, childDigest, normalized, seen) }) } }) } }) } }
+              emit('form', child, childDigest, normalized, seen.concat(digest)) }) } }) } }) } }
