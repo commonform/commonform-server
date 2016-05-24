@@ -13,7 +13,6 @@ if (!process.env.hasOwnProperty('ADMINISTRATOR_PASSWORD')) {
 
 var password = process.env.ADMINISTRATOR_PASSWORD
 
-var each = require('async-each')
 var http = require('http')
 var log = require('pino')()
 var s3 = require('./s3')
@@ -32,31 +31,46 @@ eachObject('forms/', formsLog, postForm, false, function() {
     projectsLog.info({ event: 'done' })
     log.info({ event: 'done' }) }) })
 
+var CONCURRENCY = 10
+
 function eachObject(prefix, log, iterator, marker, callback) {
-  var query = { Prefix: prefix }
-  if (marker) { query.Marker = marker }
-  log.info({ event: 'querying' })
-  s3.listObjects(query, function(error, data) {
-    if (error) { log.error({ event: 'query error' }, error) }
-    else {
-      var keys = data.Contents
-        .map(function(element) { return element.Key })
-        .filter(function(key) { return !key.endsWith('/') })
-      each(
-        keys,
-        function(key, done) {
-          var keyLog = log.child({ key: key })
-          keyLog.info({ event: 'get', key: key })
-          s3.getObject({ Key: key }, function(error, data) {
-            if (error) {
-              keyLog.error({ event: 'get error' }, error)
-              done() }
-            else { iterator(JSON.parse(data.Body), keyLog, done) } }) },
-        function() {
-          if (data.IsTruncated) {
-            var lastKey = keys[keys.length - 1]
-            eachObject(prefix, log, iterator, lastKey) }
-          else { callback() } }) } }) }
+  var doneListing = false
+  var objectQueue = require('async.queue')(
+    function worker(key, doneWithObject) {
+      var keyLog = log.child({ key: key })
+      keyLog.info({ event: 'get', key: key })
+      s3.getObject({ Key: key }, function(error, data) {
+        if (error) {
+          keyLog.error({ event: 'get error' }, error)
+          finished() }
+        else { iterator(JSON.parse(data.Body), keyLog, finished) } })
+      function finished() {
+        doneWithObject()
+        callBackIfDone() } },
+    CONCURRENCY)
+  iterateObjects()
+  function callBackIfDone() {
+    if (doneListing && objectQueue.idle()) { callback() } }
+  function iterateObjects(fromKey) {
+    var query = { Prefix: prefix }
+    if (fromKey) { query.Marker = fromKey }
+    s3.listObjects(query, function(error, data) {
+      if (error) { log.error({ event: 'query error' }, error) }
+      else {
+        var keys = data.Contents
+          .map(function(element) { return element.Key })
+          .filter(function(key) { return !key.endsWith('/') })
+        // Push keys to the object queue for processing.
+        keys.forEach(function(key) { objectQueue.push(key) })
+        // Fetch additional keys if this response did not list all.
+        if (data.IsTruncated) {
+          // Recurse using the last-fetched key as the marker for the
+          // next list query.
+          var lastKey = keys[keys.length - 1]
+          iterateObjects(lastKey) }
+        // Set flag so the queue knows when it can call back when it is
+        // done processing all queued keys.
+        else { doneListing = true } } }) } }
 
 function postForm(record, log, callback) {
   var request =
