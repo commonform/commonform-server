@@ -21,4 +21,4 @@ function backupForm(s3Log, form, digest, normalized) {
              if (error) { log.error(error) }
              else { log.info({ event: 'wrote', key: key }) } }) }
         else { log.error(error) } }
-      else { log.warn({ event: 'existing' }) } }) } }
+      else { log.info({ event: 'existing' }) } }) } }
