@@ -36,14 +36,17 @@ function postPublisher(request, response, parameters, log, level, emit) {
   readJSONBody(request, response, function(json) {
     var valid = (
       json.hasOwnProperty('name') && isString(json.name) &&
-      json.hasOwnProperty('password') && isString(json.password) )
+      ( json.hasOwnProperty('password') && isString(json.password) ||
+        json.hasOwnProperty('hash') && isString(json.hash) ) )
     if (!valid) { badRequest(response, 'invalid publisher') }
     else {
       var name = json.name
-      var password = json.password
+      var weakPassword = (
+        json.hasOwnProperty('password') &&
+        !strongPassword(json.password) )
       if (!validPublisher(name)) {
         badRequest(response, 'invalid publisher name') }
-      else if (!validPassword(password)) {
+      else if (weakPassword) {
         badRequest(response, 'invalid password') }
       else {
         var key = publisherKeyFor(name)
@@ -52,23 +55,27 @@ function postPublisher(request, response, parameters, log, level, emit) {
           unlock()
           internalError(response, new Error('locked')) }
         else {
-          bcrypt.hash(password, function(error, digest) {
-            if (error) {
-              unlock()
-              internalError(response, error) }
-            else {
-              var value = JSON.stringify({ password: digest })
-              var put = level.put.bind(level, key, value)
-              thrice(put, function(error) {
+          if (json.hasOwnProperty('hash')) {
+            storeHash(unlock, name, key, json.hash) }
+          else {
+            bcrypt.hash(json.password, function(error, hash) {
+              if (error) {
                 unlock()
-                if (error) { internalError(response, error) }
-                else {
-                  response.statusCode = 201
-                  response.setHeader('Location', ( '/publishers/' + name ))
-                  response.end()
-                  emit('publisher', name) } }) } }) } } } }) }
+                internalError(response, error) }
+              else { storeHash(unlock, name, key, hash) } }) } } } } })
+  function storeHash(unlock, name, key, hash) {
+    var value = JSON.stringify({ password: hash })
+    var put = level.put.bind(level, key, value)
+    thrice(put, function(error) {
+      unlock()
+      if (error) { internalError(response, error) }
+      else {
+        response.statusCode = 201
+        response.setHeader('Location', ( '/publishers/' + name ))
+        response.end()
+        emit('publisher', name) } }) } }
 
 function isString(argument) { return ( typeof argument === 'string' ) }
 
-function validPassword(argument) {
+function strongPassword(argument) {
   return ( owasp.test(argument).strong === true ) }

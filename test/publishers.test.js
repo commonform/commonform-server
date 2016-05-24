@@ -82,9 +82,30 @@ tape('POST /publishers with bad credentials', function(test) {
           done() })
       .end(JSON.stringify(body)) }) })
 
-tape('POST /publishers with credentials', function(test) {
+tape('POST /publishers with password', function(test) {
   test.plan(2)
   var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: '/publishers' })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 201, 'POST 201')
+          test.equal(
+            response.headers.location, '/publishers/bob',
+            'Location')
+          done() })
+      .end(JSON.stringify(body)) }) })
+
+tape('POST /publishers with hashed password', function(test) {
+  test.plan(2)
+  var body =
+    { name: 'bob',
+      hash: '$2a$10$IGrb1Nzx/EkeTN07QF7HGeS/yl2gWbKrG9Lx0zDgqI71gI2EO4Cdy' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
