@@ -16,19 +16,21 @@ function requireAuthorization(handler) {
     var authorization = request.headers.authorization
     if (authorization) {
       var parsed = parseAuthorization(authorization)
-      var mustLogIn = ( parsed === false || parsed.user !== publisher)
+      var mustLogIn = ( parsed === false )
       if (mustLogIn) { unauthorized(response) }
       else {
         if (isAdministrator(log, parsed)) { allow() }
         else {
-          checkPassword(
-            level, publisher, parsed.password,
-            function(error, valid) {
-              /* istanbul ignore if */
-              if (error) { internalError(response, error) }
-              else {
-                if (valid) { allow() }
-                else { unauthorized(response) } } }) } } }
+          if (parsed.user !== publisher) { unauthorized(response) }
+          else {
+            checkPassword(
+              level, publisher, parsed.password,
+              function(error, valid) {
+                /* istanbul ignore if */
+                if (error) { internalError(response, error) }
+                else {
+                  if (valid) { allow() }
+                  else { unauthorized(response) } } }) } } } }
     else { unauthorized(response) } } }
 
 function checkPassword(level, publisher, password, callback) {
