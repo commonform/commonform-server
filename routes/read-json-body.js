@@ -5,7 +5,7 @@ var parseJSON = require('json-parse-errback')
 var internalError = require('./responses/internal-error')
 var requestEntityTooLarge = require('./responses/request-entity-too-large')
 
-var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256 )
+var LIMIT = ( parseInt(process.env.MAX_BODY_SIZE) || 256000 )
 
 function readJSONBody(request, response, callback) {
   var buffer
