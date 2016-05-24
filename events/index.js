@@ -1,8 +1,11 @@
 module.exports = makeEventBus
 
 var EventEmitter = require('eventemitter2').EventEmitter2
+var backupForm = require('./backup/form')
 var onForm = require('./form')
 var onProject = require('./project')
+
+var s3 = require('../s3')
 
 function makeEventBus(log, level) {
   // Create a Pino child log for events.
@@ -15,9 +18,15 @@ function makeEventBus(log, level) {
 
   eventBus
     // Log all event bus activity.
-    .onAny(function(event) {
-      eventLog.info({ event: 'emit', name: event }) })
+    //.onAny(function(event) {
+    //  eventLog.info({ event: 'emit', name: event }) })
     .on('form', onForm.bind(this, emit, level, log))
     .on('project', onProject.bind(this, emit, level, log))
+
+  if (s3) {
+    eventLog.info({ event: 'enabling s3' })
+    // Create a Pino child log for S3 backup.
+    var s3Log = log.child({ log: 's3' })
+    eventBus.on('form', backupForm.bind(this, s3Log)) }
 
   return eventBus }

@@ -8,6 +8,7 @@
   "bin": "./server.js",
   "dependencies": {
     "async-series": "0.0.1",
+    "aws-sdk": "^2.3.14",
     "bcrypt-password": "^1.0.2",
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
