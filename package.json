@@ -5,6 +5,7 @@
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "repository": "kemitchell/commonform-server",
   "license": "Apache-2.0",
+  "bin": "./server.js",
   "dependencies": {
     "async-series": "0.0.1",
     "bcrypt-password": "^1.0.2",

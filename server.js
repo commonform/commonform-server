@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var fs = require('fs')
 var handler = require('./')
 var http = require('http')
