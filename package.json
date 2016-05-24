@@ -1,11 +1,8 @@
 {
   "name": "commonform-server",
-  "version": "0.0.0",
   "description": "Common Form library server",
+  "version": "0.0.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
-  "repository": "kemitchell/commonform-server",
-  "license": "Apache-2.0",
-  "preferGlobal": true,
   "bin": {
     "bootstrap-commonform-server": "./bootstrap.js",
     "commonform-server": "./server.js"
@@ -41,6 +38,9 @@
     "tape": "^4.5.1",
     "temporary-directory": "^1.0.2"
   },
+  "license": "Apache-2.0",
+  "preferGlobal": true,
+  "repository": "kemitchell/commonform-server",
   "scripts": {
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "istanbul cover -- tape test/*.test.js",
