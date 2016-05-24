@@ -1,14 +1,17 @@
 module.exports = requireAuthorization
 
-var unauthorized = require('./responses/unauthorized')
-var thrice = require('../thrice')
 var bcrypt = require('bcrypt-password')
-var publisherKey = require('../keys/publisher')
 var internalError = require('./responses/internal-error')
+var parseAuthorization = require('./parse-authorization')
+var publisherKey = require('../keys/publisher')
+var thrice = require('../thrice')
+var unauthorized = require('./responses/unauthorized')
+var isAdministrator = require('./is-administrator')
 
 function requireAuthorization(handler) {
   return function(request, response, parameters, log, level) {
     var handlerArguments = arguments
+    function allow() { handler.apply(this, handlerArguments) }
     var publisher = parameters.publisher
     var authorization = request.headers.authorization
     if (authorization) {
@@ -16,12 +19,16 @@ function requireAuthorization(handler) {
       var mustLogIn = ( parsed === false || parsed.user !== publisher)
       if (mustLogIn) { unauthorized(response) }
       else {
-        checkPassword(level, publisher, parsed.password, function(error, valid) {
-          /* istanbul ignore if */
-          if (error) { internalError(response, error) }
-          else {
-            if (valid) { handler.apply(this, handlerArguments) }
-            else { unauthorized(response) } } }) } }
+        if (isAdministrator(parsed)) { allow() }
+        else {
+          checkPassword(
+            level, publisher, parsed.password,
+            function(error, valid) {
+              /* istanbul ignore if */
+              if (error) { internalError(response, error) }
+              else {
+                if (valid) { allow() }
+                else { unauthorized(response) } } }) } } }
     else { unauthorized(response) } } }
 
 function checkPassword(level, publisher, password, callback) {
@@ -35,11 +42,3 @@ function checkPassword(level, publisher, password, callback) {
     else {
       var object = JSON.parse(value)
       bcrypt.check(password, object.password, callback) } }) }
-
-// Parse "Authorization: Basic $base64" headers.
-function parseAuthorization(header) {
-  var token = header.split(/\s/).pop()
-  var decoded = new Buffer(token, 'base64').toString()
-  var components = decoded.split(':')
-  if (components.length !== 2) { return false }
-  else { return { user: components[0], password: components[1] } } }
