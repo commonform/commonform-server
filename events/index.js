@@ -1,6 +1,6 @@
 module.exports = makeEventBus
 
-var EventEmitter = require('eventemitter2').EventEmitter2
+var EventEmitter = require('events').EventEmitter
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
 var onForm = require('./form')
@@ -18,9 +18,6 @@ function makeEventBus(log, level) {
   var emit = eventBus.emit.bind(eventBus)
 
   eventBus
-    // Log all event bus activity.
-    //.onAny(function(event) {
-    //  eventLog.info({ event: 'emit', name: event }) })
     .on('form', onForm.bind(this, emit, level, log))
     .on('project', onProject.bind(this, emit, level, log))
 
