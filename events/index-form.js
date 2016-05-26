@@ -1,6 +1,6 @@
 module.exports = indexForm
 
-var encode = require('bytewise/encoding/hex').encode
+var encode = require('../keys/encode')
 
 function indexForm(publisher, project, edition, digest, normalized) {
   var level = this.level

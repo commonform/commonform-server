@@ -1,6 +1,6 @@
 module.exports = formToProjectKey
 
-var encode = require('bytewise/encoding/hex').encode
+var encode = require('./encode')
 
 var PREFIX = 'form-to-project'
 

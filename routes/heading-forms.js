@@ -1,5 +1,5 @@
-var decode = require('bytewise/encoding/hex').decode
-var encode = require('bytewise/encoding/hex').encode
+var decode = require('../keys/decode')
+var encode = require('../keys/encode')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var sendJSON = require('./responses/send-json')

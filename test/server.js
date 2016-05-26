@@ -2,7 +2,7 @@ module.exports = startTestServer
 
 process.env.ADMINISTRATOR_PASSWORD = 'test'
 
-var decode = require('bytewise/encoding/hex').decode
+var decode = require('../keys/decode')
 var devnull = require('dev-null')
 var format = require('util').format
 var handler = require('../')

@@ -1,4 +1,4 @@
-var encode = require('bytewise/encoding/hex').encode
+var encode = require('../keys/encode')
 
 module.exports = function(publisher, project, edition, digest) {
   var log = this.log

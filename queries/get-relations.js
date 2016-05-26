@@ -1,5 +1,5 @@
-var encode = require('bytewise/encoding/hex').encode
-var decode = require('bytewise/encoding/hex').decode
+var encode = require('../keys/encode')
+var decode = require('../keys/decode')
 
 module.exports = function(prefix) {
   return function(level, name, callback) {

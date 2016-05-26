@@ -1,8 +1,8 @@
 module.exports = getProjects
 
 var compareEdition = require('reviewers-edition-compare')
-var decodeKey = require('bytewise/encoding/hex').decode
-var encode = require('bytewise/encoding/hex').encode
+var decodeKey = require('../keys/decode')
+var encode = require('../keys/encode')
 
 function getProjects(level, digest, callback) {
   var projects = [ ]
