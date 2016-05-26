@@ -1,5 +1,3 @@
-module.exports = makeEventBus
-
 var EventEmitter = require('events').EventEmitter
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
@@ -13,7 +11,7 @@ var onProjectForm = require('./project-form')
 
 var s3 = require('../s3')
 
-function makeEventBus(log, level) {
+module.exports = function(log, level) {
   // Create a Pino child log for events.
   var eventLog = log.child({ log: 'events' })
 

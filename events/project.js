@@ -1,9 +1,7 @@
-module.exports = onProject
-
 var formKeyFor = require('../keys/form')
 var normalize = require('commonform-normalize')
 
-function onProject(publisher, project, edition, digest) {
+module.exports = function(publisher, project, edition, digest) {
   var eventBus = this
   eventBus.level.get(formKeyFor(digest), function(error, json) {
     /* istanbul ignore if */

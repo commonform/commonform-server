@@ -1,9 +1,7 @@
-module.exports = backupForm
-
 var s3 = require('../../s3')
 var VERSION = require('../../package.json').version
 
-function backupForm(form, digest, normalized) {
+module.exports = function(form, digest, normalized) {
   if (digest === normalized.root) {
     var log = this.log.child({ log: 's3', digest: digest })
     var key = ( 'forms/' + digest )

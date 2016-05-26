@@ -1,9 +1,7 @@
-module.exports = onForm
-
 var putForm = require('../queries/put-form')
 
 // A new form has been added to the library.
-function onForm(form, digest, normalized, seen) {
+module.exports = function(form, digest, normalized, seen) {
   var emit = this.emit.bind(this)
   var log = this.log
   var level = this.level

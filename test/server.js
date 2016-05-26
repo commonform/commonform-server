@@ -1,5 +1,3 @@
-module.exports = startTestServer
-
 process.env.ADMINISTRATOR_PASSWORD = 'test'
 
 var decode = require('../keys/decode')
@@ -14,7 +12,7 @@ var publisherKeyFor = require('../keys/publisher')
 
 var PUBLSIHERS = require('./publishers.json')
 
-function startTestServer(callback, port) {
+module.exports = function(callback, port) {
   port = ( port || 0 )
   var logStream = ( ( port === 0 ) ? devnull() : process.stdout )
   var log = pino({ name: 'test' }, logStream)

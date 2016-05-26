@@ -1,10 +1,8 @@
-module.exports = getSortedEditions
-
 var compareEdition = require('reviewers-edition-compare')
 var decode = require('../keys/decode')
 var editionKey = require('../keys/edition')
 
-function getSortedEditions(level, publisher, project, callback) {
+module.exports = function(level, publisher, project, callback) {
   var editions = [ ]
   level.createReadStream(
     { gt: editionKey(publisher, project, null),

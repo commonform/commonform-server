@@ -1,8 +1,6 @@
-module.exports = onProjectForm
-
 var formToProjectKey = require('../keys/form-to-project')
 
-function onProjectForm(publisher, project, edition, digest, normalized) {
+module.exports = function(publisher, project, edition, digest, normalized) {
   var log = this.log
   var level = this.level
   var root = ( digest === normalized.root )

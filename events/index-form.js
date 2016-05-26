@@ -1,8 +1,6 @@
-module.exports = indexForm
-
 var encode = require('../keys/encode')
 
-function indexForm(publisher, project, edition, digest, normalized) {
+module.exports = function(publisher, project, edition, digest, normalized) {
   var level = this.level
   var log = this.log
   var batch = [ ]

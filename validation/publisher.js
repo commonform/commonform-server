@@ -1,6 +1,4 @@
-module.exports = validPublisher
-
-function validPublisher(argument) {
+module.exports = function(argument) {
   return (
     ( typeof argument === 'string' ) &&
     /^[a-z]+$/.test(argument) &&

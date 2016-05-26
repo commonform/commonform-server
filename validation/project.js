@@ -1,6 +1,4 @@
-module.exports = validProject
-
-function validProject(argument) {
+module.exports = function(argument) {
   return (
     ( typeof argument === 'string' ) &&
     /^[a-z0-9-]+$/.test(argument) ) }

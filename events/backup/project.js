@@ -1,9 +1,7 @@
-module.exports = backupProject
-
 var s3 = require('../../s3')
 var VERSION = require('../../package.json').version
 
-function backupProject(publisher, project, edition, digest) {
+module.exports = function(publisher, project, edition, digest) {
   var key = ( 'projects/' + [ publisher, project, edition ].join('/') )
   var log = this.log.child({ log: 's3', key: key })
   //// Check if key already exists.

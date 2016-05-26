@@ -1,9 +1,7 @@
-module.exports = getCurrentEdition
-
 var getSortedEditions = require('./get-sorted-editions')
 var parseEdition = require('reviewers-edition-parse')
 
-function getCurrentEdition(level, publisher, project, callback) {
+module.exports = function(level, publisher, project, callback) {
   getSortedEditions(level, publisher, project, function(error, editions) {
     if (error) { callback(error) }
     else {

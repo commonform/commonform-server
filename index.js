@@ -1,5 +1,3 @@
-module.exports = makeRequestHandler
-
 // EventEmitter2 supports wildcard event handlers and `.onAny()`, which
 // is used for logging.
 var notFound = require('./routes/responses/not-found')
@@ -8,7 +6,7 @@ var uuid = require('uuid')
 
 var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
 
-function makeRequestHandler(log, level) {
+module.exports = function(log, level) {
   var eventBus = require('./events')(log, level)
   var emit = eventBus.emit.bind(eventBus)
   var routes = require('./routes')

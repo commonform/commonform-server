@@ -1,9 +1,7 @@
-module.exports = thrice
-
 var retry = require('retry')
 
 // Try an asynchronous operation, retrying up to three times.
-function thrice(asyncFunction, callback, /* optional */ isFinalError) {
+module.exports = function(asyncFunction, callback, /* optional */ isFinalError) {
   var operation = retry.operation({ retries: 3 })
   operation.attempt(function() {
     asyncFunction(function(error, result) {
