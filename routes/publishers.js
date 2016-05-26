@@ -1,6 +1,7 @@
 var badRequest = require('./responses/bad-request')
 var bcrypt = require('bcrypt-password')
-var getPublishers = require('../queries/get-publishers')
+var decodeKey = require('bytewise/encoding/hex').decode
+var editionKeyFor = require('../keys/edition')
 var internalError = require('./responses/internal-error')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -29,6 +30,22 @@ module.exports = function(request, response, parameters, log, level) {
   else if(request.method === 'POST') {
     requireAdministrator(postPublisher).apply(this, arguments) }
   else { methodNotAllowed(response) } }
+
+function getPublishers(level, callback) {
+  var publishers = [ ]
+  level.createReadStream(
+    { gt: editionKeyFor(null, null, null),
+      lt: editionKeyFor(undefined, undefined, undefined),
+      values: false })
+    .on('data', function(key) {
+      var decodedKey = decodeKey(key)
+      var publisher = decodedKey[1]
+      if (publishers.indexOf(publisher) < 0) {
+        publishers.push(publisher) } })
+    .on('error', function(error) {
+      callback(error) })
+    .on('end', function() {
+      callback(null, publishers.sort()) }) }
 
 function postPublisher(request, response, parameters, log, level, emit) {
   readJSONBody(request, response, function(json) {
