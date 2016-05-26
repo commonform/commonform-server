@@ -1,5 +1,3 @@
-module.exports = formsDigest
-
 var badRequest = require('./responses/bad-request')
 var getForm = require('./get-form')
 var internalError = require('./responses/internal-error')
@@ -8,7 +6,7 @@ var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
 var sendJSON = require('./responses/send-json')
 
-function formsDigest(request, response, params, log, level) {
+module.exports = function(request, response, params, log, level) {
   var digest = params.digest
   if (!isDigest(digest)) { badRequest(response, 'invalid digest') }
   else {

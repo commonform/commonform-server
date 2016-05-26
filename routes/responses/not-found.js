@@ -1,5 +1,3 @@
-module.exports = notFound
-
-function notFound(response) {
+module.exports = function(response) {
   response.statusCode = 404
   response.end() }

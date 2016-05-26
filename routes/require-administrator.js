@@ -1,10 +1,8 @@
-module.exports = requireAdministrator
-
 var unauthorized = require('./responses/unauthorized')
 var parseAuthorization = require('./parse-authorization')
 var isAdministrator = require('./is-administrator')
 
-function requireAdministrator(handler) {
+module.exports = function(handler) {
   return function(request, response, parameters, log, level) {
     var handlerArguments = arguments
     var authorization = request.headers.authorization

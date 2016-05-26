@@ -1,9 +1,7 @@
-module.exports = publisherProjects
-
 var internalError = require('./responses/internal-error')
 var getPublisherProjects = require('../queries/get-publisher-projects')
 
-function publisherProjects(request, response, parameters, log, level) {
+module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     var publisher = parameters.publisher
     getPublisherProjects(level, publisher, function(error, projects) {

@@ -1,8 +1,6 @@
-module.exports = isAdministrator
-
 var PASSWORD = ( process.env.ADMINISTRATOR_PASSWORD )
 
-function isAdministrator(log, credentials) {
+module.exports = function(log, credentials) {
   if (PASSWORD === undefined) {
     log.warn({ event: 'admin attempt' })
     return false }

@@ -1,5 +1,3 @@
-module.exports = formParents
-
 var decode = require('bytewise/encoding/hex').decode
 var encode = require('bytewise/encoding/hex').encode
 var internalError = require('./responses/internal-error')
@@ -8,7 +6,7 @@ var sendJSON = require('./responses/send-json')
 
 var PREFIX = 'form-in-form'
 
-function formParents(request, response, parameters, log, level) {
+module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     var digest = parameters.digest
     var parents = [ ]

@@ -1,9 +1,7 @@
-module.exports = getForm
-
 var thrice = require('../thrice')
 var formKeyFor = require('../keys/form')
 
-function getForm(level, digest, callback) {
+module.exports = function(level, digest, callback) {
   var key = formKeyFor(digest)
   var get = level.get.bind(level, key)
   thrice(get, callback, isNotFoundError) }

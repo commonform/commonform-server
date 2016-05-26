@@ -1,9 +1,7 @@
-module.exports = formProjects
-
 var getProjects = require('../queries/get-projects')
 var internalError = require('./responses/internal-error')
 
-function formProjects(request, response, parameters, log, level) {
+module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     var digest = parameters.digest
     getProjects(level, digest, function(error, projects) {

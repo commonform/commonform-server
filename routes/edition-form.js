@@ -1,12 +1,10 @@
-module.exports = editionForm
-
 var getCurrentEdition = require('../queries/get-current-edition')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var getProject = require('../queries/get-project')
 var getLatestEdition = require('../queries/get-latest-edition')
 
-function editionForm(request, response, parameters, log, level) {
+module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     var publisher = parameters.publisher
     var project = parameters.project

@@ -1,6 +1,4 @@
-module.exports = parseAuthorization
-
-function parseAuthorization(header) {
+module.exports = function(header) {
   var token = header.split(/\s/).pop()
   var decoded = new Buffer(token, 'base64').toString()
   var components = decoded.split(':')

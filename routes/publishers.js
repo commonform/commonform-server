@@ -1,5 +1,3 @@
-module.exports = publishers
-
 var badRequest = require('./responses/bad-request')
 var bcrypt = require('bcrypt-password')
 var getPublishers = require('../queries/get-publishers')
@@ -20,7 +18,7 @@ owasp.config(
     minPhraseLength: 20,
     minOptionalTestsToPass: 4 })
 
-function publishers(request, response, parameters, log, level) {
+module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     getPublishers(level, function(error, publishers) {
       /* istanbul ignore if */

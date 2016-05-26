@@ -1,5 +1,3 @@
-module.exports = forms
-
 var badRequest = require('./responses/bad-request')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -8,7 +6,7 @@ var putForm = require('../queries/put-form')
 var readJSONBody = require('./read-json-body')
 var validForm = require('commonform-validate').form
 
-function forms(request, response, parameters, log, level, emit) {
+module.exports = function(request, response, parameters, log, level, emit) {
   if (request.method === 'POST') {
     readJSONBody(request, response, function(form) {
       if (!validForm(form)) { badRequest(response, 'invalid form') }

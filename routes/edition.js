@@ -1,5 +1,3 @@
-module.exports = edition
-
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var editionKeyFor = require('../keys/edition')
@@ -23,7 +21,7 @@ var validPublisher = require('../validation/publisher')
 
 var VERSION = require('../package.json').version
 
-function edition(request, response) {
+module.exports = function(request, response) {
   var method = request.method
   if (method === 'GET') { serveProject.apply(this, arguments) }
   else if (method === 'POST') {

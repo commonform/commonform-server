@@ -1,5 +1,3 @@
-module.exports = requireAuthorization
-
 var bcrypt = require('bcrypt-password')
 var internalError = require('./responses/internal-error')
 var parseAuthorization = require('./parse-authorization')
@@ -8,7 +6,7 @@ var thrice = require('../thrice')
 var unauthorized = require('./responses/unauthorized')
 var isAdministrator = require('./is-administrator')
 
-function requireAuthorization(handler) {
+module.exports = function(handler) {
   return function(request, response, parameters, log, level) {
     var handlerArguments = arguments
     function allow() { handler.apply(this, handlerArguments) }
