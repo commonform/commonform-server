@@ -5,6 +5,7 @@ var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
 var onForm = require('./form')
 var onProject = require('./project')
+var onProjectForm = require('./project-form')
 
 var s3 = require('../s3')
 
@@ -20,6 +21,7 @@ function makeEventBus(log, level) {
   eventBus
     .on('form', onForm.bind(this, emit, level, log))
     .on('project', onProject.bind(this, emit, level, log))
+    .on('project form', onProjectForm.bind(this, emit, level, log))
 
   if (s3) {
     eventLog.info({ event: 'enabling s3' })
