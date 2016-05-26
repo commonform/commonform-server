@@ -3,6 +3,9 @@ module.exports = makeEventBus
 var EventEmitter = require('events').EventEmitter
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
+var indexForm = require('./index-form')
+var indexDigest = require('./index-digest')
+var indexFormChildren = require('./index-form-children')
 var onForm = require('./form')
 var onProject = require('./project')
 var onProjectForm = require('./project-form')
@@ -23,6 +26,9 @@ function makeEventBus(log, level) {
     .on('form', onForm)
     .on('project', onProject)
     .on('projectForm', onProjectForm)
+    .on('projectForm', indexForm)
+    .on('projectForm', indexFormChildren)
+    .on('projectForm', indexDigest)
 
   if (s3) {
     eventLog.info({ event: 'enabling s3' })

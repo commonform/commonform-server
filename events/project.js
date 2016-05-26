@@ -10,4 +10,11 @@ function onProject(publisher, project, edition, digest) {
     if (error) { eventBus.log.error(error) }
     else {
       var normalized = normalize(JSON.parse(json).form)
-      eventBus.emit('projectForm', publisher, project, edition, digest, normalized) } }) }
+      Object.keys(normalized)
+        .forEach(function(digest) {
+          if (digest !== 'root') {
+            var args = [
+              'projectForm',
+              publisher, project, edition,
+              digest, normalized ]
+            eventBus.emit.apply(eventBus, args) } }) } }) }
