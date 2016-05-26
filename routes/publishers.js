@@ -1,7 +1,7 @@
 var badRequest = require('./responses/bad-request')
 var bcrypt = require('bcrypt-password')
-var getPublishers = require('../queries/get-publishers')
 var internalError = require('./responses/internal-error')
+var listNamespace = require('./list-namespace')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var owasp = require('owasp-password-strength-test')
@@ -18,14 +18,11 @@ owasp.config(
     minPhraseLength: 20,
     minOptionalTestsToPass: 4 })
 
-module.exports = function(request, response, parameters, log, level) {
+var listPublishers = listNamespace('publisher')
+
+module.exports = function(request, response) {
   if (request.method === 'GET') {
-    getPublishers(level, function(error, publishers) {
-      /* istanbul ignore if */
-      if (error) { internalError(response, error) }
-      else {
-        response.setHeader('Content-Type', 'application/json')
-        response.end(JSON.stringify(publishers)) } }) }
+    listPublishers.apply(this, arguments) }
   else if(request.method === 'POST') {
     requireAdministrator(postPublisher).apply(this, arguments) }
   else { methodNotAllowed(response) } }
