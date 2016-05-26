@@ -13,7 +13,8 @@ routes.set('/publishers/:publisher/projects/:project/editions/:edition', require
 routes.set('/publishers/:publisher/projects/:project/editions/:edition/form', require('./edition-form'))
 
 var listNamespace = require('./list-namespace')
-;[ 'heading', 'term', 'digest' ].forEach(function(namespace) {
+var namespaces = [ 'heading', 'term', 'digest' ]
+namespaces.forEach(function(namespace) {
   var pattern = ( '/' + namespace + 's')
   routes.set(pattern, listNamespace(namespace)) })
 
