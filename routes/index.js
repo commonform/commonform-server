@@ -11,8 +11,6 @@ routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
 routes.set('/publishers/:publisher/projects/:project/editions', require('./project-editions'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition', require('./edition'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition/form', require('./edition-form'))
-routes.set('/headings/:heading/forms', require('./heading-forms'))
-routes.set('/headings/:heading/references', require('./heading-references'))
 
 var listNamespace = require('./list-namespace')
 ;[ 'heading', 'term', 'digest' ].forEach(function(namespace) {
@@ -23,12 +21,22 @@ var listRelations = require('./list-relations')
 var relationships =
   [ { prefix: 'term-defined-in-form',
       namespace: 'terms',
+      parameter: 'term',
       relations: 'definitions' },
     { prefix: 'term-used-in-form',
       namespace: 'terms',
-      relations: 'uses' } ]
+      parameter: 'term',
+      relations: 'uses' },
+    { prefix: 'heading-referenced-in-form',
+      namespace: 'headings',
+      parameter: 'heading',
+      relations: 'references' } ]
 relationships.forEach(function(relationship) {
   var pattern =
-    ( '/' + relationship.namespace + '/:name/' +
+    ( '/' + relationship.namespace +
+      '/:' + relationship.parameter + '/' +
       relationship.relations )
-  routes.set(pattern, listRelations(relationship.prefix)) })
+  var handler = listRelations(relationship.prefix, relationship.parameter)
+  routes.set(pattern, handler) })
+
+routes.set('/headings/:heading/forms', require('./heading-forms'))
