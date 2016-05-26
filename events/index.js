@@ -16,19 +16,19 @@ function makeEventBus(log, level) {
   // An event bus. Used to trigger indexing and other processing of form
   // and project data posted by users.
   var eventBus = new EventEmitter
-  var emit = eventBus.emit.bind(eventBus)
+  eventBus.level = level
+  eventBus.log = eventLog
 
   eventBus
-    .on('form', onForm.bind(this, emit, level, log))
-    .on('project', onProject.bind(this, emit, level, log))
-    .on('project form', onProjectForm.bind(this, emit, level, log))
+    .on('form', onForm)
+    .on('project', onProject)
+    .on('projectForm', onProjectForm)
 
   if (s3) {
     eventLog.info({ event: 'enabling s3' })
     // Create a Pino child log for S3 backup.
-    var s3Log = log.child({ log: 's3' })
-    eventBus.on('form', backupForm.bind(this, s3Log))
-    eventBus.on('project', backupProject.bind(this, s3Log)) }
+    eventBus.on('form', backupForm)
+    eventBus.on('project', backupProject) }
 
   // Log every event when emitted.
   eventBus.eventNames().forEach(function(eventName) {

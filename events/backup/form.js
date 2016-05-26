@@ -3,9 +3,9 @@ module.exports = backupForm
 var s3 = require('../../s3')
 var VERSION = require('../../package.json').version
 
-function backupForm(s3Log, form, digest, normalized) {
+function backupForm(form, digest, normalized) {
   if (digest === normalized.root) {
-    var log = s3Log.child({ digest: digest })
+    var log = this.log.child({ log: 's3', digest: digest })
     var key = ( 'forms/' + digest )
     //// Check if key already exists.
     s3.headObject({ Key: key }, function (error) {
