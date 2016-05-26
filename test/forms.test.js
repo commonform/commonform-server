@@ -49,7 +49,7 @@ tape('POST /forms without request body', function(test) {
         done() ; test.end() })
       .end() }) })
 
-// The following two tests do not work correctly.
+// The following test does not work correctly.
 
 // This test errors out on the client side. The response handler is
 // never called. There is no such problem when the Content-Length header
@@ -84,7 +84,7 @@ if (process.env.RUN_SLOW_TESTS) {
         .request(request, function(response) {
           test.equal(response.statusCode, 408, 'responds 408')
           done() ; test.end() })
-      .end(json) }) }) }
+        .end(json) }) }) }
 
 tape('POST /forms with invalid form', function(test) {
   server(function(port, done) {
