@@ -28,4 +28,9 @@ function makeEventBus(log, level) {
     eventBus.on('form', backupForm.bind(this, s3Log))
     eventBus.on('project', backupProject.bind(this, s3Log)) }
 
+  // Log every event when emitted.
+  eventBus.eventNames().forEach(function(eventName) {
+    eventBus.prependListener(eventName, function() {
+      eventLog.info({ event: eventName }) }) })
+
   return eventBus }
