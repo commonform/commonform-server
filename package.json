@@ -24,7 +24,6 @@
     "levelup": "^1.3.2",
     "owasp-password-strength-test": "^1.3.0",
     "pino": "^2.4.2",
-    "retry": "^0.9.0",
     "reviewers-edition-compare": "^1.0.4",
     "reviewers-edition-parse": "^2.0.5",
     "uuid": "^2.0.2"

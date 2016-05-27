@@ -1,17 +1,15 @@
-var retry = require('retry')
-
 // Try an asynchronous operation, retrying up to three times.
 module.exports = function(asyncFunction, callback, /* optional */ isFinalError) {
-  var operation = retry.operation({ retries: 3 })
-  operation.attempt(function() {
-    asyncFunction(function(error, result) {
-      // This is the final error if:
-      var haveFinalError = (
-        // The caller passed a predicate to identify errors that
-        // shouldn't prompt a retry, and this is one of them.
-        ( typeof isFinalError === 'function' && isFinalError(error) ) ||
-        // We're out of retries.
-        !shouldRetry(error) )
-      /* istanbul ignore else */
-      if (haveFinalError) { callback(error, result) } }) })
-  function shouldRetry(error) { operation.retry(error) } }
+  if (isFinalError === undefined) {
+    isFinalError = function() { return false } }
+  attempt(asyncFunction, callback, isFinalError, 2, callback) }
+
+function attempt(asyncFunction, callback, isFinalError, left) {
+  asyncFunction(function(error, result) {
+    if (error) {
+      if (isFinalError(error) || ( left === 0 )) { callback(error) }
+      else {
+        setTimeout(
+          attempt.bind(this, asyncFunction, callback, isFinalError, ( left - 1 )),
+          100) } }
+    else { callback(null, result) } }) }
