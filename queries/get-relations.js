@@ -9,5 +9,7 @@ module.exports = function(prefix) {
         lt: encode([ prefix, name, undefined ]) })
       .on('data', function(item) {
         results.push(decode(item.key)[2]) })
-      .on('error', function(error) { callback(error) })
+      .on('error',
+        /* istanbul ignore next */
+        function(error) { callback(error) })
       .on('end', function() { callback(null, results) }) } }

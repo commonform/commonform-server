@@ -28,4 +28,5 @@ module.exports = function(publisher, project, edition, digest, normalized) {
         push([ 'heading-for-form-in-form', heading, childDigest, digest])
         push([ 'form-under-heading-in-form', childDigest, heading, digest]) } } })
   level.batch(batch, function(error) {
+    /* istanbul ignore if */
     if (error) { log.error(error) } }) }

@@ -100,6 +100,27 @@ tape('GET /forms/$digest/parents', function(test) {
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 
+tape('POST /forms/$digest/parents', function(test) {
+  var child = { content: [ 'Some content' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ 'Hooray!', { form: child } ] }
+  var grandparent = { content: [ 'More!', { form: parent } ] }
+  var grandparentDigest = normalize(grandparent).root
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, grandparent, test),
+        postProject(port, 'gpa', '1e', grandparentDigest, test),
+        function postParents(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: ( '/forms/' + childDigest + '/parents' ) },
+            function(response) {
+              test.equal( response.statusCode, 405, 'responds 405')
+              done() })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
 tape('GET /headings/$heading/forms', function(test) {
   var heading = 'X'
   var child = { content: [ 'Some content' ] }
@@ -128,6 +149,26 @@ tape('GET /headings/$heading/forms', function(test) {
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 
+tape('POST /headings/$heading/forms', function(test) {
+  var heading = 'X'
+  var child = { content: [ 'Some content' ] }
+  var parent = { content: [ { heading: heading, form: child } ] }
+  var parentDigest = normalize(parent).root
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, parent, test),
+        postProject(port, 'parent', '1e', parentDigest, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: ( '/headings/' + heading + '/forms' ) },
+            function(response) {
+              test.equal( response.statusCode, 405, 'responds 405')
+              done() })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
 tape('GET /forms/$form/headings', function(test) {
   var heading = 'X'
   var child = { content: [ 'Some content' ] }
@@ -153,6 +194,25 @@ tape('GET /forms/$form/headings', function(test) {
                       ( element.parent === parentDigest ) ) }),
                   'serves heading in parent')
                 done() }) })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
+tape('POST /forms/$form/headings', function(test) {
+  var heading = 'X'
+  var child = { content: [ 'Some content' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ { heading: heading, form: child } ] }
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, parent, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: ( '/forms/' + childDigest + '/headings' ) },
+            function(response) {
+              test.equal(response.statusCode, 405, 'responds 405')
+              done() })
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 

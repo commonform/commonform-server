@@ -7,5 +7,6 @@ module.exports = function(prefix, parameter) {
   return function(request, response, parameters, log, level) {
     var name = parameters[parameter]
     getMatches(level, name, function(error, results) {
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else { sendJSON(response, results) } }) } }

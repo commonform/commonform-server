@@ -28,4 +28,19 @@ tape('GET /publishers/$publisher/projects/$project/editions', function(test) {
                   body, [ '1e', '1e1u' ],
                   'GET editions JSON')
                 done() }) }) } ],
-      function() { closeServer() ; test.end() }) }) })
+      function finish() {
+        closeServer()
+        test.end() }) }) })
+
+tape('PUT /publishers/$publisher/projects/$project/editions', function(test) {
+  server(function(port, done) {
+    http.request(
+      { method: 'PUT',
+        port: port,
+        path: '/publishers/ana/projects/nda/editions' },
+      function(response) {
+        test.equal(
+          response.statusCode, 405,
+          'responds 405')
+          done() ; test.end() })
+      .end() }) })

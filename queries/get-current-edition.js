@@ -3,6 +3,7 @@ var parseEdition = require('reviewers-edition-parse')
 
 module.exports = function(level, publisher, project, callback) {
   getSortedEditions(level, publisher, project, function(error, editions) {
+    /* istanbul ignore if */
     if (error) { callback(error) }
     else {
       editions = editions.filter(function isNotADraft(element) {

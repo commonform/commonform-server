@@ -14,8 +14,9 @@ module.exports = function(level, publisher, project, callback) {
           project: decodedKey[2],
           edition: decodedKey[3],
           digest: JSON.parse(item.value).digest }) })
-    .on('error', function yieldError(error) {
-      callback(error) })
+    .on('error',
+      /* istanbul ignore next */
+      function yieldError(error) { callback(error) })
     .on('end', function yieldEditions() {
       editions.sort(function byEdition(a, b) {
         return compareEdition(a.edition, b.edition) })

@@ -27,6 +27,15 @@ tape('GET /digests', function(test) {
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
 
+tape('POST /digests', function(test) {
+  server(function(port, closeServer) {
+    http.get(
+      { method: 'POST', port: port, path: '/digests' },
+      function(response) {
+        test.equal(response.statusCode, 405, 'POST 405')
+        closeServer()
+        test.end() }) }) })
+
 tape('GET /headings', function(test) {
   var heading = 'X'
   var form = { content: [ { reference: heading } ] }

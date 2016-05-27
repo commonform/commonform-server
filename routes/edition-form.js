@@ -20,13 +20,9 @@ module.exports = function(request, response, parameters, log, level) {
       /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
-        if (project) {
-          response.statusCode = 301
-          response.setHeader(
-            'Location',
-            ( 'https://api.commonform.org/forms/' + project.digest ))
-          response.end() }
-        else {
-          response.statusCode = 404
-          response.end() } } }) }
+        response.statusCode = 301
+        response.setHeader(
+          'Location',
+          ( 'https://api.commonform.org/forms/' + project.digest ))
+        response.end() } }) }
   else { methodNotAllowed(response) } }

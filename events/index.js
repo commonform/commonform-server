@@ -30,6 +30,7 @@ module.exports = function(log, level) {
     .on('projectForm', indexFormChildren)
     .on('projectForm', indexDigest)
 
+  /* istanbul ignore if */
   if (s3) {
     eventLog.info({ event: 'enabling s3' })
     // Create a Pino child log for S3 backup.

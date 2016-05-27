@@ -68,6 +68,19 @@ tape('POST /publishers with password', function(test) {
           done() ; test.end() })
       .end(JSON.stringify(body)) }) })
 
+tape('POST /publishers with bad Authorization', function(test) {
+  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  server(function(port, done) {
+    http.request(
+      { method: 'POST',
+        port: port,
+        path: '/publishers',
+        headers: { authorization: 'blah' } })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 401, 'POST 401')
+          done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
 tape('POST /publishers with hashed password', function(test) {
   var body =
     { name: 'bob',
@@ -86,6 +99,30 @@ tape('POST /publishers with hashed password', function(test) {
             response.headers.location, '/publishers/bob',
             'Location')
           done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
+tape('POST /publishers without password', function(test) {
+  test.plan(2)
+  var body = { name: 'bob' }
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: '/publishers' })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 400, 'POST 400')
+          var buffer = [ ]
+          response
+            .on('data', function(chunk) {
+              buffer.push(chunk) })
+            .on('end', function() {
+              test.equal(
+                Buffer.concat(buffer).toString(), 'invalid publisher',
+                'responds "invalid publisher"')
+              done() ; test.end() }) })
       .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers with insecure password', function(test) {
@@ -135,3 +172,17 @@ tape('POST /publishers for administrator', function(test) {
                 'serves "invalid publisher name"') })
           done() ; test.end() })
       .end(JSON.stringify(body)) }) })
+
+tape('PUT /publishers as administrator', function(test) {
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'PUT',
+        port: port,
+        path: '/publishers' })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 405, 'POST 405')
+          done() ; test.end() })
+      .end() }) })

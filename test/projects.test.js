@@ -57,6 +57,28 @@ tape('POST /publishers/$other-publisher/projects/$project/editions/$edition', fu
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
+tape('POST /publishers/publisher/projects/$project/editions/$edition for unknown publisher', function(test) {
+  var publisher = 'charlie'
+  var password = 'charlie\'s password'
+  var project = 'nda'
+  var edition = '1e'
+  var digest = 'a'.repeat(64)
+  var path =
+    ( '/publishers/' + publisher +
+      '/projects/' + project +
+      '/editions/' + edition )
+  server(function(port, done) {
+    http.request(
+      { auth: ( publisher + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: path })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 401, '401')
+        done()
+        test.end() })
+      .end(JSON.stringify({ digest: digest })) }) })
+
 tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', function(test) {
   var project = 'no_underscores_allowed'
   var edition = '1e'
@@ -75,6 +97,56 @@ tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', 
         test.equal(response.statusCode, 400, '400')
         response.pipe(concat(function(buffer) {
           test.equal(buffer.toString(), 'invalid project name', 'invalid name')
+          done()
+          test.end() })) })
+      .end(JSON.stringify({ digest: digest })) }) })
+
+
+tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', function(test) {
+  test.plan(2)
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var project = 'no_underscores_allowed'
+  var edition = '1e'
+  var digest = 'a'.repeat(64)
+  var path =
+    ( '/publishers/' + publisher +
+      '/projects/' + project +
+      '/editions/' + edition )
+  server(function(port, done) {
+    http.request(
+      { auth: ( publisher + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: path },
+      function(response) {
+        test.equal(response.statusCode, 400, '400')
+        response.pipe(concat(function(buffer) {
+          test.equal(buffer.toString(), 'invalid project name', 'invalid name')
+          done()
+          test.end() })) })
+      .end(JSON.stringify({ digest: digest })) }) })
+
+tape('POST /publishers/$publisher/projects/$project/editions/$edition with missing form', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var project = 'nda'
+  var edition = '1e'
+  var digest = 'a'.repeat(64)
+  var path =
+    ( '/publishers/' + publisher +
+      '/projects/' + project +
+      '/editions/' + edition )
+  server(function(port, done) {
+    http.request(
+      { auth: ( publisher + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: path },
+      function(response) {
+        test.equal(response.statusCode, 400, '400')
+        response.pipe(concat(function(buffer) {
+          test.equal(buffer.toString(), 'unknown form', 'unknown form')
           done()
           test.end() })) })
       .end(JSON.stringify({ digest: digest })) }) })

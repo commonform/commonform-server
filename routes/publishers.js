@@ -46,6 +46,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
       else {
         var key = publisherKeyFor(name)
         var unlock = lock(level, key, 'w')
+        /* istanbul ignore if */
         if (!unlock) {
           unlock()
           internalError(response, new Error('locked')) }
@@ -54,6 +55,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
             storeHash(unlock, name, key, json.hash) }
           else {
             bcrypt.hash(json.password, function(error, hash) {
+              /* istanbul ignore if */
               if (error) {
                 unlock()
                 internalError(response, error) }
@@ -63,6 +65,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
     var put = level.put.bind(level, key, value)
     thrice(put, function(error) {
       unlock()
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
         response.statusCode = 201

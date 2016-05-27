@@ -15,6 +15,7 @@ module.exports = function(publisher, project, edition, digest, normalized) {
         value: undefined }) }
   childrenOf(digest, normalized).forEach(push)
   level.batch(batch, function(error) {
+    /* istanbul ignore if */
     if (error) { log.error(error) } }) }
 
 function childrenOf(digest, normalized) {

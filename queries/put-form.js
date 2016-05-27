@@ -11,4 +11,3 @@ module.exports = function(level, digest, form, posted, callback) {
       posted: posted })
   var put = level.put.bind(level, formKeyFor(digest), value)
   thrice(put, callback) }
-

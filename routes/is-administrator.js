@@ -1,6 +1,7 @@
 var PASSWORD = ( process.env.ADMINISTRATOR_PASSWORD )
 
 module.exports = function(log, credentials) {
+  /* istanbul ignore if */
   if (PASSWORD === undefined) {
     log.warn({ event: 'admin attempt' })
     return false }

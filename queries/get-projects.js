@@ -15,8 +15,9 @@ module.exports = function(level, digest, callback) {
           project: decodedKey[3],
           edition: decodedKey[4],
           root: decodedKey[5] }) })
-    .on('error', function yieldError(error) {
-      callback(error) })
+    .on('error',
+        /* istanbul ignore next */
+        function yieldError(error) { callback(error) })
     .on('end', function yieldProjects() {
       projects.sort(compareProjects)
       callback(null, projects) }) }

@@ -18,6 +18,7 @@ module.exports = function(log, level) {
     response.on('finish', function() { response.log.info(response) })
 
     response.setTimeout(TIMEOUT, function() {
+      console.error('timed out')
       response.log.error({ event: 'timeout' })
       response.statusCode = 408
       response.removeAllListeners()

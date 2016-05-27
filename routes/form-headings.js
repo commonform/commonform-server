@@ -16,6 +16,8 @@ module.exports = function(request, response, parameters, log, level) {
       .on('data', function(item) {
         var decoded = decode(item.key)
         parents.push({ heading: decoded[2], parent: decoded[3] }) })
-      .on('error', function(error) { internalError(error) })
+      .on('error',
+        /* istanbul ignore next */
+        function(error) { internalError(error) })
       .on('end', function() { sendJSON(response, parents) }) }
   else { methodNotAllowed(response) } }

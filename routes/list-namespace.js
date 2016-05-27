@@ -16,8 +16,10 @@ module.exports = function(namespace) {
             ( ( first ? '' : ',' ) +
               JSON.stringify(decode(item.key)[1]) ))
           first = false })
-        .on('error', function(error) {
-          log.error(error)
-          response.end(']') })
+        .on('error',
+          /* istanbul ignore next */
+          function(error) {
+            log.error(error)
+            response.end(']') })
         .on('end', function() { response.end(']') }) }
     else { methodNotAllowed(response) } } }

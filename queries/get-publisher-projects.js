@@ -8,8 +8,8 @@ module.exports = function(level, publisher, callback) {
       lt: makeProjectKey(publisher, undefined, undefined) })
     .on('data', function pushDecodedKey(key) {
       keys.push(decodeKey(key)) })
-    .on('error', function yieldError(error) {
-      callback(error) })
+    .on('error', /* istanbul ignore next */
+      function yieldError(error) { callback(error) })
     .on('end', function yieldListOfProjects() {
       var projectNames = keys
         .reduce(

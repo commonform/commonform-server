@@ -21,18 +21,22 @@ module.exports = function(request, response, callback) {
     request.once('end', onEnd)
     request.once('error', onEnd) }
   function onData(chunk) {
+    /* istanbul ignore else */
     if (!finished) {
       buffer.push(chunk)
       bytesReceived += chunk.length
       if (bytesReceived > LIMIT) {
         finish()
         requestEntityTooLarge(response) } } }
+  /* istanbul ignore next */
   function onAborted() {
     if (!finished) {
       finish()
       badRequest(response, 'request aborted') } }
   function onEnd(error) {
+    /* istanbul ignore else */
     if (!finished) {
+      /* istanbul ignore if */
       if (error) {
         request.pause()
         finish()
@@ -40,6 +44,7 @@ module.exports = function(request, response, callback) {
       else {
         var inaccurateHeader = (
           lengthHeader && ( parseInt(lengthHeader) !== bytesReceived ) )
+        /* istanbul ignore if */
         if (inaccurateHeader) {
           finish()
           badRequest(response, 'inaccurate Content-Length') }
@@ -49,6 +54,7 @@ module.exports = function(request, response, callback) {
             if (error) { badRequest(response, 'invalid JSON') }
             else { callback(object) } }) } } } }
   function finish() {
+    /* istanbul ignore else */
     if (!finished) {
       finished = true
       buffer = null
