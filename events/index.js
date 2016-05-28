@@ -1,6 +1,7 @@
 var EventEmitter = require('events').EventEmitter
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
+var indexAnnotation = require('./index-annotation')
 var indexForm = require('./index-form')
 var indexDigest = require('./index-digest')
 var indexFormChildren = require('./index-form-children')
@@ -29,6 +30,7 @@ module.exports = function(log, level) {
     .on('projectForm', indexForm)
     .on('projectForm', indexFormChildren)
     .on('projectForm', indexDigest)
+    .on('annotation', indexAnnotation)
 
   /* istanbul ignore if */
   if (s3) {

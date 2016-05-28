@@ -14,12 +14,12 @@ module.exports = function(namespace) {
         .on('data', function(item) {
           response.write(
             ( ( first ? '' : ',' ) +
-              JSON.stringify(decode(item.key)[1]) ))
+              JSON.stringify(decode(item.key)[1]) + '\n' ))
           first = false })
         .on('error',
           /* istanbul ignore next */
           function(error) {
             log.error(error)
-            response.end(']') })
-        .on('end', function() { response.end(']') }) }
+            response.end('\n]') })
+        .on('end', function() { response.end('\n]') }) }
     else { methodNotAllowed(response) } } }
