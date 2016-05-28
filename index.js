@@ -18,7 +18,6 @@ module.exports = function(log, level) {
     response.on('finish', function() { response.log.info(response) })
 
     response.setTimeout(TIMEOUT, function() {
-      console.error('timed out')
       response.log.error({ event: 'timeout' })
       response.statusCode = 408
       response.removeAllListeners()
@@ -26,7 +25,7 @@ module.exports = function(log, level) {
 
     // Route the request.
     var parsed = url.parse(request.url)
-    var route = routes.get(parsed.path)
+    var route = routes.get(parsed.pathname)
     if (route.handler) {
       route.handler(request, response, route.params, log, level, emit) }
     else {
