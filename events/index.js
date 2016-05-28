@@ -1,4 +1,5 @@
 var EventEmitter = require('events').EventEmitter
+var backupAnnotation = require('./backup/annotation')
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
 var indexAnnotation = require('./index-annotation')
@@ -37,7 +38,8 @@ module.exports = function(log, level) {
     eventLog.info({ event: 'enabling s3' })
     // Create a Pino child log for S3 backup.
     eventBus.on('form', backupForm)
-    eventBus.on('project', backupProject) }
+    eventBus.on('project', backupProject)
+    eventBus.on('annotation', backupAnnotation) }
 
   // Log every event when emitted.
   eventBus.eventNames().forEach(function(eventName) {
