@@ -24,6 +24,7 @@ function getAnnotations(request, response, parameters, log, level) {
     getForm(level, query.displaying, function(error, displaying) {
       displaying = JSON.parse(displaying).form
       if (error) {
+        /* istanbul ignore else */
         if (error.notFound) { badRequest(response, 'Unknown form') }
         else { internalError(response, error) } }
       else {

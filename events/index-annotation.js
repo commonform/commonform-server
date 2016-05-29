@@ -6,4 +6,5 @@ module.exports = function(annotation) {
   var eventBus = this
   var key = encode([ PREFIX, annotation.form, annotation.uuid ])
   eventBus.level.put(key, JSON.stringify(annotation), function(error) {
+    /* istanbul ignore if */
     if (error) { eventBus.log.error(error) } }) }
