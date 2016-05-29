@@ -18,6 +18,3 @@ function hasProperty(object, key, predicate) {
 
 function nonemptyString(argument) {
   return ( ( typeof argument === 'string' ) && ( argument.length !== 0 ) ) }
-
-function isBoolean(argument) {
-  return ( ( argument === true ) || ( argument === false ) ) }
