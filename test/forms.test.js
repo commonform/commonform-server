@@ -34,11 +34,24 @@ tape('POST /forms with form', function(test) {
 
 tape('POST /forms with infinite request body', function(test) {
   server(function(port, done) {
-    var request = { method: 'POST', path: '/forms', port: port }
-    makeInfiniteStream()
-      .pipe(http.request(request, function(response) {
+    function finish() { done() ; test.end() }
+    var infinite = makeInfiniteStream()
+      .on('error', function(error) {
+        test.assert(
+          ( ( error.message === 'write EPIPE' ) ||
+            ( error.message === 'write ECONNRESET' ) ))
+        finish() })
+    var options = { method: 'POST', path: '/forms', port: port }
+    var request = http.request(options)
+      .on('error', function(error) {
+        test.assert(
+          ( ( error.message === 'write EPIPE' ) ||
+            ( error.message === 'write ECONNRESET' ) ))
+        finish() })
+      .on('response', function(response) {
         test.equal(response.statusCode, 413, 'responds 413')
-        done() ; test.end() })) }) })
+        finish() })
+    infinite.pipe(request) }) })
 
 tape('POST /forms without request body', function(test) {
   server(function(port, done) {
