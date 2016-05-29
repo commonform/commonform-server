@@ -12,7 +12,7 @@ module.exports = function(handler) {
       if (mustLogIn) { unauthorized(response) }
       else {
         if (isAdministrator(log, parsed)) {
-          request.administrator = true
+          request.publisher = 'administrator'
           handler.apply(this, handlerArguments) }
         else { unauthorized(response) } } }
     else { unauthorized(response) } } }

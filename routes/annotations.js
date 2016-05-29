@@ -1,74 +1,71 @@
+var allowAuthorization = require('./allow-authorization')
+var encode = require('../keys/encode')
+var url = require('url')
+var multistream = require('multistream')
+var isDigest = require('is-sha-256-hex-digest')
 var badRequest = require('./responses/bad-request')
-var getAnnotation = require('../queries/get-annotation')
 var getForm = require('./get-form')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
-var putAnnotation = require('../queries/put-annotation')
 var normalize = require('commonform-normalize')
-var readJSONBody = require('./read-json-body')
-var requireAuthorization = require('./require-authorization')
-var uuid = require('uuid')
-var validAnnotation = require('../validation/annotation')
+
+var PREFIX = 'form-has-annotation'
 
 module.exports = function(request, response) {
   if (request.method === 'GET') {
-    requireAuthorization(getAnnotations).apply(this, arguments) }
-  else if(request.method === 'POST') {
-    requireAuthorization(postAnnotation).apply(this, arguments) }
+    allowAuthorization(getAnnotations).apply(this, arguments) }
   else { methodNotAllowed(response) } }
 
-function postAnnotation(request, response, parameters, log, level, emit) {
-  if (request.method === 'POST') {
-    readJSONBody(request, response, function(annotation) {
-      var put = function() {
-        putAnnotation(level, annotation, function(error) {
-          if (error) { internalError(response) }
-          else {
-            response.log.info({ event: 'annotation' })
-            response.statusCode = 201
-            var location = ( '/annotations/' + annotation.uuid )
-            response.setHeader('Location', location)
-            response.end()
-            emit('annotation', annotation) } }) }
-      if (!validAnnotation(annotation)) {
-        badRequest(response, 'invalid annotation') }
+function getAnnotations(request, response, parameters, log, level) {
+  var query = url.parse(request.url, true).query
+  var hasDisplaying = ( ( 'displaying' in query ) && isDigest(query.displaying) )
+  if (!hasDisplaying) { badRequest(response, 'Must specify displaying') }
+  else {
+    getForm(level, query.displaying, function(error, displaying) {
+      displaying = JSON.parse(displaying).form
+      if (error) {
+        if (error.notFound) { badRequest(response, 'Unknown form') }
+        else { internalError(response, error) } }
       else {
-        if (request.administrator === true) { put() }
-        else {
-          annotation.publisher = parameters.publisher
-          annotation.uuid = uuid.v4()
-          response.log.info({ event: 'uuid', uuid: annotation.uuid })
-          annotation.timestamp = Date.now().toString()
-          // Does the server have the context form?
-          getForm(level, annotation.context, function(error, context) {
-            if (error) {
-              if (error.notFound) { badRequest(response, 'Unknown context') }
-              else { internalError(response, error) } }
-            else {
-              // Is the annotated form within the context?
-              context = JSON.parse(context)
-              var childrenDigests = Object.keys(normalize(context.form))
-              if (childrenDigests.indexOf(annotation.form) === -1) {
-                badRequest(response, 'Form not in context') }
-              else {
-                if (annotation.replyTo) {
-                  getAnnotation(level, annotation.replyTo, function(error, prior) {
-                    if (error) {
-                      if (error.notFound) { badRequest(response, 'Invalid replyTo') }
-                      else { internalError(response, error) } }
-                    else {
-                      if (prior.private === true) {
-                        badRequest(response, 'Invalid replyTo') }
-                      else {
-                        var sameTarget = (
-                          ( annotation.context === prior.context ) &&
-                          ( annotation.form === prior.form ) )
-                        if (!sameTarget) {
-                          badRequest(response, 'Does not match replyTo') }
-                        else { put() } } } }) }
-                else { put() } } } }) } } }) }
-  else { methodNotAllowed(response) } }
+        var contexts = computeContexts(normalize(displaying))
+        var streams = Object.keys(contexts).map(function(digest) {
+          return function() {
+            return level.createReadStream(
+              { gt: encode([ PREFIX, digest, null ]),
+                lt: encode([ PREFIX, digest, undefined ]) }) } })
+        var first = true
+        response.write('[\n')
+        multistream.obj(streams)
+          .on('data', function(item) {
+            var annotation = JSON.parse(item.value)
+            if (matchesContext(annotation, contexts)) {
+              response.write(( ( first ? '' : ',' ) + item.value + '\n' ))
+              first = false } })
+          .on('error',
+            /* istanbul ignore next */
+            function(error) {
+              log.error(error)
+              response.end('\n]') })
+          .on('end', function() { response.end('\n]') }) } }) } }
 
-  function getAnnotations() {
-     }
+function matchesContext(annotation, contexts) {
+  return (
+    ( annotation.form === annotation.context ) ||
+    ( contexts[annotation.form].indexOf(annotation.context) !== -1 ) ) }
 
+// Produces an object map from digest to an array of parent digests.
+function computeContexts(normalized) {
+  var result = { }
+  // Initialze an empty array property for each digest.
+  Object.keys(normalized)
+    .forEach(function(digest) {
+      if (digest !== 'root') { result[digest] = [ ] } })
+  return recurse(normalized.root, [ ], result)
+  function recurse(digest, parents, result) {
+    // Push every parent's digest to the list of parents.
+    parents.forEach(function(parent) { result[digest].push(parent) })
+    // Iterate children.
+    normalized[digest].content.forEach(function(element) {
+      var isChild = ( ( typeof element === 'object' ) && ( 'digest' in element ) )
+      if (isChild) { recurse(element.digest, parents.concat(digest), result) } })
+    return result } }
