@@ -3,7 +3,7 @@ var parseAuthorization = require('./parse-authorization')
 var isAdministrator = require('./is-administrator')
 
 module.exports = function(handler) {
-  return function(request, response, parameters, log, level) {
+  return function(request, response, parameters, log) {
     var handlerArguments = arguments
     var authorization = request.headers.authorization
     if (authorization) {
@@ -12,6 +12,7 @@ module.exports = function(handler) {
       if (mustLogIn) { unauthorized(response) }
       else {
         if (isAdministrator(log, parsed)) {
+          request.administrator = true
           handler.apply(this, handlerArguments) }
         else { unauthorized(response) } } }
     else { unauthorized(response) } } }

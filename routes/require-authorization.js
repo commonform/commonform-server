@@ -18,7 +18,9 @@ module.exports = function(handler) {
       var mustLogIn = ( parsed === false )
       if (mustLogIn) { unauthorized(response) }
       else {
-        if (isAdministrator(log, parsed)) { allow() }
+        if (isAdministrator(log, parsed)) {
+          request.administrator = true
+          allow() }
         else {
           if (parsed.user !== publisher) { unauthorized(response) }
           else {

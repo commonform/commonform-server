@@ -29,7 +29,9 @@ eachObject('forms/', formsLog, postForm, false, function() {
   var projectsLog = log.child({ type: 'projects' })
   eachObject('projects/', projectsLog, postProject, false, function() {
     projectsLog.info({ event: 'done' })
-    log.info({ event: 'done' }) }) })
+    var annotationsLog = log.child({ type: 'annotations' })
+    eachObject('annotations/', annotationsLog, postAnnotation, false, function() {
+      log.info({ event: 'done' }) }) }) })
 
 var CONCURRENCY = 10
 
@@ -98,6 +100,23 @@ function postProject(record, log, callback) {
         ( '/publishers/' + record.publisher +
           '/projects/' + record.project +
           '/editions/' + record.edition ),
+      port: server.port }
+  log.info({ event: 'posting' })
+  http
+    .request(request, function(response) {
+      var status = response.statusCode
+      if (status === 201) { log.info({ event: 'wrote' }) }
+      else { log.error({ event: 'write error', status: status }) }
+      callback() })
+    .end(JSON.stringify({ digest: record.digest })) }
+
+function postAnnotation(record, log, callback) {
+  var request =
+    { protocol: server.protocol,
+      host: server.hostname,
+      method: 'POST',
+      auth: ( 'administrator:' + password ),
+      path: '/annotations',
       port: server.port }
   log.info({ event: 'posting' })
   http
