@@ -198,7 +198,7 @@ tape('GET /forms/$great_grandchild_of_posted', function(test) {
               response.pipe(concat(function(buffer) {
                 test.same(
                   JSON.parse(buffer), greatgrandchild,
-                  'serves the great granchild form')
+                  'serves the great grandchild form')
                 done() ; test.end() })) }) },
           200) })
       .end(JSON.stringify(parent)) }) })
