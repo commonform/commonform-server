@@ -55,14 +55,11 @@ function postAnnotation(request, response, parameters, log, level, emit) {
                       if (error.notFound) { badRequest(response, 'Invalid replyTo') }
                       else { internalError(response, error) } }
                     else {
-                      if (prior.private === true) {
-                        badRequest(response, 'Invalid replyTo') }
-                      else {
-                        var sameTarget = (
-                          ( annotation.context === prior.context ) &&
-                          ( annotation.form === prior.form ) )
-                        if (!sameTarget) {
-                          badRequest(response, 'Does not match replyTo') }
-                        else { put() } } } }) }
+                      var sameTarget = (
+                        ( annotation.context === prior.context ) &&
+                        ( annotation.form === prior.form ) )
+                      if (!sameTarget) {
+                        badRequest(response, 'Does not match replyTo') }
+                      else { put() } } }) }
                 else { put() } } } }) } } }) }
   else { methodNotAllowed(response) } }

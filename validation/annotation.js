@@ -9,10 +9,9 @@ module.exports = function(argument) {
     has('context', isDigest) &&
     has('publisher', nonemptyString) &&
     has('text', nonemptyString) &&
-    has('private', isBoolean) &&
     has('replyTo', function(value) {
       return ( ( value === null ) || isUUID(value) ) }) &&
-    ( Object.keys(argument).length === 6 ) ) }
+    ( Object.keys(argument).length === 5 ) ) }
 
 function hasProperty(object, key, predicate) {
   return ( object.hasOwnProperty(key) && predicate(object[key]) ) }
