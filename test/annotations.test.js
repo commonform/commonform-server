@@ -181,17 +181,17 @@ tape('GET /annotations?displaying=digest', function(test) {
   Object.keys(forms).forEach(function(key) {
     digests[key] = normalize(forms[key]).root })
   // Annotations
-  var annotations = { }
-  ;[ { form: 'd', context: 'b' },
-     { form: 'd', context: 'x' },
-     { form: 'd', context: 'a' },
-     { form: 'f', context: 'f' },
-     { form: 'a', context: 'a' } ]
-     .forEach(function(element) {
-       var form = element.form
-       var context = element.context
-       var key = ( form.toUpperCase() + 'in' + context.toUpperCase() )
-       annotations[key] =
+  var annotations = { };
+  [ { form: 'd', context: 'b' },
+    { form: 'd', context: 'x' },
+    { form: 'd', context: 'a' },
+    { form: 'f', context: 'f' },
+    { form: 'a', context: 'a' } ]
+    .forEach(function(element) {
+      var form = element.form
+      var context = element.context
+      var key = ( form.toUpperCase() + 'in' + context.toUpperCase() )
+      annotations[key] =
         { publisher: publisher,
           form: digests[form],
           context: digests[context],
@@ -239,7 +239,7 @@ tape('GET /annotations?displaying=digest', function(test) {
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })
 
-tape('GET /annotations?displaying=digest', function(test) {
+tape('GET /annotations?displaying=digest&form=digest', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
   // Forms
@@ -266,17 +266,17 @@ tape('GET /annotations?displaying=digest', function(test) {
   Object.keys(forms).forEach(function(key) {
     digests[key] = normalize(forms[key]).root })
   // Annotations
-  var annotations = { }
-  ;[ { form: 'd', context: 'b' },
-     { form: 'd', context: 'x' },
-     { form: 'd', context: 'a' },
-     { form: 'f', context: 'f' },
-     { form: 'a', context: 'a' } ]
-     .forEach(function(element) {
-       var form = element.form
-       var context = element.context
-       var key = ( form.toUpperCase() + 'in' + context.toUpperCase() )
-       annotations[key] =
+  var annotations = { };
+  [ { form: 'd', context: 'b' },
+    { form: 'd', context: 'x' },
+    { form: 'd', context: 'a' },
+    { form: 'f', context: 'f' },
+    { form: 'a', context: 'a' } ]
+    .forEach(function(element) {
+      var form = element.form
+      var context = element.context
+      var key = ( form.toUpperCase() + 'in' + context.toUpperCase() )
+      annotations[key] =
         { publisher: publisher,
           form: digests[form],
           context: digests[context],
@@ -296,11 +296,12 @@ tape('GET /annotations?displaying=digest', function(test) {
             { port: port,
               path:
                 ( '/annotations' +
-                  '?' + 'displaying=' + digests.a ) },
+                  '?' + 'displaying=' + digests.a +
+                  '&' + 'form=' + digests.b ) },
             function(response) {
               test.equal(response.statusCode, 200, 'GET 200')
               concat(test, response, function(body) {
-                test.equal(body.length, 4, 'serves annotations')
+                test.equal(body.length, 2, 'serves annotations')
                 test.assert(
                   body.some(function(element) {
                     return ( element.text === annotations.DinB.text ) }),
@@ -312,14 +313,14 @@ tape('GET /annotations?displaying=digest', function(test) {
                 test.assert(
                   body.some(function(element) {
                     return ( element.text === annotations.DinA.text ) }),
-                  'serves annotation of D in A')
+                  'does not serve annotation of D in A')
                 test.assert(
-                  body.some(function(element) {
+                  !body.some(function(element) {
                     return ( element.text === annotations.FinF.text ) }),
-                  'serves annotation of F in F')
+                  'does not serve annotation of F in F')
                 test.assert(
-                  body.some(function(element) {
+                  !body.some(function(element) {
                     return ( element.text === annotations.AinA.text ) }),
-                  'serves annotation of A in A')
+                  'does not serve annotation of A in A')
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })

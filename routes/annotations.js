@@ -19,6 +19,7 @@ module.exports = function(request, response) {
 function getAnnotations(request, response, parameters, log, level) {
   var query = url.parse(request.url, true).query
   var hasDisplaying = ( ( 'displaying' in query ) && isDigest(query.displaying) )
+  var hasForm = ( ( 'form' in query ) && isDigest(query.form) )
   if (!hasDisplaying) { badRequest(response, 'Must specify displaying') }
   else {
     getForm(level, query.displaying, function(error, displaying) {
@@ -29,14 +30,26 @@ function getAnnotations(request, response, parameters, log, level) {
         else { internalError(response, error) } }
       else {
         var contexts = computeContexts(normalize(displaying))
-        var streams = Object.keys(contexts).map(function(digest) {
-          return function() {
-            return level.createReadStream(
-              { gt: encode([ PREFIX, digest, null ]),
-                lt: encode([ PREFIX, digest, undefined ]) }) } })
+        if (hasForm) {
+          if (query.form in contexts) {
+            send(
+              multistream.obj(
+                Object.keys(contexts)
+                  .filter(function(digest) {
+                    return (
+                      // The form is query.form itself.
+                      ( digest === query.form ) ||
+                      // The form is a child of query.form.
+                      ( contexts[digest].indexOf(query.form) !== -1 ) ) })
+                  .map(annotationsStream))) }
+          else {
+            badRequest(response, ( query.form + ' not in ' + query.displaying )) } }
+        else {
+          send(multistream.obj(Object.keys(contexts).map(annotationsStream))) } }
+      function send(stream) {
         var first = true
         response.write('[\n')
-        multistream.obj(streams)
+        stream
           .on('data', function(item) {
             var annotation = JSON.parse(item.value)
             if (matchesContext(annotation, contexts)) {
@@ -47,7 +60,11 @@ function getAnnotations(request, response, parameters, log, level) {
             function(error) {
               log.error(error)
               response.end('\n]') })
-          .on('end', function() { response.end('\n]') }) } }) } }
+          .on('end', function() { response.end('\n]') }) } }) }
+  function annotationsStream(digest) {
+    return level.createReadStream(
+      { gt: encode([ PREFIX, digest, null ]),
+        lt: encode([ PREFIX, digest, undefined ]) }) } }
 
 function matchesContext(annotation, contexts) {
   return (
