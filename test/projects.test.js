@@ -515,14 +515,15 @@ tape('PUT /publishers/$publisher/projects/$project/editions/$edition/form', func
       .end() }) })
 
 tape('GET /forms/$form/projects', function(test) {
-  var project = 'nda'
-  var edition = '1e'
   var form = { content: [ 'A test form' ] }
   var digest = normalize(form).root
   server(function(port, done) {
     series(
       [ postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
+        postProject('ana', 'ana\'s password', port, 'nda', '1e1d', digest, test),
+        postProject('ana', 'ana\'s password', port, 'nda', '1e', digest, test),
+        postProject('ana', 'ana\'s password', port, 'nondisclosure', '1e', digest, test),
+        postProject('bob', 'bob\'s password', port, 'conf', '3e', digest, test),
         function getProjects(done) {
           http.get(
             { port: port,
@@ -532,9 +533,22 @@ tape('GET /forms/$form/projects', function(test) {
                 var responseBody = JSON.parse(buffer)
                 test.same(
                   responseBody,
-                  [ { publisher: PUBLISHER,
-                      project: project,
-                      edition: edition,
+                  [ { publisher: 'ana',
+                      project: 'nda',
+                      edition: '1e1d',
+                      root: true, digest: digest },
+                    { publisher: 'ana',
+                      project: 'nda',
+                      edition: '1e',
+                      root: true, digest: digest },
+                    { publisher: 'ana',
+                      project: 'nondisclosure',
+                      edition: '1e',
+                      root: true,
+                      digest: digest },
+                    { publisher: 'bob',
+                      project: 'conf',
+                      edition: '3e',
                       root: true,
                       digest: digest } ],
                   'GET projects JSON')
