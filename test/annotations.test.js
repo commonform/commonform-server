@@ -26,6 +26,43 @@ tape('POST /annotations', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with form not in context', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var a = { content: [ 'A form' ] }
+  var aDigest = normalize(a).root
+  var b = { content: [ 'Another form' ] }
+  var bDigest = normalize(b).root
+  var annotation = {
+    publisher: publisher,
+    form: aDigest,
+    context: bDigest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, a, test),
+        postForm(port, b, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              auth: ( publisher + ':' + password ),
+              path: ( '/publishers/' + publisher + '/annotations' ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 400)
+              var buffer = [ ]
+              response
+                .on('data', function(chunk) { buffer.push(chunk) })
+                .on('end', function() {
+                  var body = Buffer.concat(buffer).toString()
+                  test.equal(
+                    body, 'Form not in context',
+                    'form not in context')
+                  done() }) })
+            .end(JSON.stringify(annotation)) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /annotations with reply', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
@@ -258,4 +295,39 @@ tape('GET /annotations?context=digest&form=digest', function(test) {
                     return ( element.text === annotations.AinA.text ) }),
                   'does not serve annotation of A in A')
                 done() }) }) } ],
+      function() { done() ; test.end() }) }) })
+
+tape('GET /annotations?context=digest&form=not_in_context', function(test) {
+  // Forms
+  var forms = { }
+  forms.a = { content: [ 'This is A' ] }
+  forms.b = { content: [ 'This is B' ] }
+  // Digests
+  var digests = { }
+  Object.keys(forms).forEach(function(key) {
+    digests[key] = normalize(forms[key]).root })
+  // Annotations
+  server(function(port, done) {
+    series(
+      [ postForm(port, forms.a, test),
+        postForm(port, forms.b, test),
+        function(done) {
+          http.get(
+            { port: port,
+              path:
+                ( '/annotations' +
+                  '?' + 'context=' + digests.a +
+                  '&' + 'form=' + digests.b ) },
+            function(response) {
+              test.equal(response.statusCode, 400, 'GET 400')
+              var buffer = [ ]
+              response
+                .on('data', function(chunk) {
+                  buffer.push(chunk) })
+                .on('end', function() {
+                  var body = Buffer.concat(buffer).toString()
+                  test.equal(
+                    body, ( digests.b + ' not in ' + digests.a ),
+                    'form not in context')
+                  done() }) }) } ],
       function() { done() ; test.end() }) }) })
