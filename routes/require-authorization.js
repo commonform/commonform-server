@@ -2,7 +2,7 @@ var checkPassword = require('./check-password')
 var forbidden = require('./responses/forbidden')
 var internalError = require('./responses/internal-error')
 var isAdministrator = require('./is-administrator')
-var parseAuthorization = require('./parse-authorization')
+var parseAuthorization = require('basic-auth')
 var unauthorized = require('./responses/unauthorized')
 
 module.exports = function(handler) {
@@ -10,24 +10,20 @@ module.exports = function(handler) {
     var handlerArguments = arguments
     function allow() { handler.apply(this, handlerArguments) }
     var publisher = parameters.publisher
-    var authorization = request.headers.authorization
-    if (authorization) {
-      var parsed = parseAuthorization(authorization)
-      var mustLogIn = ( parsed === false )
-      if (mustLogIn) { unauthorized(response) }
+    var parsed = parseAuthorization(request)
+    if (parsed === undefined) { unauthorized(response) }
+    else {
+      if (isAdministrator(log, parsed)) {
+        request.publisher = 'administrator'
+        allow() }
       else {
-        if (isAdministrator(log, parsed)) {
-          request.publisher = 'administrator'
-          allow() }
+        if (parsed.name !== publisher) { forbidden(response) }
         else {
-          if (parsed.user !== publisher) { forbidden(response) }
-          else {
-            checkPassword(
-              level, publisher, parsed.password, response,
-              function(error, valid) {
-                /* istanbul ignore if */
-                if (error) { internalError(response, error) }
-                else {
-                  if (valid) { allow() }
-                  else { unauthorized(response) } } }) } } } }
-    else { unauthorized(response) } } }
+          checkPassword(
+            level, publisher, parsed.pass, response,
+            function(error, valid) {
+              /* istanbul ignore if */
+              if (error) { internalError(response, error) }
+              else {
+                if (valid) { allow() }
+                else { unauthorized(response) } } }) } } } } }

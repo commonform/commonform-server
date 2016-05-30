@@ -6,10 +6,10 @@ module.exports = function(log, credentials) {
     log.warn({ event: 'admin attempt' })
     return false }
   else {
-    if (credentials.user !== 'administrator') {
+    if (credentials.name !== 'administrator') {
       return false }
     else {
-      if (credentials.password === PASSWORD) {
+      if (credentials.pass === PASSWORD) {
         return true }
       else {
         log.warn({ event: 'invalid admin password' })

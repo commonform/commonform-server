@@ -279,7 +279,24 @@ tape('POST /publishers/:name with bad Authorization', function(test) {
       { method: 'POST',
         port: port,
         path: '/publishers/charlie',
-        headers: { authorization: 'blah' } })
+        headers: { Authorization: 'blah' } })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 401, 'POST 401')
+          done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
+tape('PUT /publishers/:name with bad Authorization', function(test) {
+  var body =
+    { email: 'ana@example.com',
+      about: 'More about',
+      notifications: false,
+      password: 'evil mastdon hoary cup' }
+  server(function(port, done) {
+    http.request(
+      { method: 'PUT',
+        port: port,
+        path: '/publishers/ana',
+        headers: { Authorization: 'blah' } })
       .on('response', function(response) {
           test.equal(response.statusCode, 401, 'POST 401')
           done() ; test.end() })

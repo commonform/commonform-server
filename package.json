@@ -11,6 +11,7 @@
     "async-series": "0.0.1",
     "async.queue": "^0.5.2",
     "aws-sdk": "^2.3.14",
+    "basic-auth": "^1.0.4",
     "bcrypt-password": "^1.0.2",
     "bytewise": "^1.1.0",
     "commonform-normalize": "^0.5.2",
