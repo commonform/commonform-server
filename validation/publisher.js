@@ -3,6 +3,7 @@ var isEMail = require('email-validator').validate
 var requiredKeys = [ 'name', 'notifications', 'about', 'email', 'password' ]
 
 module.exports = function(argument) {
+  /* istanbul ignore if */
   if (typeof argument !== 'object') {
     return false }
   var keys = Object.keys(argument)
