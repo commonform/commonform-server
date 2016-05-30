@@ -1,9 +1,9 @@
 var concat = require('concat-stream')
 var http = require('http')
+var makeInfiniteStream = require('./infinite-stream')
 var normalize = require('commonform-normalize')
 var server = require('./server')
 var tape = require('tape')
-var makeInfiniteStream = require('./infinite-stream')
 
 tape('POST /forms with invalid JSON', function(test) {
   server(function(port, done) {
@@ -31,6 +31,20 @@ tape('POST /forms with form', function(test) {
           'sets location header')
           done() ; test.end() })
       .end(JSON.stringify(form)) }) })
+
+tape('POST /forms with oversized request body', function(test) {
+  server(function(port, done) {
+    var body = Buffer.alloc(256001, 'a', 'ascii')
+    var options =
+      { method: 'POST',
+        path: '/forms',
+        port: port,
+        headers: { 'Content-Length': Buffer.byteLength(body) } }
+    http.request(options)
+      .on('response', function(response) {
+        test.equal(response.statusCode, 413, 'responds 413')
+        done() ; test.end() })
+      .end(body) }) })
 
 tape('POST /forms with infinite request body', function(test) {
   server(function(port, done) {
