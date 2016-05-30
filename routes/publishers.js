@@ -1,6 +1,7 @@
 var badRequest = require('./responses/bad-request')
 var bcrypt = require('bcrypt-password')
 var internalError = require('./responses/internal-error')
+var isEMail = require('email-validator').validate
 var listNamespace = require('./list-namespace')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -30,9 +31,18 @@ module.exports = function(request, response) {
 function postPublisher(request, response, parameters, log, level, emit) {
   readJSONBody(request, response, function(json) {
     var valid = (
+      // Name
       json.hasOwnProperty('name') && isString(json.name) &&
-      ( json.hasOwnProperty('password') && isString(json.password) ||
-        json.hasOwnProperty('hash') && isString(json.hash) ) )
+      // E-Mail
+      ( json.name === 'administrator' ||
+        ( json.hasOwnProperty('email') && isEMail(json.email) ) ) &&
+      // Notifications preference
+      ( !json.hasOwnProperty('notifications') ||
+        ( json.notifications === true ) ||
+        ( json.notifications === false ) ) &&
+      // Password
+      ( ( json.hasOwnProperty('password') && isString(json.password) ) ||
+        ( json.hasOwnProperty('hash') && isString(json.hash) ) ) )
     if (!valid) { badRequest(response, 'invalid publisher') }
     else {
       var name = json.name
@@ -45,6 +55,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
         badRequest(response, 'invalid password') }
       else {
         var key = publisherKeyFor(name)
+        // TODO Check existence
         var unlock = lock(level, key, 'w')
         /* istanbul ignore if */
         if (!unlock) {

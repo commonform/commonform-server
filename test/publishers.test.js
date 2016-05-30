@@ -27,7 +27,10 @@ tape('GET /publishers/$publisher/projects/$project/editions/$existing', function
       function() { done() ; test.end() }) }) })
 
 tape('POST /publishers without credentials', function(test) {
-  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var body =
+    { name: 'bob',
+      email: 'bob@example.com',
+      password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request({ method: 'POST', port: port, path: '/publishers' })
       .on('response', function(response) {
@@ -36,7 +39,10 @@ tape('POST /publishers without credentials', function(test) {
       .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers with bad credentials', function(test) {
-  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var body =
+    { name: 'bob',
+      email: 'bob@example.com',
+      password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = 'incorrect password'
   server(function(port, done) {
@@ -51,7 +57,10 @@ tape('POST /publishers with bad credentials', function(test) {
       .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers with password', function(test) {
-  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var body =
+    { name: 'bob',
+      email: 'bob@example.com',
+      password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
@@ -69,7 +78,10 @@ tape('POST /publishers with password', function(test) {
       .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers with bad Authorization', function(test) {
-  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var body =
+    { name: 'bob',
+      email: 'bob@example.com',
+      password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
       { method: 'POST',
@@ -84,6 +96,7 @@ tape('POST /publishers with bad Authorization', function(test) {
 tape('POST /publishers with hashed password', function(test) {
   var body =
     { name: 'bob',
+      email: 'bob@example.com',
       hash: '$2a$10$IGrb1Nzx/EkeTN07QF7HGeS/yl2gWbKrG9Lx0zDgqI71gI2EO4Cdy' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -103,7 +116,58 @@ tape('POST /publishers with hashed password', function(test) {
 
 tape('POST /publishers without password', function(test) {
   test.plan(2)
-  var body = { name: 'bob' }
+  var body = { name: 'bob', email: 'bob@example.com' }
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: '/publishers' })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 400, 'POST 400')
+          var buffer = [ ]
+          response
+            .on('data', function(chunk) {
+              buffer.push(chunk) })
+            .on('end', function() {
+              test.equal(
+                Buffer.concat(buffer).toString(), 'invalid publisher',
+                'responds "invalid publisher"')
+              done() ; test.end() }) })
+      .end(JSON.stringify(body)) }) })
+
+tape('POST /publishers without e-mail', function(test) {
+  test.plan(2)
+  var body = { name: 'bob', password: 'evil mastdon hoary cup' }
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: '/publishers' })
+      .on('response', function(response) {
+          test.equal(response.statusCode, 400, 'POST 400')
+          var buffer = [ ]
+          response
+            .on('data', function(chunk) {
+              buffer.push(chunk) })
+            .on('end', function() {
+              test.equal(
+                Buffer.concat(buffer).toString(), 'invalid publisher',
+                'responds "invalid publisher"')
+              done() ; test.end() }) })
+      .end(JSON.stringify(body)) }) })
+
+tape('POST /publishers with bad e-mail', function(test) {
+  test.plan(2)
+  var body =
+    { name: 'bob',
+      email: 'bob',
+      password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
@@ -126,7 +190,10 @@ tape('POST /publishers without password', function(test) {
       .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers with insecure password', function(test) {
-  var body = { name: 'bob', password: 'password' }
+  var body =
+    { name: 'bob',
+      email: 'bob@example.com',
+      password: 'password' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
