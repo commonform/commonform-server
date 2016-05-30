@@ -102,20 +102,20 @@ function postPublisher(request, response, parameters, log, level, emit) {
       var name = json.name
       var key = publisherKeyFor(name)
       var unlock = lock(level, key, 'w')
-      exists(level, key, function(error, exists) {
-        /* istanbul ignore if */
-        if (error) {
-          unlock()
-          internalError(response, error) }
-        else {
-          if (exists) {
+      /* istanbul ignore if */
+      if (!unlock) {
+        unlock()
+        conflict(response, new Error('locked')) }
+      else {
+        exists(level, key, function(error, exists) {
+          /* istanbul ignore if */
+          if (error) {
             unlock()
-            conflict(response) }
+            internalError(response, error) }
           else {
-            /* istanbul ignore if */
-            if (!unlock) {
+            if (exists) {
               unlock()
-              conflict(response, new Error('locked')) }
+              conflict(response) }
             else {
               if (alreadyHashed) { store(unlock, name, key, json) }
               else {
@@ -126,7 +126,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
                     internalError(response, error) }
                   else {
                     json.password = hash
-                    store(unlock, name, key, json) } }) } } } } }) } })
+                    store(unlock, name, key, json) } }) } } } }) } } })
   function store(unlock, name, key, data) {
     var value = JSON.stringify({ version: VERSION, publisher: data })
     var put = level.put.bind(level, key, value)
