@@ -50,7 +50,8 @@ function postAnnotation(request, response, parameters, log, level, emit) {
                 badRequest(response, 'Form not in context') }
               else {
                 if (annotation.replyTo) {
-                  getAnnotation(level, annotation.replyTo, function(error, prior) {
+                  getAnnotation(level, annotation.replyTo, function(error, stored) {
+                    var prior = JSON.parse(stored).annotation
                     if (error) {
                       if (error.notFound) { badRequest(response, 'Invalid replyTo') }
                       else { internalError(response, error) } }

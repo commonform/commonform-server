@@ -26,6 +26,37 @@ tape('POST /annotations', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with reply', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var child = { content: [ 'The child' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ { form: child } ] }
+  var parentDigest = normalize(parent).root
+  var annotation = {
+    publisher: publisher,
+    form: childDigest,
+    context: parentDigest,
+    replyTo: null,
+    text: 'Not good' }
+  var reply
+  server(function(port, done) {
+    series(
+      [ postForm(port, parent, test),
+        function(done) {
+          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          function withLocation(error, location) {
+            reply =
+              { publisher: publisher,
+                form: childDigest,
+                context: parentDigest,
+                replyTo: location.replace('/annotations/', ''),
+                text: 'On second thought...' }
+            done() } },
+        function(done) {
+          postAnnotation(publisher, password, port, reply, test)(done) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('GET /annotation/:uuid', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'

@@ -9,6 +9,7 @@ module.exports = function(publisher, password, port, annotation, test) {
         port: port,
         auth: ( publisher + ':' + password ) })
       .on('response', function(response) {
+        response.pipe(process.stdout)
         test.equal(response.statusCode, 201, 'POST annotation')
         if (callback) { callback(null, response.headers.location) } })
       .end(JSON.stringify(annotation)) } }
