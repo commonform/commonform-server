@@ -121,7 +121,7 @@ tape('POST /publishers/$publisher/projects/$project/editions/$edition with bad b
           test.end() })) })
       .end(JSON.stringify({})) }) })
 
-tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', function(test) {
+tape('POST /publishers/$publisher/projects/$invalid-project/editions/$edition', function(test) {
   test.plan(2)
   var publisher = 'ana'
   var password = 'ana\'s password'
