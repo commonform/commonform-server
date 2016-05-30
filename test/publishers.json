@@ -1,11 +1,15 @@
 [
   {
     "name": "ana",
+    "notifications": false,
+    "about": "",
     "email": "ana@example.com",
     "password": "$2a$10$Rh2hKL.XnUlvSV6mMFeCruCoq1D.MxhAfTL5eSGb9Kv9Hoa83EUZG"
   },
   {
     "name": "bob",
+    "notifications": false,
+    "about": "",
     "email": "bob@example.com",
     "password": "$2a$10$ac6MFvJ20UPt2jy7G8E8J.OIqXX7Cis0fwTo.4u2yRsf3vxQ9v.oO"
   }

@@ -9,6 +9,7 @@ var notFound = require('./responses/not-found')
 var publisherKeyFor = require('../keys/publisher')
 var readJSONBody = require('./read-json-body')
 var requireAdministrator = require('./require-administrator')
+var requireAuthorization = require('./require-authorization')
 var sendJSON = require('./responses/send-json')
 var thrice = require('../thrice')
 var validPublisher = require('../validation/publisher')
@@ -21,6 +22,8 @@ module.exports = function(request, response) {
     getPublisher.apply(this, arguments) }
   else if(request.method === 'POST') {
     requireAdministrator(postPublisher).apply(this, arguments) }
+  else if(request.method === 'PUT') {
+    requireAuthorization(putPublisher).apply(this, arguments) }
   else { methodNotAllowed(response) } }
 
 function getPublisher(request, response, parameters, log, level) {
@@ -37,6 +40,50 @@ function getPublisher(request, response, parameters, log, level) {
       if (stored.hasOwnProperty('about')) {
         json.about = stored.about }
       sendJSON(response, json) } }) }
+
+function putPublisher(request, response, parameters, log, level, emit) {
+  var publisher = parameters.publisher
+  readJSONBody(request, response, function(json) {
+    json.name = publisher
+    if (!validPublisher(json)) { badRequest(response, 'invalid publisher') }
+    else if (!validPassword(json.password)) {
+      badRequest(response, 'invalid password') }
+    else {
+      var name = json.name
+      var key = publisherKeyFor(name)
+      var unlock = lock(level, key, 'w')
+      /* istanbul ignore if */
+      if (!unlock) { conflict(response) }
+      else {
+        exists(level, key, function(error, exists) {
+          /* istanbul ignore if */
+          if (error) {
+            unlock()
+            internalError(response, error) }
+          else {
+            if (!exists) {
+              unlock()
+              notFound(response) }
+            else {
+              bcrypt.hash(json.password, function(error, hash) {
+                /* istanbul ignore if */
+                if (error) {
+                  unlock()
+                  internalError(response, error) }
+                else {
+                  json.password = hash
+                  store(unlock, name, key, json) } }) } } }) } } })
+  function store(unlock, name, key, data) {
+    var value = JSON.stringify({ version: VERSION, publisher: data })
+    var put = level.put.bind(level, key, value)
+    thrice(put, function(error) {
+      unlock()
+      /* istanbul ignore if */
+      if (error) { internalError(response, error) }
+      else {
+        response.statusCode = 204
+        response.end()
+        emit('publisher', name) } }) } }
 
 function postPublisher(request, response, parameters, log, level, emit) {
   var publisher = parameters.publisher

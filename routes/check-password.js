@@ -13,5 +13,5 @@ module.exports = function(level, publisher, password, response, callback) {
       if (error.notFound) { callback(null, false) }
       else { callback(error) } }
     else {
-      var object = JSON.parse(value)
+      var object = JSON.parse(value).publisher
       bcrypt.check(password, object.password, callback) } } }

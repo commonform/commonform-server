@@ -29,7 +29,9 @@ module.exports = function(callback, port) {
     return (
       { type: 'put',
         key: publisherKeyFor(publisher.name),
-        value: JSON.stringify({ password: publisher.password }) } ) })
+        value: JSON.stringify(
+          { version: 'test',
+            publisher: publisher }) }) })
   level.batch(batch, function(error) {
     if (error) {
       process.stderr.write('Error writing test publishers')

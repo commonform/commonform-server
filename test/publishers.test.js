@@ -158,6 +158,35 @@ tape('POST /publishers/:name for existing', function(test) {
         done() ; test.end() })
       .end(JSON.stringify(body)) }) })
 
+tape('PUT /publishers/:name to update', function(test) {
+  var user = 'ana'
+  var password = 'ana\'s password'
+  var newPassword = 'evil mastodon hoary cup'
+  var body =
+    { email: 'different@example.com',
+      about: 'Ana the test publisher',
+      notifications: false,
+      password: newPassword }
+  var form = { content: [ 'Just a test form' ] }
+  var digest = normalize(form).root
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        // Change password.
+        function(done) {
+          http.request(
+            { auth: ( user + ':' + password ),
+              method: 'PUT',
+              port: port,
+              path: '/publishers/ana' })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, 'PUT 204')
+              done() })
+            .end(JSON.stringify(body)) },
+        // Use updated password to post a project.
+        postProject('ana', newPassword, port, 'y', '1e', digest, test) ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /publishers/:name with bad Authorization', function(test) {
   var body =
     { email: 'charlie@example.com',
