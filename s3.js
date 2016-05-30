@@ -1,9 +1,12 @@
 var env = process.env
+/* istanbul ignore next */
 var haveCredentials =
   ( env.hasOwnProperty('AWS_ACCESS_KEY_ID') &&
     env.hasOwnProperty('AWS_SECRET_ACCESS_KEY') &&
     env.hasOwnProperty('AWS_REGION') &&
     env.hasOwnProperty('AWS_S3_BUCKET') )
+
+/* istanbul ignore else */
 if (!haveCredentials) {
   module.exports = false }
 else {
