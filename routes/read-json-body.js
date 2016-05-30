@@ -52,6 +52,7 @@ module.exports = function(request, response, callback) {
           parseJSON(Buffer.concat(buffer), function(error, object) {
             finish()
             if (error) { badRequest(response, 'invalid JSON') }
+            else if (object === null) { badRequest(response, 'null body') }
             else { callback(object) } }) } } } }
   function finish() {
     /* istanbul ignore else */

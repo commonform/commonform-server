@@ -64,6 +64,20 @@ tape('POST /publishers/:name with password', function(test) {
         done() ; test.end() })
       .end(JSON.stringify(body)) }) })
 
+tape('POST /publishers/:name with null', function(test) {
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'POST',
+        port: port,
+        path: '/publishers/charlie' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 400, 'POST 400')
+        done() ; test.end() })
+      .end('null') }) })
+
 tape('GET /publishers/:name for existing', function(test) {
   var body =
     { email: 'charlie@example.com',
