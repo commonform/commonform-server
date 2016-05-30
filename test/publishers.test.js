@@ -329,8 +329,8 @@ tape('POST /publishers/:name with insecure password', function(test) {
               test.same(
                 Buffer.concat(buffer).toString(),
                 'invalid password',
-                'serves "invalid password"') })
-          done() ; test.end() })
+                'serves "invalid password"')
+              done() ; test.end() }) })
       .end(JSON.stringify(body)) }) })
 
 tape('GET /publishers', function(test) {
