@@ -35,9 +35,6 @@ function postEdition(request, response, parameters, log, level, emit) {
   var parsedEdition = parseEdition(edition)
   if (parsedEdition === false) {
     badRequest(response, 'invalid edition') }
-  /* istanbul ignore next */
-  else if (!validPublisher(publisher)) {
-    badRequest(response, 'invalid publisher name') }
   else if (!validProject(project)) {
     badRequest(response, 'invalid project name') }
   else {
@@ -51,6 +48,7 @@ function postEdition(request, response, parameters, log, level, emit) {
           var formKey = formKeyFor(digest)
           var value = JSON.stringify({ version: VERSION, digest: digest })
           var unlock = lock(level, editionKey, 'w')
+          /* istanbul ignore if */
           if (!unlock) { conflict(response) }
           else {
             exists(level, formKey, function(error, formExists) {
