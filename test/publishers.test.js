@@ -81,7 +81,7 @@ tape('POST /publishers/:name with null', function(test) {
 tape('GET /publishers/:name for existing', function(test) {
   var body =
     { email: 'charlie@example.com',
-      about: '',
+      about: 'A test publisher',
       notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
@@ -108,8 +108,8 @@ tape('GET /publishers/:name for existing', function(test) {
                 body.publisher, 'charlie',
                 'serves name')
               test.equal(
-                body.email, body.email,
-                'serves name')
+                body.about, body.about,
+                'serves about')
               test.assert(
                 !body.hasOwnProperty('email'),
                 'does not serve e-mail')
@@ -186,6 +186,68 @@ tape('PUT /publishers/:name to update', function(test) {
         // Use updated password to post a project.
         postProject('ana', newPassword, port, 'y', '1e', digest, test) ],
       function() { done() ; test.end() }) }) })
+
+tape('PUT /publishers/:nonexistent', function(test) {
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  var body =
+    { email: 'charlie@example.com',
+      about: 'Charlie the test publisher',
+      notifications: false,
+      password: 'evil mastdon hoary cup' }
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'PUT',
+        port: port,
+        path: '/publishers/charlie' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 404, 'PUT 404')
+        done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
+tape('PUT /publishers/:name with bad body', function(test) {
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  var body = { invalid: 'nonsense' }
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'PUT',
+        port: port,
+        path: '/publishers/ana' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 400, 'PUT 400')
+        done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
+tape('PUT /publishers/:name with weak password', function(test) {
+  var user = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  var body =
+    { email: 'charlie@example.com',
+      about: 'Charlie the test publisher',
+      notifications: false,
+      password: '1234' }
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'PUT',
+        port: port,
+        path: '/publishers/ana' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 400, 'PUT 400')
+        var buffer = [ ]
+        response
+          .on('data', function(chunk) {
+            buffer.push(chunk) })
+          .on('end', function() {
+            test.same(
+              Buffer.concat(buffer).toString(),
+              'invalid password',
+              'serves "invalid password"')
+            done() ; test.end() }) })
+      .end(JSON.stringify(body)) }) })
 
 tape('POST /publishers/:name with bad Authorization', function(test) {
   var body =

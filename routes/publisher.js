@@ -37,6 +37,7 @@ function getPublisher(request, response, parameters, log, level) {
     else {
       stored = JSON.parse(stored).publisher
       var json = { publisher: publisher }
+      /* istanbul ignore else */
       if (stored.hasOwnProperty('about')) {
         json.about = stored.about }
       sendJSON(response, json) } }) }
