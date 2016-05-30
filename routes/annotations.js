@@ -23,12 +23,12 @@ function getAnnotations(request, response, parameters, log, level) {
   if (!hasContext) { badRequest(response, 'Must specify context') }
   else {
     getForm(level, query.context, function(error, context) {
-      context = JSON.parse(context).form
       if (error) {
         /* istanbul ignore else */
         if (error.notFound) { badRequest(response, 'Unknown form') }
         else { internalError(response, error) } }
       else {
+        context = JSON.parse(context).form
         var contexts = computeContexts(normalize(context))
         if (hasForm) {
           if (query.form in contexts) {

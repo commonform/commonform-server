@@ -126,6 +126,26 @@ tape('GET /annotation/:uuid', function(test) {
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })
 
+tape('GET /annotations without query', function(test) {
+  server(function(port, done) {
+    http.get(
+      { port: port,
+        path: '/annotations' },
+      function(response) {
+        test.equal(response.statusCode, 400, 'GET 400')
+        done() ; test.end() }) }) })
+
+tape('DELETE /annotations', function(test) {
+  server(function(port, done) {
+    http.request(
+      { method: 'DELETE',
+        port: port,
+        path: '/annotations' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 405, 'DELETE 405')
+        done() ; test.end() })
+      .end() }) })
+
 tape('GET /annotations?context=digest', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
@@ -331,3 +351,20 @@ tape('GET /annotations?context=digest&form=not_in_context', function(test) {
                     'form not in context')
                   done() }) }) } ],
       function() { done() ; test.end() }) }) })
+
+tape('GET /annotations?context=nonexistent', function(test) {
+  server(function(port, done) {
+    var digest = 'a'.repeat(64)
+    http.get(
+      { port: port,
+        path: ( '/annotations?context=' + digest ) },
+      function(response) {
+        test.equal(response.statusCode, 400, 'GET 400')
+        var buffer = [ ]
+        response
+          .on('data', function(chunk) {
+            buffer.push(chunk) })
+          .on('end', function() {
+            var body = Buffer.concat(buffer).toString()
+            test.equal(body, 'Unknown form', 'unknown form')
+            done() ; test.end() }) }) }) })
