@@ -1,3 +1,4 @@
+// TODO retry existence checks
 module.exports = function(level, key, callback) {
   level.get(key, function(error) {
     if (error) {
