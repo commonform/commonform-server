@@ -1,6 +1,7 @@
+var checkPassword = require('./check-password')
+var forbidden = require('./responses/forbidden')
 var internalError = require('./responses/internal-error')
 var isAdministrator = require('./is-administrator')
-var checkPassword = require('./check-password')
 var parseAuthorization = require('./parse-authorization')
 var unauthorized = require('./responses/unauthorized')
 
@@ -19,7 +20,7 @@ module.exports = function(handler) {
           request.publisher = 'administrator'
           allow() }
         else {
-          if (parsed.user !== publisher) { unauthorized(response) }
+          if (parsed.user !== publisher) { forbidden(response) }
           else {
             checkPassword(
               level, publisher, parsed.password, response,

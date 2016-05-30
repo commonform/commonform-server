@@ -52,7 +52,7 @@ tape('POST /publishers/$other-publisher/projects/$project/editions/$edition', fu
         port: port,
         path: path })
       .on('response', function(response) {
-        test.equal(response.statusCode, 401, '401')
+        test.equal(response.statusCode, 403, '403')
         done()
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
@@ -73,10 +73,11 @@ tape('POST /publishers/$other-publisher/projects/$project/editions/$edition', fu
         port: port,
         path: path })
       .on('response', function(response) {
-        test.equal(response.statusCode, 401, '401')
+        test.equal(response.statusCode, 403, '403')
         done()
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
+
 tape('POST /publishers/publisher/projects/$project/editions/$edition for unknown publisher', function(test) {
   var publisher = 'charlie'
   var password = 'charlie\'s password'

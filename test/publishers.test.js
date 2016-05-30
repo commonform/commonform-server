@@ -187,6 +187,25 @@ tape('PUT /publishers/:name to update', function(test) {
         postProject('ana', newPassword, port, 'y', '1e', digest, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('PUT /publishers/:name by another publisher', function(test) {
+  var user = 'bob'
+  var password = 'bob\'s password'
+  var body =
+    { email: 'different@example.com',
+      about: 'Ana the test publisher',
+      notifications: false,
+      password: 'evil mastdon hoary cup' }
+  server(function(port, done) {
+    http.request(
+      { auth: ( user + ':' + password ),
+        method: 'PUT',
+        port: port,
+        path: '/publishers/ana' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 403, 'PUT 403')
+        done() ; test.end() })
+      .end(JSON.stringify(body)) }) })
+
 tape('PUT /publishers/:nonexistent', function(test) {
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
