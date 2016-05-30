@@ -57,6 +57,26 @@ tape('POST /publishers/$other-publisher/projects/$project/editions/$edition', fu
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
+tape('POST /publishers/$other-publisher/projects/$project/editions/$edition', function(test) {
+  var otherPublisher = 'bob'
+  var project = 'nda'
+  var edition = '1e'
+  var digest = 'a'.repeat(64)
+  var path =
+    ( '/publishers/' + otherPublisher +
+      '/projects/' + project +
+      '/editions/' + edition )
+  server(function(port, done) {
+    http.request(
+      { auth: ( PUBLISHER + ':' + PASSWORD ),
+        method: 'POST',
+        port: port,
+        path: path })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 401, '401')
+        done()
+        test.end() })
+      .end(JSON.stringify({ digest: digest })) }) })
 tape('POST /publishers/publisher/projects/$project/editions/$edition for unknown publisher', function(test) {
   var publisher = 'charlie'
   var password = 'charlie\'s password'
@@ -79,10 +99,9 @@ tape('POST /publishers/publisher/projects/$project/editions/$edition for unknown
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', function(test) {
-  var project = 'no_underscores_allowed'
+tape('POST /publishers/$publisher/projects/$project/editions/$edition with bad body', function(test) {
+  var project = 'nda'
   var edition = '1e'
-  var digest = 'a'.repeat(64)
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
@@ -96,11 +115,10 @@ tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', 
       .on('response', function(response) {
         test.equal(response.statusCode, 400, '400')
         response.pipe(concat(function(buffer) {
-          test.equal(buffer.toString(), 'invalid project name', 'invalid name')
+          test.equal(buffer.toString(), 'invalid project', 'invalid project')
           done()
           test.end() })) })
-      .end(JSON.stringify({ digest: digest })) }) })
-
+      .end(JSON.stringify({})) }) })
 
 tape('POST /publishers/$publisher/projects/$Invalid-project/editions/$edition', function(test) {
   test.plan(2)
