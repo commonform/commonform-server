@@ -154,12 +154,12 @@ tape('GET /forms/:digest/annotations?context=other', function(test) {
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })
 
-tape('GET /annotations?displaying=digest', function(test) {
+tape('GET /annotations?context=digest', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
   // Forms
   var forms = { }
-  //   A <<< displaying
+  //   A <<< context
   //   +-B
   //   | +-C
   //   |   +-D
@@ -173,7 +173,7 @@ tape('GET /annotations?displaying=digest', function(test) {
   forms.c = { content: [ { form: forms.d } ] }
   forms.b = { content: [ { form: forms.c } ] }
   forms.a = { content: [ { form: forms.b }, { form: forms.e }, { form: forms.g } ] }
-  //   X <<< not displaying
+  //   X <<< not context
   //   +-D
   forms.x = { content: [ 'This is X', { form: forms.d } ] }
   // Digests
@@ -211,7 +211,7 @@ tape('GET /annotations?displaying=digest', function(test) {
             { port: port,
               path:
                 ( '/annotations' +
-                  '?' + 'displaying=' + digests.a ) },
+                  '?' + 'context=' + digests.a ) },
             function(response) {
               test.equal(response.statusCode, 200, 'GET 200')
               concat(test, response, function(body) {
@@ -239,12 +239,12 @@ tape('GET /annotations?displaying=digest', function(test) {
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })
 
-tape('GET /annotations?displaying=digest&form=digest', function(test) {
+tape('GET /annotations?context=digest&form=digest', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
   // Forms
   var forms = { }
-  //   A <<< displaying
+  //   A <<< context
   //   +-B
   //   | +-C
   //   |   +-D
@@ -258,7 +258,7 @@ tape('GET /annotations?displaying=digest&form=digest', function(test) {
   forms.c = { content: [ { form: forms.d } ] }
   forms.b = { content: [ { form: forms.c } ] }
   forms.a = { content: [ { form: forms.b }, { form: forms.e }, { form: forms.g } ] }
-  //   X <<< not displaying
+  //   X <<< not context
   //   +-D
   forms.x = { content: [ 'This is X', { form: forms.d } ] }
   // Digests
@@ -296,7 +296,7 @@ tape('GET /annotations?displaying=digest&form=digest', function(test) {
             { port: port,
               path:
                 ( '/annotations' +
-                  '?' + 'displaying=' + digests.a +
+                  '?' + 'context=' + digests.a +
                   '&' + 'form=' + digests.b ) },
             function(response) {
               test.equal(response.statusCode, 200, 'GET 200')

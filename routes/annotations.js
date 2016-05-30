@@ -18,18 +18,18 @@ module.exports = function(request, response) {
 
 function getAnnotations(request, response, parameters, log, level) {
   var query = url.parse(request.url, true).query
-  var hasDisplaying = ( ( 'displaying' in query ) && isDigest(query.displaying) )
+  var hasContext = ( ( 'context' in query ) && isDigest(query.context) )
   var hasForm = ( ( 'form' in query ) && isDigest(query.form) )
-  if (!hasDisplaying) { badRequest(response, 'Must specify displaying') }
+  if (!hasContext) { badRequest(response, 'Must specify context') }
   else {
-    getForm(level, query.displaying, function(error, displaying) {
-      displaying = JSON.parse(displaying).form
+    getForm(level, query.context, function(error, context) {
+      context = JSON.parse(context).form
       if (error) {
         /* istanbul ignore else */
         if (error.notFound) { badRequest(response, 'Unknown form') }
         else { internalError(response, error) } }
       else {
-        var contexts = computeContexts(normalize(displaying))
+        var contexts = computeContexts(normalize(context))
         if (hasForm) {
           if (query.form in contexts) {
             send(
@@ -43,7 +43,7 @@ function getAnnotations(request, response, parameters, log, level) {
                       ( contexts[digest].indexOf(query.form) !== -1 ) ) })
                   .map(annotationsStream))) }
           else {
-            badRequest(response, ( query.form + ' not in ' + query.displaying )) } }
+            badRequest(response, ( query.form + ' not in ' + query.context )) } }
         else {
           send(multistream.obj(Object.keys(contexts).map(annotationsStream))) } }
       function send(stream) {
