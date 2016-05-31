@@ -1,8 +1,10 @@
 var compareEdition = require('reviewers-edition-compare')
 var decodeKey = require('../keys/decode')
 var encode = require('../keys/encode')
+var once = require('once')
 
 module.exports = function(level, digest, callback) {
+  callback = once(callback)
   var projects = [ ]
   level.createReadStream(
     { gt: encode([ 'form-to-project', digest, null ]),

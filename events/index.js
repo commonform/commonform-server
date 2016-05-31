@@ -10,8 +10,10 @@ var indexPublisher = require('./index-publisher')
 var onForm = require('./form')
 var onProject = require('./project')
 var onProjectForm = require('./project-form')
+var sendAnnotationNotifications = require('./notifications/annotation')
 
 var s3 = require('../s3')
+var mailgun = require('../mailgun')
 
 module.exports = function(log, level) {
   // Create a Pino child log for events.
@@ -40,6 +42,9 @@ module.exports = function(log, level) {
     eventBus.on('form', backupForm)
     eventBus.on('project', backupProject)
     eventBus.on('annotation', backupAnnotation) }
+
+  if (mailgun) {
+    eventBus.on('annotation', sendAnnotationNotifications) }
 
   // Log every event when emitted.
   eventBus.eventNames().forEach(function(eventName) {
