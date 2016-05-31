@@ -116,7 +116,7 @@ function postAnnotation(request, response, parameters, log, level, emit) {
     if (!validAnnotation(annotation)) {
       badRequest(response, 'invalid annotation') }
     else if (!authorized ) {
-      if (request.publisher === undefined) { unauthorized(response) }
+      if (request.publisher === false) { unauthorized(response) }
       else { forbidden(response) } }
     else {
       if (request.publisher === 'administrator') { put() }

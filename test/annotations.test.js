@@ -27,6 +27,46 @@ tape('POST /annotations', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations without authorization', function(test) {
+  var form = { content: [ 'The child' ] }
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: 'bob',
+    form: digest,
+    context: digest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: '/annotations' })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 401, '401')
+              done() })
+            .end(JSON.stringify(annotation)) } ],
+      function() { done() ; test.end() }) }) })
+
+tape('POST /annotations as administrator', function(test) {
+  var form = { content: [ 'The child' ] }
+  var digest = normalize(form).root
+  var publisher = 'administrator'
+  var password = process.env.ADMINISTRATOR_PASSWORD
+  var annotation = {
+    publisher: 'bob',
+    form: digest,
+    context: digest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        postAnnotation(publisher, password, port, annotation, test) ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /annotations for another publisher', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
