@@ -236,6 +236,26 @@ tape('POST /publishers/$publisher/projects/$project/editions/$edition with inval
           test.end() })) })
       .end('The form is ' + digest) }) })
 
+tape('POST /publishers/$publisher/projects/$project/editions/$edition as other publisher', function(test) {
+  var project = 'nda'
+  var edition = '1e'
+  var digest = 'a'.repeat(64)
+  var path =
+    ( '/publishers/' + 'bob' +
+      '/projects/' + project +
+      '/editions/' + edition )
+  server(function(port, done) {
+    http.request(
+      { auth: ( PUBLISHER + ':' + PASSWORD ),
+        method: 'POST',
+        port: port,
+        path: path })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 403, '403')
+        done()
+        test.end() })
+      .end(JSON.stringify({ digest: digest })) }) })
+
 tape('POST /publishers/$publisher/projects/$project/editions/$edition with bad password', function(test) {
   var badPassword = 'not ana\'s password'
   var project = 'nda'
