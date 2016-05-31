@@ -3,6 +3,7 @@ language: "node_js"
 node_js: [ "6", "node" ]
 env: [ "CXX=g++-4.8 RUN_SLOW_TESTS=true" ]
 sudo: false
+script: "npm run coverage"
 addons:
   apt:
     sources: [ "ubuntu-toolchain-r-test" ]
