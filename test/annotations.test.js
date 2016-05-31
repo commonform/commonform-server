@@ -128,6 +128,32 @@ tape('POST /annotations for another publisher', function(test) {
             .end(JSON.stringify(annotation)) } ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with bad password', function(test) {
+  var publisher = 'ana'
+  var password = 'not ana\'s password'
+  var form = { content: [ 'The form' ] }
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: 'bob',
+    form: digest,
+    context: digest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              auth: ( publisher + ':' + password ),
+              path: '/annotations' })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 401, '401')
+              done() })
+            .end(JSON.stringify(annotation)) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /annotations with form not in context', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
@@ -324,6 +350,57 @@ tape('GET /annotation/:uuid', function(test) {
                 test.equal(body.text, annotation.text, 'serves text')
                 done() }) }) } ],
       function() { done() ; test.end() }) }) })
+
+tape('DELETE /annotation/:uuid', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var form = { content: [ 'The form' ] }
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: publisher,
+    form: digest,
+    context: digest,
+    replyTo: null,
+    text: 'Not good' }
+  var uuid
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          function withLocation(error, location) {
+            uuid = location.replace('/annotations/', '')
+            done() } },
+        function(done) {
+          http.request(
+            { method: 'DELETE',
+              port: port,
+              path: ( '/annotations/' + uuid ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 405, '405')
+              done() })
+            .end() } ],
+      function() { done() ; test.end() }) }) })
+
+tape('GET /annotation/:not_a_uuid', function(test) {
+  server(function(port, done) {
+    http.request(
+      { port: port,
+        path: '/annotations/x' })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 404, '404')
+        done() ; test.end() })
+      .end() }) })
+
+tape('GET /annotation/:nonexistent', function(test) {
+  server(function(port, done) {
+    http.request(
+      { port: port,
+        path: ( '/annotations/' + uuid.v4() ) })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 404, '404')
+        done() ; test.end() })
+      .end() }) })
 
 tape('GET /annotations without query', function(test) {
   server(function(port, done) {
