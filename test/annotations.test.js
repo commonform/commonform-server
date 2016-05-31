@@ -163,6 +163,35 @@ tape('POST /annotations with mismatched context', function(test) {
             .end(JSON.stringify(reply)) } ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with unknown context', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var form = { content: [ 'The child' ] }
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: publisher,
+    form: digest,
+    context: digest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    http.request(
+      { method: 'POST',
+        path: '/annotations',
+        port: port,
+        auth: ( publisher + ':' + password ) })
+      .on('response', function(response) {
+        test.equal(response.statusCode, 400, '400')
+        var buffer = [ ]
+        response
+          .on('data', function(chunk) {
+            buffer.push(chunk) })
+          .on('end', function() {
+            var body = Buffer.concat(buffer).toString()
+            test.equal(body, 'Unknown context', 'unknown context')
+            done() ; test.end() }) })
+      .end(JSON.stringify(annotation)) }) })
+
 tape('GET /annotation/:uuid', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
