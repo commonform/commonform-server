@@ -6,6 +6,7 @@ var postForm = require('./post-form')
 var series = require('async-series')
 var server = require('./server')
 var tape = require('tape')
+var uuid = require('uuid')
 
 tape('POST /annotations', function(test) {
   var publisher = 'ana'
@@ -92,6 +93,32 @@ tape('POST /annotations with reply', function(test) {
             done() } },
         function(done) {
           postAnnotation(publisher, password, port, reply, test)(done) } ],
+      function() { done() ; test.end() }) }) })
+
+tape('POST /annotations with reply to nonexistent', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var form = { content: [ 'The child' ] }
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: publisher,
+    form: digest,
+    context: digest,
+    replyTo: uuid.v4(),
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: '/annotations',
+              auth: ( publisher + ':' + password ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 400, '400')
+              done() })
+            .end(JSON.stringify(annotation)) } ],
       function() { done() ; test.end() }) }) })
 
 tape('GET /annotation/:uuid', function(test) {

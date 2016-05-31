@@ -101,6 +101,7 @@ function postAnnotation(request, response, parameters, log, level, emit) {
   readJSONBody(request, response, function(annotation) {
     var put = function() {
       putAnnotation(level, annotation, function(error) {
+        /* istanbul ignore if */
         if (error) { internalError(response) }
         else {
           response.log.info({ event: 'annotation' })
@@ -127,6 +128,7 @@ function postAnnotation(request, response, parameters, log, level, emit) {
         // Does the server have the context form?
         getForm(level, annotation.context, function(error, context) {
           if (error) {
+            /* istanbul ignore else */
             if (error.notFound) { badRequest(response, 'Unknown context') }
             else { internalError(response, error) } }
           else {
@@ -138,11 +140,12 @@ function postAnnotation(request, response, parameters, log, level, emit) {
             else {
               if (annotation.replyTo) {
                 getAnnotation(level, annotation.replyTo, function(error, stored) {
-                  var prior = JSON.parse(stored).annotation
                   if (error) {
+                    /* istanbul ignore else */
                     if (error.notFound) { badRequest(response, 'Invalid replyTo') }
                     else { internalError(response, error) } }
                   else {
+                    var prior = JSON.parse(stored).annotation
                     var sameTarget = (
                       ( annotation.context === prior.context ) &&
                       ( annotation.form === prior.form ) )
