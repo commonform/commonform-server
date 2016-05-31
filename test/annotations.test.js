@@ -121,6 +121,48 @@ tape('POST /annotations with reply to nonexistent', function(test) {
             .end(JSON.stringify(annotation)) } ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with mismatched context', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var child = { content: [ 'The child' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ { form: child } ] }
+  var parentDigest = normalize(parent).root
+  var annotation = {
+    publisher: publisher,
+    form: childDigest,
+    context: parentDigest,
+    replyTo: null,
+    text: 'Not good' }
+  var reply = JSON.parse(JSON.stringify(annotation))
+  reply.context = childDigest
+  server(function(port, done) {
+    series(
+      [ postForm(port, parent, test),
+        function(done) {
+          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          function withLocation(error, location) {
+            reply.replyTo = location.replace('/annotations/', '')
+            done() } },
+        function(done) {
+          http.request(
+            { method: 'POST',
+              path: '/annotations',
+              port: port,
+              auth: ( publisher + ':' + password ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 400, '400')
+              var buffer = [ ]
+              response
+                .on('data', function(chunk) {
+                  buffer.push(chunk) })
+                .on('end', function() {
+                  var body = Buffer.concat(buffer).toString()
+                  test.equal(body, 'Does not match replyTo', 'does not match')
+                  done() }) })
+            .end(JSON.stringify(reply)) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('GET /annotation/:uuid', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
