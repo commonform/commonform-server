@@ -60,6 +60,8 @@ tape('POST /annotations as administrator', function(test) {
     form: digest,
     context: digest,
     replyTo: null,
+    uuid: uuid.v4(),
+    timestamp: Date.now().toString(),
     text: 'Not good' }
   server(function(port, done) {
     series(
