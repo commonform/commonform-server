@@ -1,6 +1,6 @@
 var isEMail = require('email-validator').validate
 
-var requiredKeys = [ 'name', 'notifications', 'about', 'email', 'password' ]
+var requiredKeys = [ 'name', 'about', 'email', 'password' ]
 
 module.exports = function(argument) {
   /* istanbul ignore if */
@@ -11,10 +11,6 @@ module.exports = function(argument) {
     // Name
     has('name') &&
     validPublisherName(argument.name) &&
-    // Notifications
-    has('notifications') &&
-    ( ( argument.notifications === true ) ||
-      ( argument.notifications === false ) ) &&
     // About
     has('about') &&
     ( typeof argument.about === 'string' ) &&

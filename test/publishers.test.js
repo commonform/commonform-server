@@ -11,7 +11,6 @@ tape('POST /publishers/:name without credentials', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
@@ -27,7 +26,6 @@ tape('POST /publishers/:name with bad credentials', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = 'incorrect password'
@@ -46,7 +44,6 @@ tape('POST /publishers/:name with password', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -82,7 +79,6 @@ tape('GET /publishers/:name for existing', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: 'A test publisher',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -143,7 +139,6 @@ tape('POST /publishers/:name for existing', function(test) {
   var body =
     { email: 'ana@example.com',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -165,7 +160,6 @@ tape('PUT /publishers/:name to update', function(test) {
   var body =
     { email: 'different@example.com',
       about: 'Ana the test publisher',
-      notifications: false,
       password: newPassword }
   var form = { content: [ 'Just a test form' ] }
   var digest = normalize(form).root
@@ -193,7 +187,6 @@ tape('PUT /publishers/:name by another publisher', function(test) {
   var body =
     { email: 'different@example.com',
       about: 'Ana the test publisher',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
@@ -212,7 +205,6 @@ tape('PUT /publishers/:nonexistent', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: 'Charlie the test publisher',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
@@ -246,7 +238,6 @@ tape('PUT /publishers/:name with weak password', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: 'Charlie the test publisher',
-      notifications: false,
       password: '1234' }
   server(function(port, done) {
     http.request(
@@ -272,7 +263,6 @@ tape('POST /publishers/:name with bad Authorization', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
@@ -289,7 +279,6 @@ tape('PUT /publishers/:name with bad Authorization', function(test) {
   var body =
     { email: 'ana@example.com',
       about: 'More about',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   server(function(port, done) {
     http.request(
@@ -306,7 +295,6 @@ tape('POST /publishers/:name with hashed password', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       hash: '$2a$10$IGrb1Nzx/EkeTN07QF7HGeS/yl2gWbKrG9Lx0zDgqI71gI2EO4Cdy' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -327,8 +315,7 @@ tape('POST /publishers/:name with hashed password', function(test) {
 tape('POST /publishers/:name without password', function(test) {
   var body =
     { email: 'charlie@example.com',
-      about: '',
-      notifications: false }
+      about: '' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
@@ -353,8 +340,7 @@ tape('POST /publishers/:name without password', function(test) {
 tape('POST /publishers/:name without e-mail', function(test) {
   var body =
     { password: 'evil mastdon hoary cup',
-      about: '',
-      notifications: false }
+      about: '' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
   server(function(port, done) {
@@ -380,7 +366,6 @@ tape('POST /publishers/:name with bad e-mail', function(test) {
   var body =
     { email: 'charlie',
       about: '',
-      notifications: false,
       password: 'evil mastdon hoary cup' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
@@ -407,7 +392,6 @@ tape('POST /publishers/:name with insecure password', function(test) {
   var body =
     { email: 'charlie@example.com',
       about: '',
-      notifications: false,
       password: 'password' }
   var user = 'administrator'
   var password = process.env.ADMINISTRATOR_PASSWORD
