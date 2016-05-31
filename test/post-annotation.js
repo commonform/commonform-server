@@ -5,7 +5,7 @@ module.exports = function(publisher, password, port, annotation, test) {
   return function(callback) {
     http.request(
       { method: 'POST',
-        path: ( '/publishers/' + publisher + '/annotations' ),
+        path: '/annotations',
         port: port,
         auth: ( publisher + ':' + password ) })
       .on('response', function(response) {

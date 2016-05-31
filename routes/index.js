@@ -12,7 +12,6 @@ routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
 routes.set('/publishers/:publisher/projects/:project/editions', require('./project-editions'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition', require('./edition'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition/form', require('./edition-form'))
-routes.set('/publishers/:publisher/annotations', require('./publisher-annotations'))
 routes.set('/annotations', require('./annotations'))
 routes.set('/annotations/:uuid', require('./annotation'))
 

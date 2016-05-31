@@ -48,9 +48,9 @@ tape('POST /annotations with form not in context', function(test) {
             { method: 'POST',
               port: port,
               auth: ( publisher + ':' + password ),
-              path: ( '/publishers/' + publisher + '/annotations' ) })
+              path: '/annotations' })
             .on('response', function(response) {
-              test.equal(response.statusCode, 400)
+              test.equal(response.statusCode, 400, '400')
               var buffer = [ ]
               response
                 .on('data', function(chunk) { buffer.push(chunk) })
