@@ -27,6 +27,37 @@ tape('POST /annotations', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations with invalid annotation', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var form = { content: [ 'The form' ] }
+  var digest = normalize(form).root
+  var annotation =
+    { publisher: publisher,
+      form: digest,
+      text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: '/annotations',
+              auth: ( publisher + ':' + password ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 400, '400')
+              var buffer = [ ]
+              response
+                .on('data', function(chunk) {
+                  buffer.push(chunk) })
+                .on('end', function() {
+                  var body = Buffer.concat(buffer).toString()
+                  test.equal(body, 'Invalid annotation', 'invalid')
+                  done() }) })
+            .end(JSON.stringify(annotation)) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /annotations without authorization', function(test) {
   var form = { content: [ 'The child' ] }
   var digest = normalize(form).root
