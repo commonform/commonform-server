@@ -14,6 +14,7 @@
     "basic-auth": "^1.0.4",
     "bcrypt-password": "^1.0.2",
     "bytewise": "^1.1.0",
+    "cache-immutable": "^1.0.1",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^0.6.2",
     "do-not-cache": "^1.0.0",

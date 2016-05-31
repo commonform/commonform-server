@@ -169,6 +169,13 @@ tape('GET /forms/$posted', function(test) {
             'sets Content-Type')
           response.pipe(concat(function(buffer) {
             test.same(JSON.parse(buffer), form, 'serves the posted form')
+            test.assert(
+              ( 'cache-control' in response.headers),
+              'Cache-Control')
+            var cacheControl = response.headers['cache-control']
+            test.assert(
+              ( cacheControl && cacheControl.indexOf('max-age') !== -1 ),
+              'max-age')
             done() ; test.end() })) }) })
       .end(JSON.stringify(form)) }) })
 

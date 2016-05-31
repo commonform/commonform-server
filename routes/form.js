@@ -1,4 +1,5 @@
 var badRequest = require('./responses/bad-request')
+var cache = require('cache-immutable')
 var getForm = require('./get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
@@ -16,5 +17,7 @@ module.exports = function(request, response, params, log, level) {
           /* istanbul ignore else */
           if (error.notFound) { notFound(response) }
           else { internalError(response, error) } }
-        else { sendJSON(response, JSON.parse(value).form) } }) }
+        else {
+          cache(response)
+          sendJSON(response, JSON.parse(value).form) } }) }
     else { methodNotAllowed(response) } } }
