@@ -27,6 +27,34 @@ tape('POST /annotations', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
+tape('POST /annotations for another publisher', function(test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var child = { content: [ 'The child' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ { form: child } ] }
+  var parentDigest = normalize(parent).root
+  var annotation = {
+    publisher: 'bob',
+    form: childDigest,
+    context: parentDigest,
+    replyTo: null,
+    text: 'Not good' }
+  server(function(port, done) {
+    series(
+      [ postForm(port, parent, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              auth: ( publisher + ':' + password ),
+              path: '/annotations' })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 403, '403')
+              done() })
+            .end(JSON.stringify(annotation)) } ],
+      function() { done() ; test.end() }) }) })
+
 tape('POST /annotations with form not in context', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
