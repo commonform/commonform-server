@@ -1,4 +1,6 @@
 process.env.ADMINISTRATOR_PASSWORD = 'test'
+process.env.MAILGUN_KEY = 'fakekey'
+process.env.DOMAIN = 'example.com'
 
 var decode = require('../keys/decode')
 var devnull = require('dev-null')

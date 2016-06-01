@@ -121,7 +121,6 @@ function postAnnotation(request, response, parameters, log, level, emit) {
         if (request.publisher === false) { unauthorized(response) }
         else { forbidden(response) } }
       else {
-          annotation.publisher = parameters.publisher
           annotation.uuid = uuid.v4()
           response.log.info({ event: 'uuid', uuid: annotation.uuid })
           annotation.timestamp = Date.now().toString()

@@ -13,7 +13,8 @@ module.exports = function(annotation) {
     projects.forEach(function(project) {
       if (publishers.indexOf(project.publisher) === -1) {
         publishers.push(project.publisher) } })
-    asyncMap(publishers, getPublisher, function(error, publishers) {
+    var get = getPublisher.bind(null, level)
+    asyncMap(publishers, get, function(error, publishers) {
       if (error) { log.error(error) }
       else {
         projects.forEach(function(project) {
@@ -39,7 +40,7 @@ function publisherEMail(publisher, publishers) {
   var length = publishers.length
   for (var index = 0; index < length; index++) {
     var record = publishers[index]
-    if (record.publisher === publisher) {
+    if (record.name === publisher) {
       return record.email } }
   return undefined }
 
