@@ -18,8 +18,7 @@ tape('Notification on annotation to publication', function(test) {
   server(function(port, done) {
     var mailgun = require('../mailgun')
     mailgun.events
-      .on('message', function(message, callback) {
-        callback()
+      .on('message', function(message) {
         test.equal(message.to, 'ana@example.com', 'to ana@example.com')
         test.equal(
           message.subject, 'Annotation to ana/nda@1e',

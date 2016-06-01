@@ -24,8 +24,7 @@ module.exports = function(annotation) {
             log.error(new Error('No e-mail for ' + publisher)) }
           else {
             var message = messageFor(annotation, project, email)
-            mailgun(message, function(error) {
-              if (error) { log.error(error) } }) } }) } }) }) }
+            mailgun(message, log) } }) } }) }) }
 
 function messageFor(annotation, project, email) {
   var id = projectString(project)
