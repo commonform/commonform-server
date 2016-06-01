@@ -7,9 +7,16 @@ var haveCredentials =
   ( env.hasOwnProperty('MAILGUN_KEY') &&
     env.hasOwnProperty('DOMAIN') )
 
-/* istanbul ignore else */
-if (!haveCredentials) {
+if (process.env.NODE_ENV === 'test') {
+  var EventEmitter = require('events').EventEmitter
+  var events = new EventEmitter
+  module.exports = function(message, callback) {
+    events.emit('message', message, callback)
+    if (events.listenerCount('message') === 0) { callback() } }
+  module.exports.events = events }
+else if (!haveCredentials) {
   module.exports = false }
+/* istanbul ignore next */
 else {
   var from = ( 'notifications@' + env.DOMAIN )
   module.exports = function(message, callback) {

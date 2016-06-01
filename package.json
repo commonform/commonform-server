@@ -40,7 +40,6 @@
     "dev-null": "^0.1.1",
     "istanbul": "^0.4.3",
     "memdown": "^1.1.2",
-    "nock": "^8.0.0",
     "tape": "^4.5.1",
     "temporary-directory": "^1.0.2"
   },
@@ -49,7 +48,7 @@
   "repository": "kemitchell/commonform-server",
   "scripts": {
     "coverage": "istanbul check-coverage coverage/coverage.json",
-    "precoverage": "istanbul cover -- tape test/*.test.js",
-    "test": "tape test/*.test.js"
+    "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
+    "test": "NODE_ENV=test tape test/*.test.js"
   }
 }
