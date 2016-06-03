@@ -1,3 +1,4 @@
+var http = require('http')
 var mailgun = require('../mailgun')
 var normalize = require('commonform-normalize')
 var postAnnotation = require('./post-annotation')
@@ -57,6 +58,30 @@ tape('DELETE /forms/:digest/subscribers', function(test) {
             mailgun.events.removeAllListeners()
             test.end() ; closeServer() },
           500) }) }) })
+
+tape('GET /forms/:digest/subscribers/:', function(test) {
+  var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, form, test),
+        subscribeToForm(port, publisher, password, test, digest),
+        function(done) {
+          http.get(
+            { port: port,
+              path: subscriptionPath,
+              auth: ( publisher + ':' + password ) },
+            function(response) {
+              test.equal(response.statusCode, 204, '204 as subscriber')
+              done() }) },
+        function(done) {
+          http.get(
+            { port: port,
+              path: subscriptionPath,
+              auth: ( 'bob:bob\'s password' ) },
+            function(response) {
+              test.equal(response.statusCode, 403, '403 as other publisher')
+              done() }) } ],
+      function() { closeServer() ; test.end() }) }) })
 
 tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
   server(function(port, closeServer) {

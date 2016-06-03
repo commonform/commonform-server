@@ -1,4 +1,5 @@
 var conflict = require('./responses/conflict')
+var exists = require('../queries/exists')
 var internalError = require('./responses/internal-error')
 var keyFor = require('../keys/subscription')
 var lock = require('level-lock')
@@ -8,10 +9,13 @@ var thrice = require('../thrice')
 
 module.exports = function(type, keys) {
   return function(request, response) {
-    if (request.method === 'POST') {
+    var method = request.method
+    if (method === 'POST') {
       requireAuthorization(postSubscriber).apply(this, arguments) }
-    else if (request.method === 'DELETE') {
+    else if (method === 'DELETE') {
       requireAuthorization(deleteSubscriber).apply(this, arguments) }
+    else if (method === 'GET') {
+      requireAuthorization(getSubscriber).apply(this, arguments) }
     else { methodNotAllowed(response) } }
 
   function postSubscriber(request, response, parameters, log, level, emit) {
@@ -52,4 +56,18 @@ module.exports = function(type, keys) {
         else {
           response.statusCode = 204
           response.end()
-          emit('unsubscribed', keyComponents) } }) } } }
+          emit('unsubscribed', keyComponents) } }) } }
+
+  function getSubscriber(request, response, parameters, log, level) {
+    var keyComponents = [ type ]
+      .concat(keys.map(function(key) { return parameters[key] }))
+    var key = keyFor(keyComponents)
+    exists(level, key, function(error, exists) {
+      if (error) { internalError(response, error) }
+      else {
+        if (exists) {
+          response.statusCode = 204
+          response.end() }
+        else {
+          response.statusCode = 404
+          response.end() } } }) } }
