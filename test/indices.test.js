@@ -28,10 +28,10 @@ tape('GET /terms/$term/definitions', function(test) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
                 test.assert(
-                  body.includes(digestA),
+                  ( body.indexOf(digestA) !== -1 ),
                   'serves project form digest')
                 test.assert(
-                  !body.includes(digestB),
+                  ( body.indexOf(digestB) === -1 ),
                   'does not serve non-project form digest')
                 done() }) })
             .end() } ],
@@ -56,10 +56,10 @@ tape('GET /terms/$term/uses', function(test) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
                 test.assert(
-                  body.includes(digestA),
+                  ( body.indexOf(digestA) !== -1 ),
                   'serves project form digest')
                 test.assert(
-                  !body.includes(digestB),
+                  ( body.indexOf(digestB) === -1 ),
                   'does not serve non-project form digest')
                 done() }) })
             .end() } ],
@@ -232,7 +232,7 @@ tape('GET /headings/$heading/references', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(digest), 'serves form')
+                test.assert(( body.indexOf(digest) !== -1 ), 'serves form')
                 done() }) })
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
@@ -251,7 +251,7 @@ tape('GET /headings', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(heading), 'serves heading')
+                test.assert(( body.indexOf(heading) !== -1 ), 'serves heading')
                 done() }) })
             .end() } ],
       function() { closeServer() ; test.end() }) }) })

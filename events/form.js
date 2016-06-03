@@ -6,7 +6,7 @@ module.exports = function(form, digest, normalized, seen) {
   var log = this.log
   var level = this.level
   /* istanbul ignore if */
-  if (seen.includes(digest)) {
+  if (seen.indexOf(digest) !== -1) {
     log.error({ event: 'collision', digest: digest, seen: seen }) }
   else {
     form.content.forEach(function(element, index) {

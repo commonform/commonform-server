@@ -23,7 +23,7 @@ tape('GET /digests', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(digest), 'serves digest')
+                test.assert((body.indexOf(digest) !== -1 ), 'serves digest')
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
 
@@ -50,7 +50,7 @@ tape('GET /headings', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(heading), 'serves referenced heading')
+                test.assert(( body.indexOf(heading) !== -1 ), 'serves referenced heading')
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
 
@@ -70,7 +70,7 @@ tape('GET /headings', function(test) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
                 test.assert(
-                  body.includes(heading),
+                  ( body.indexOf(heading) !== -1 ),
                   'serves heading')
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
@@ -89,7 +89,7 @@ tape('GET /terms', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(term), 'serves used term')
+                test.assert(( body.indexOf(term) !== -1 ), 'serves used term')
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
 
@@ -107,6 +107,6 @@ tape('GET /terms', function(test) {
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.includes(term), 'serves defined term')
+                test.assert(( body.indexOf(term) !== -1 ), 'serves defined term')
                 done() }) }) } ],
       function() { closeServer() ; test.end() }) }) })
