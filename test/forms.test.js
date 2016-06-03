@@ -34,7 +34,7 @@ tape('POST /forms with form', function(test) {
 
 tape('POST /forms with oversized request body', function(test) {
   server(function(port, done) {
-    var body = Buffer.alloc(256001, 'a', 'ascii')
+    var body = sizedBuffer(256001, 'a', 'ascii')
     var options =
       { method: 'POST',
         path: '/forms',
@@ -45,6 +45,14 @@ tape('POST /forms with oversized request body', function(test) {
         test.equal(response.statusCode, 413, 'responds 413')
         done() ; test.end() })
       .end(body) }) })
+
+function sizedBuffer(size, fill, encoding) {
+  if ('alloc' in Buffer) {
+    return Buffer.alloc(size, fill, encoding) }
+  else {
+    var buffer = Buffer(size)
+    buffer.fill(fill, encoding)
+    return buffer } }
 
 tape('POST /forms with infinite request body', function(test) {
   server(function(port, done) {
