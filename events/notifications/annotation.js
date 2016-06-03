@@ -27,19 +27,14 @@ function notifyEditionSubscribers(level, log, annotation) {
               /* istanbul ignore if */
               if (error) { log.error(error) }
               else {
-                /* istanbul ignore if */
-                if (typeof subscriber.email !== 'string') {
-                  log.error(new Error('No e-mail for ' + subscriber.name)) }
-                else {
-                  var message =
-                    { to: subscriber.email,
-                      subject: ( 'Annotation to ' + editionString ),
-                      text:
-                        [ ( annotation.publisher +
-                            ' has made a new annotation to ' +
-                            editionString ) ]
-                        .join('\n') }
-                  mailgun(message, log) } } }) }) } }) }) }) }
+                var message =
+                  { subject: ( 'Annotation to ' + editionString ),
+                    text:
+                      [ ( annotation.publisher +
+                          ' has made a new annotation to ' +
+                          editionString ) ]
+                      .join('\n') }
+                sendEMail(subscriber, message, log) } }) }) } }) }) }) }
 
 function notifyFormSubscribers(level, log, annotation) {
   var digest = annotation.context
@@ -58,19 +53,22 @@ function notifyFormSubscribers(level, log, annotation) {
                 /* istanbul ignore if */
                 if (error) { log.error(error) }
                 else {
-                  /* istanbul ignore if */
-                  if (typeof subscriber.email !== 'string') {
-                    log.error(new Error('No e-mail for ' + subscriber.name)) }
-                  else {
-                    var message =
-                      { to: subscriber.email,
-                        subject: ( 'Annotation to ' + annotation.digest ),
-                        text:
-                          [ ( annotation.publisher +
-                              ' has made a new annotation to ' +
-                              annotation.form ) ]
-                          .join('\n') }
-                    mailgun(message, log) } } }) }) } }) }) } }) }
+                  var message =
+                    { subject: ( 'Annotation to ' + annotation.digest ),
+                      text:
+                        [ ( annotation.publisher +
+                            ' has made a new annotation to ' +
+                            annotation.form ) ]
+                        .join('\n') }
+                  sendEMail(subscriber, message, log) } }) }) } }) }) } }) }
+
+function sendEMail(subscriber, message, log) {
+  /* istanbul ignore if */
+  if (typeof subscriber.email !== 'string') {
+    log.error(new Error('No e-mail for ' + subscriber.name)) }
+  else {
+    message.to = subscriber.email
+    mailgun(message, log) } }
 
 function editionStringFor(project) {
   return (
