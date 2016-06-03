@@ -83,6 +83,47 @@ tape('GET /forms/:digest/subscribers/:', function(test) {
               done() }) } ],
       function() { closeServer() ; test.end() }) }) })
 
+tape('GET /forms/:digest/subscribers/:not-subscribed', function(test) {
+  var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.get(
+            { port: port,
+              path: subscriptionPath,
+              auth: ( publisher + ':' + password ) },
+            function(response) {
+              test.equal(response.statusCode, 404, '404 as subscriber')
+              done() }) },
+        function(done) {
+          http.get(
+            { port: port,
+              path: subscriptionPath,
+              auth: ( 'bob:bob\'s password' ) },
+            function(response) {
+              test.equal(response.statusCode, 403, '403 as other publisher')
+              done() }) } ],
+      function() { closeServer() ; test.end() }) }) })
+
+tape('PATCH /forms/:digest/subscribers/:', function(test) {
+  var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, form, test),
+        subscribeToForm(port, publisher, password, test, digest),
+        function(done) {
+          http.request(
+            { method: 'PATCH',
+              port: port,
+              path: subscriptionPath,
+              auth: ( publisher + ':' + password ) })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 405, '405')
+              done() })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
 tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
   server(function(port, closeServer) {
     mailgun.events

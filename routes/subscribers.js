@@ -63,6 +63,7 @@ module.exports = function(type, keys) {
       .concat(keys.map(function(key) { return parameters[key] }))
     var key = keyFor(keyComponents)
     exists(level, key, function(error, exists) {
+      /* istanbul ignore if */
       if (error) { internalError(response, error) }
       else {
         if (exists) {
