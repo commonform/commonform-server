@@ -2,6 +2,7 @@ var badRequest = require('./responses/bad-request')
 var bcrypt = require('bcrypt-password')
 var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
+var getPublisher = require('../queries/get-publisher')
 var internalError = require('./responses/internal-error')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -20,28 +21,26 @@ var VERSION = require('../package.json').version
 
 module.exports = function(request, response) {
   if (request.method === 'GET') {
-    getPublisher.apply(this, arguments) }
+    handleGetPublisher.apply(this, arguments) }
   else if(request.method === 'POST') {
     requireAdministrator(postPublisher).apply(this, arguments) }
   else if(request.method === 'PUT') {
     requireAuthorization(putPublisher).apply(this, arguments) }
   else { methodNotAllowed(response) } }
 
-function getPublisher(request, response, parameters, log, level) {
+function handleGetPublisher(request, response, parameters, log, level) {
   var publisher = parameters.publisher
-  var key = publisherKeyFor(publisher)
-  level.get(key, function(error, stored) {
-    if (error) {
-      /* istanbul ignore else */
-      if (error.notFound) { notFound(response) }
-      else { internalError(response, error) } }
+  getPublisher(level, parameters.publisher, function(error, stored) {
+    /* istanbul ignore if */
+    if (error) { internalError(response, error) }
     else {
-      stored = JSON.parse(stored).publisher
-      var json = { publisher: publisher }
-      /* istanbul ignore else */
-      if (stored.hasOwnProperty('about')) {
-        json.about = stored.about }
-      sendJSON(response, json) } }) }
+      if (!stored) { notFound(response) }
+      else {
+        var json = { publisher: publisher }
+        /* istanbul ignore else */
+        if (stored.hasOwnProperty('about')) {
+          json.about = stored.about }
+        sendJSON(response, json) } } }) }
 
 function putPublisher(request, response, parameters, log, level, emit) {
   var publisher = parameters.publisher

@@ -115,6 +115,13 @@ tape('GET /publishers/:name for existing', function(test) {
               done() ; test.end() }) }) })
       .end(JSON.stringify(body)) }) })
 
+tape('GET /publishers/:name for nonexistent', function(test) {
+  server(function(port, done) {
+    http.get({ port: port, path: '/publishers/david' },
+      function(response) {
+        test.equal(response.statusCode, 404, 'GET 404')
+          done() ; test.end() }) }) })
+
 tape('DELETE /publishers/:name', function(test) {
   server(function(port, done) {
     http.request(
