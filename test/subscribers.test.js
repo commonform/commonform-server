@@ -1,5 +1,6 @@
 var http = require('http')
 var mailgun = require('../mailgun')
+var subscribeToAnnotation = require('./subscribe-to-annotation')
 var normalize = require('commonform-normalize')
 var postAnnotation = require('./post-annotation')
 var postForm = require('./post-form')
@@ -7,6 +8,7 @@ var postProject = require('./post-project')
 var series = require('async-series')
 var server = require('./server')
 var tape = require('tape')
+var unsubscribeFromAnnotation = require('./unsubscribe-from-annotation')
 
 var publisher = 'ana'
 var password = 'ana\'s password'
@@ -17,7 +19,7 @@ var digest = normalize(form).root
 var annotation =
   { publisher: publisher,
     form: digest, context: digest,
-    replyTo: null, text: 'Not good' }
+    replyTo: [ ], text: 'Not good' }
 var project = 'nda'
 var edition = '1e'
 var formPath = ( '/forms/' + digest )
@@ -233,6 +235,58 @@ tape('DELETE /publishers/:/subscribers/:', function(test) {
               done() })
             .end() },
         postProject(publisher, password, port, project, edition, digest, test) ],
+      function() {
+        setTimeout(
+          function() {
+            mailgun.events.removeAllListeners()
+            test.end() ; closeServer() },
+          500) }) }) })
+
+tape('POST /annotations/:/subscribers/:', function(test) {
+  var uuid
+  var reply = JSON.parse(JSON.stringify(annotation))
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function(message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        closeServer() ; test.end() })
+    series(
+      [ postForm(port, form, test),
+        function annotate(done) {
+          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          function withLocation(error, location) {
+            uuid = location.replace('/annotations/', '')
+            reply.replyTo = [ uuid ]
+            done() } },
+        subscribeToAnnotation(port, publisher, password, test, function() {
+          return uuid }),
+        function postReply(done) {
+          var reply = JSON.parse(JSON.stringify(annotation))
+          reply.replyTo = [ uuid ]
+          postAnnotation(publisher, password, port, reply, test)(done) } ],
+      function() { /* pass */ }) }) })
+
+tape('DELETE /annotation/:/subscribers/:', function(test) {
+  var uuid
+  var reply = JSON.parse(JSON.stringify(annotation))
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function() { test.fail('sent notification') })
+    series(
+      [ postForm(port, form, test),
+        function annotate(done) {
+          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          function withLocation(error, location) {
+            uuid = location.replace('/annotations/', '')
+            reply.replyTo = [ uuid ]
+            done() } },
+        subscribeToAnnotation(port, publisher, password, test, function() {
+          return uuid }),
+        unsubscribeFromAnnotation(port, publisher, password, test, function() {
+          return uuid }),
+        function postReply(done) {
+          postAnnotation(publisher, password, port, reply, test)(done) } ],
       function() {
         setTimeout(
           function() {

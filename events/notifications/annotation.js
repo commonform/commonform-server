@@ -10,7 +10,8 @@ module.exports = function(annotation) {
   var log = this.log
   var level = this.level
   notifyFormSubscribers(level, log, annotation)
-  notifyEditionSubscribers(level, log, annotation) }
+  notifyEditionSubscribers(level, log, annotation)
+  notifyAnnotationSubscribers(level, log, annotation) }
 
 function notifyEditionSubscribers(level, log, annotation) {
   getProjects(level, annotation.context, function(error, projects) {
@@ -62,6 +63,26 @@ function notifyFormSubscribers(level, log, annotation) {
                             annotation.form ) ]
                         .join('\n') }
                   sendEMail(subscriber, message, log) } }) }) } }) }) } }) }
+
+function notifyAnnotationSubscribers(level, log, annotation) {
+  var parents = annotation.replyTo
+  parents.forEach(function(parent) {
+    var keys = [ 'annotation', parent ]
+    getSubscribers(level, keys, function(error, subscribers) {
+      /* istanbul ignore if */
+      if (error) { log.error(error) }
+      else {
+        subscribers.forEach(function(subscriber) {
+          getPublisher(level, subscriber, function(error, subscriber) {
+            /* istanbul ignore if */
+            if (error) { log.error(error) }
+            else {
+              var message =
+                { subject: ( 'Reply to annotation to ' + annotation.digest ),
+                  text:
+                    [ ( annotation.publisher + ' has replied to annotation ' + parent ) ]
+                    .join('\n') }
+              sendEMail(subscriber, message, log) } }) }) } }) }) }
 
 function sendEMail(subscriber, message, log) {
   /* istanbul ignore if */

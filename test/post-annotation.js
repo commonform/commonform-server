@@ -1,4 +1,3 @@
-
 var http = require('http')
 
 module.exports = function(publisher, password, port, annotation, test) {

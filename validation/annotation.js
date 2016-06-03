@@ -10,7 +10,7 @@ module.exports = function(argument) {
     has('publisher', nonemptyString) &&
     has('text', nonemptyString) &&
     has('replyTo', function(value) {
-      return ( ( value === null ) || isUUID(value) ) }) &&
+      return ( Array.isArray(value) && value.every(isUUID) ) }) &&
     ( Object.keys(argument).length === 5 ) ) }
 
 function hasProperty(object, key, predicate) {

@@ -1,6 +1,7 @@
 var allowAuthorization = require('./allow-authorization')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
+var equals = require('array-equal')
 var forbidden = require('./responses/forbidden')
 var getAnnotation = require('../queries/get-annotation')
 var getForm = require('./get-form')
@@ -137,8 +138,8 @@ function postAnnotation(request, response, parameters, log, level, emit) {
               if (childrenDigests.indexOf(annotation.form) === -1) {
                 badRequest(response, 'Form not in context') }
               else {
-                if (annotation.replyTo) {
-                  getAnnotation(level, annotation.replyTo, function(error, stored) {
+                if (annotation.replyTo.length !== 0) {
+                  getAnnotation(level, annotation.replyTo[0], function(error, stored) {
                     if (error) {
                       /* istanbul ignore else */
                       if (error.notFound) { badRequest(response, 'Invalid replyTo') }
@@ -147,8 +148,9 @@ function postAnnotation(request, response, parameters, log, level, emit) {
                       var prior = JSON.parse(stored).annotation
                       var sameTarget = (
                         ( annotation.context === prior.context ) &&
-                        ( annotation.form === prior.form ) )
+                        ( annotation.form === prior.form ) &&
+                        equals(annotation.replyTo.slice(1), prior.replyTo) )
                       if (!sameTarget) {
-                        badRequest(response, 'Does not match replyTo') }
+                        badRequest(response, 'Does not match parent') }
                       else { put() } } }) }
                 else { put() } } } }) } } }) }

@@ -8,6 +8,7 @@
     "commonform-server": "./server.js"
   },
   "dependencies": {
+    "array-equal": "^1.0.0",
     "async-series": "0.0.1",
     "async.map": "^0.5.2",
     "async.queue": "^0.5.2",

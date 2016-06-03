@@ -19,7 +19,7 @@ tape('POST /annotations', function(test) {
     publisher: publisher,
     form: childDigest,
     context: parentDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -65,7 +65,7 @@ tape('POST /annotations without authorization', function(test) {
     publisher: 'bob',
     form: digest,
     context: digest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -90,7 +90,7 @@ tape('POST /annotations as administrator', function(test) {
     publisher: 'bob',
     form: digest,
     context: digest,
-    replyTo: null,
+    replyTo: [ ],
     uuid: uuid.v4(),
     timestamp: Date.now().toString(),
     text: 'Not good' }
@@ -111,7 +111,7 @@ tape('POST /annotations for another publisher', function(test) {
     publisher: 'bob',
     form: childDigest,
     context: parentDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -137,7 +137,7 @@ tape('POST /annotations with bad password', function(test) {
     publisher: 'bob',
     form: digest,
     context: digest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -165,7 +165,7 @@ tape('POST /annotations with form not in context', function(test) {
     publisher: publisher,
     form: aDigest,
     context: bDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -202,7 +202,7 @@ tape('POST /annotations with reply', function(test) {
     publisher: publisher,
     form: childDigest,
     context: parentDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   var reply
   server(function(port, done) {
@@ -215,7 +215,7 @@ tape('POST /annotations with reply', function(test) {
               { publisher: publisher,
                 form: childDigest,
                 context: parentDigest,
-                replyTo: location.replace('/annotations/', ''),
+                replyTo: [ location.replace('/annotations/', '') ],
                 text: 'On second thought...' }
             done() } },
         function(done) {
@@ -231,7 +231,7 @@ tape('POST /annotations with reply to nonexistent', function(test) {
     publisher: publisher,
     form: digest,
     context: digest,
-    replyTo: uuid.v4(),
+    replyTo: [ uuid.v4() ],
     text: 'Not good' }
   server(function(port, done) {
     series(
@@ -259,7 +259,7 @@ tape('POST /annotations with mismatched context', function(test) {
     publisher: publisher,
     form: childDigest,
     context: parentDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   var reply = JSON.parse(JSON.stringify(annotation))
   reply.context = childDigest
@@ -269,7 +269,7 @@ tape('POST /annotations with mismatched context', function(test) {
         function(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
-            reply.replyTo = location.replace('/annotations/', '')
+            reply.replyTo = [ location.replace('/annotations/', '') ]
             done() } },
         function(done) {
           http.request(
@@ -285,7 +285,7 @@ tape('POST /annotations with mismatched context', function(test) {
                   buffer.push(chunk) })
                 .on('end', function() {
                   var body = Buffer.concat(buffer).toString()
-                  test.equal(body, 'Does not match replyTo', 'does not match')
+                  test.equal(body, 'Does not match parent', 'does not match')
                   done() }) })
             .end(JSON.stringify(reply)) } ],
       function() { done() ; test.end() }) }) })
@@ -299,7 +299,7 @@ tape('POST /annotations with unknown context', function(test) {
     publisher: publisher,
     form: digest,
     context: digest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   server(function(port, done) {
     http.request(
@@ -330,7 +330,7 @@ tape('GET /annotation/:uuid', function(test) {
     publisher: publisher,
     form: childDigest,
     context: parentDigest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   var uuid
   server(function(port, done) {
@@ -360,7 +360,7 @@ tape('DELETE /annotation/:uuid', function(test) {
     publisher: publisher,
     form: digest,
     context: digest,
-    replyTo: null,
+    replyTo: [ ],
     text: 'Not good' }
   var uuid
   server(function(port, done) {
@@ -463,7 +463,7 @@ tape('GET /annotations?context=digest', function(test) {
         { publisher: publisher,
           form: digests[form],
           context: digests[context],
-          replyTo: null,
+          replyTo: [ ],
           text: ( 'Annotation of ' + form + ' in context of ' + context ) } })
   server(function(port, done) {
     series(
@@ -548,7 +548,7 @@ tape('GET /annotations?context=digest&form=digest', function(test) {
         { publisher: publisher,
           form: digests[form],
           context: digests[context],
-          replyTo: null,
+          replyTo: [ ],
           text: ( 'Annotation of ' + form + ' in context of ' + context ) } })
   server(function(port, done) {
     series(
