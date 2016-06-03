@@ -3,14 +3,16 @@ var backupAnnotation = require('./backup/annotation')
 var backupForm = require('./backup/form')
 var backupProject = require('./backup/project')
 var indexAnnotation = require('./index-annotation')
-var indexForm = require('./index-form')
 var indexDigest = require('./index-digest')
+var indexForm = require('./index-form')
 var indexFormChildren = require('./index-form-children')
 var indexPublisher = require('./index-publisher')
 var onForm = require('./form')
 var onProject = require('./project')
 var onProjectForm = require('./project-form')
 var sendAnnotationNotifications = require('./notifications/annotation')
+var subscribed = require('./subscribed')
+var unsubscribed = require('./unsubscribed')
 
 var s3 = require('../s3')
 var mailgun = require('../mailgun')
@@ -34,6 +36,8 @@ module.exports = function(log, level) {
     .on('projectForm', indexFormChildren)
     .on('projectForm', indexDigest)
     .on('annotation', indexAnnotation)
+    .on('subscribed', subscribed)
+    .on('unsubscribed', unsubscribed)
 
   /* istanbul ignore if */
   if (s3) {

@@ -1,23 +1,12 @@
-var decode = require('../keys/decode')
-var encode = require('../keys/encode')
+var getParents = require('../queries/get-parents')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var sendJSON = require('./responses/send-json')
 
-var PREFIX = 'form-in-form'
-
 module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
-    var digest = parameters.digest
-    var parents = [ ]
-    level.createReadStream(
-      { gt: encode([ PREFIX, digest, null ]),
-        lt: encode([ PREFIX, digest, undefined ]) })
-      .on('data', function(item) {
-        var decoded = decode(item.key)
-        parents.push({ digest: decoded[2], depth: decoded[3] }) })
-      .on('error',
-        /* istanbul ignore next */
-        function(error) { internalError(error) })
-      .on('end', function() { sendJSON(response, parents) }) }
+    getParents(level, parameters.digest, function(error, parents) {
+      /* istanbul ignore if */
+      if (error) { internalError(error) }
+      else { sendJSON(response, parents) } }) }
   else { methodNotAllowed(response) } }

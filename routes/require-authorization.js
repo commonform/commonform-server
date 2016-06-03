@@ -9,7 +9,10 @@ module.exports = function(handler) {
   return function(request, response, parameters, log, level) {
     var handlerArguments = arguments
     function allow() { handler.apply(this, handlerArguments) }
-    var publisher = parameters.publisher
+    var publisher = (
+      parameters.hasOwnProperty('subscriber')
+        ? parameters.subscriber
+        : parameters.publisher )
     var parsed = parseAuthorization(request)
     if (parsed === undefined) { unauthorized(response) }
     else {

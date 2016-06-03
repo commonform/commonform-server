@@ -1,49 +1,78 @@
-var asyncMap = require('async.map')
-var getPublisher = require('../../queries/get-publisher')
+var getParents = require('../../queries/get-parents')
 var getProjects = require('../../queries/get-projects')
+var getPublisher = require('../../queries/get-publisher')
+var getSubscribers = require('../../queries/get-subscribers')
 var mailgun = require('../../mailgun')
 
 /* istanbul ignore next */
 module.exports = function(annotation) {
   var log = this.log
   var level = this.level
-  var digest = annotation.form
-  getProjects(level, digest, function(error, projects) {
-    var publishers = [ ]
+  notifyFormSubscribers(level, log, annotation)
+  notifyEditionSubscribers(level, log, annotation) }
+
+function notifyEditionSubscribers(level, log, annotation) {
+  getProjects(level, annotation.context, function(error, projects) {
     projects.forEach(function(project) {
-      if (publishers.indexOf(project.publisher) === -1) {
-        publishers.push(project.publisher) } })
-    var get = getPublisher.bind(null, level)
-    asyncMap(publishers, get, function(error, publishers) {
-      if (error) { log.error(error) }
-      else {
-        projects.forEach(function(project) {
-          var publisher = project.publisher
-          var email = publisherEMail(publisher, publishers)
-          if (email === undefined) {
-            log.error(new Error('No e-mail for ' + publisher)) }
+      var editionString = editionStringFor(project)
+      var keys =
+        [ 'edition',
+          project.publisher, project.project, project.edition ]
+      getSubscribers(level, keys, function(error, subscribers) {
+        /* istanbul ignore if */
+        if (error) { log.error(error) }
+        else {
+          subscribers.forEach(function(subscriber) {
+            getPublisher(level, subscriber, function(error, subscriber) {
+              /* istanbul ignore if */
+              if (error) { log.error(error) }
+              else {
+                /* istanbul ignore if */
+                if (typeof subscriber.email !== 'string') {
+                  log.error(new Error('No e-mail for ' + subscriber.name)) }
+                else {
+                  var message =
+                    { to: subscriber.email,
+                      subject: ( 'Annotation to ' + editionString ),
+                      text:
+                        [ ( annotation.publisher +
+                            ' has made a new annotation to ' +
+                            editionString ) ]
+                        .join('\n') }
+                  mailgun(message, log) } } }) }) } }) }) }) }
+
+function notifyFormSubscribers(level, log, annotation) {
+  var digest = annotation.context
+  getParents(level, digest, function(error, parents) {
+    /* istanbul ignore if */
+    if (error) { log.error(error) }
+    else {
+      [ digest ].concat(parents).forEach(function(context) {
+        var keys = [ 'form', context ]
+        getSubscribers(level, keys, function(error, subscribers) {
+          /* istanbul ignore if */
+          if (error) { log.error(error) }
           else {
-            var message = messageFor(annotation, project, email)
-            mailgun(message, log) } }) } }) }) }
+            subscribers.forEach(function(subscriber) {
+              getPublisher(level, subscriber, function(error, subscriber) {
+                /* istanbul ignore if */
+                if (error) { log.error(error) }
+                else {
+                  /* istanbul ignore if */
+                  if (typeof subscriber.email !== 'string') {
+                    log.error(new Error('No e-mail for ' + subscriber.name)) }
+                  else {
+                    var message =
+                      { to: subscriber.email,
+                        subject: ( 'Annotation to ' + annotation.digest ),
+                        text:
+                          [ ( annotation.publisher +
+                              ' has made a new annotation to ' +
+                              annotation.form ) ]
+                          .join('\n') }
+                    mailgun(message, log) } } }) }) } }) }) } }) }
 
-function messageFor(annotation, project, email) {
-  var id = projectString(project)
-  return (
-    { to: email,
-      subject: ( 'Annotation to ' + id ),
-      text:
-        [ ( annotation.publisher + ' has made a new annotation to ' + id + '.' ) ]
-        .join('\n') } ) }
-
-function publisherEMail(publisher, publishers) {
-  var length = publishers.length
-  for (var index = 0; index < length; index++) {
-    var record = publishers[index]
-    if (record.name === publisher) {
-      return record.email } }
-  return undefined }
-
-function projectString(project) {
+function editionStringFor(project) {
   return (
     project.publisher +
     '/' + project.project +
