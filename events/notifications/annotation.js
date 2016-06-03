@@ -1,3 +1,4 @@
+var editionStringFor = require('../../edition-string')
 var getParents = require('../../queries/get-parents')
 var getProjects = require('../../queries/get-projects')
 var getPublisher = require('../../queries/get-publisher')
@@ -69,9 +70,3 @@ function sendEMail(subscriber, message, log) {
   else {
     message.to = subscriber.email
     mailgun(message, log) } }
-
-function editionStringFor(project) {
-  return (
-    project.publisher +
-    '/' + project.project +
-    '@' + project.edition ) }

@@ -11,6 +11,7 @@ var onForm = require('./form')
 var onProject = require('./project')
 var onProjectForm = require('./project-form')
 var sendAnnotationNotifications = require('./notifications/annotation')
+var sendProjectNotifications = require('./notifications/project')
 var subscribed = require('./subscribed')
 var unsubscribed = require('./unsubscribed')
 
@@ -48,7 +49,9 @@ module.exports = function(log, level) {
     eventBus.on('annotation', backupAnnotation) }
 
   if (mailgun) {
-    eventBus.on('annotation', sendAnnotationNotifications) }
+    eventBus
+      .on('annotation', sendAnnotationNotifications)
+      .on('project', sendProjectNotifications) }
 
   // Log every event when emitted.
   eventBus.eventNames().forEach(function(eventName) {

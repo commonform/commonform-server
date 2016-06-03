@@ -21,10 +21,8 @@ var annotation =
 var project = 'nda'
 var edition = '1e'
 var formPath = ( '/forms/' + digest )
-var projectPath =
-  ( '/publishers/' + publisher +
-    '/projects/' + project +
-    '/editions/' + edition )
+var projectPath = ( '/publishers/' + publisher + '/projects/' + project )
+var editionPath = ( projectPath + '/editions/' + edition )
 
 tape('POST /forms/:digest/subscribers', function(test) {
   server(function(port, done) {
@@ -96,7 +94,7 @@ tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
           http.request(
             { method: 'POST',
               port: port,
-              path: ( projectPath + '/subscribers/' + publisher ),
+              path: ( editionPath + '/subscribers/' + publisher ),
               auth: auth })
             .on('response', function(response) {
               test.equal(response.statusCode, 204, '204')
@@ -106,6 +104,60 @@ tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
       function() { /* pass */ }) }) })
 
 tape('DELETE /publishers/:/projects/:/editions/:/subscribers', function(test) {
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function() { test.fail('sent notification') })
+    var subscriptionPath = ( editionPath + '/subscribers/' + publisher )
+    series(
+      [ postForm(port, form, test),
+        postProject(publisher, password, port, project, edition, digest, test),
+        function(done) {
+          http.request(
+            { method: 'POST', port: port, path: subscriptionPath, auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        function(done) {
+          http.request(
+            { method: 'DELETE', port: port, path: subscriptionPath, auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        postAnnotation(publisher, password, port, annotation, test) ],
+      function() {
+        setTimeout(
+          function() {
+            mailgun.events.removeAllListeners()
+            test.end() ; closeServer() },
+          500) }) }) })
+
+tape('POST /publishers/:/projects/:/subscribers/:', function(test) {
+  var subscriptionPath = ( projectPath + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function(message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        closeServer() ; test.end() })
+    series(
+      [ postForm(port, form, test),
+        postProject(publisher, password, port, project, edition, digest, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: subscriptionPath,
+              auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        postProject(publisher, password, port, project, '2e', digest, test) ],
+      function() { /* pass */ }) }) })
+
+tape('DELETE /publishers/:/projects/:/subscribers/:', function(test) {
   server(function(port, closeServer) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
@@ -127,7 +179,7 @@ tape('DELETE /publishers/:/projects/:/editions/:/subscribers', function(test) {
               test.equal(response.statusCode, 204, '204')
               done() })
             .end() },
-        postAnnotation(publisher, password, port, annotation, test) ],
+        postProject(publisher, password, port, project, '2e', digest, test) ],
       function() {
         setTimeout(
           function() {
