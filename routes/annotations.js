@@ -1,3 +1,4 @@
+var annotationPath = require('../paths/annotation')
 var allowAuthorization = require('./allow-authorization')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
@@ -107,8 +108,7 @@ function postAnnotation(request, response, parameters, log, level, emit) {
         else {
           response.log.info({ event: 'annotation' })
           response.statusCode = 201
-          var location = ( '/annotations/' + annotation.uuid )
-          response.setHeader('Location', location)
+          response.setHeader('Location', annotationPath(annotation.uuid))
           response.end()
           emit('annotation', annotation) } }) }
     var authorized =

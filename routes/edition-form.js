@@ -1,3 +1,4 @@
+var formPath = require('../paths/form')
 var getCurrentEdition = require('../queries/get-current-edition')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -21,8 +22,6 @@ module.exports = function(request, response, parameters, log, level) {
       if (error) { internalError(response, error) }
       else {
         response.statusCode = 301
-        response.setHeader(
-          'Location',
-          ( 'https://api.commonform.org/forms/' + project.digest ))
+        response.setHeader('Location', formPath(project.digest))
         response.end() } }) }
   else { methodNotAllowed(response) } }

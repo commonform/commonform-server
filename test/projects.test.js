@@ -437,9 +437,8 @@ tape('GET /publishers/$publisher/projects/$project/editions/$existing/form', fun
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
               test.equal(
-                response.headers.location,
-                ( 'https://api.commonform.org/forms/' + digest ),
-                'GET api.commonform.org/forms/...')
+                response.headers.location, ( '/forms/' + digest ),
+                'Location /forms/...')
               done() })
             .end() } ],
       function finish() { done() ; test.end() }) }) })
@@ -464,9 +463,8 @@ tape('GET /publishers/$publisher/projects/$project/editions/current/form', funct
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
               test.equal(
-                response.headers.location,
-                ( 'https://api.commonform.org/forms/' + digest ),
-                'GET api.commonform.org/forms/...')
+                response.headers.location, ( '/forms/' + digest ),
+                'Location /forms/...')
               done() })
             .end() } ],
       function finish() { done() ; test.end() }) }) })
@@ -491,9 +489,8 @@ tape('GET /publishers/$publisher/projects/$project/editions/latest/form', functi
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
               test.equal(
-                response.headers.location,
-                ( 'https://api.commonform.org/forms/' + digest ),
-                'GET api.commonform.org/forms/...')
+                response.headers.location, ( '/forms/' + digest ),
+                'Location /forms/...')
               done() })
             .end() } ],
       function finish() { done() ; test.end() }) }) })

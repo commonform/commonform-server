@@ -1,4 +1,5 @@
 var badRequest = require('./responses/bad-request')
+var formPath = require('../paths/form')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var normalize = require('commonform-normalize')
@@ -20,7 +21,7 @@ module.exports = function(request, response, parameters, log, level, emit) {
           else {
             response.log.info({ event: 'form' })
             response.statusCode = 201
-            response.setHeader('Location', ( '/forms/' + digest ))
+            response.setHeader('Location', formPath(digest))
             response.end()
             // Emit an event for the new form. This will trigger
             // indexing and other processing by event handlers

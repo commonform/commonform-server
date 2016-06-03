@@ -1,19 +1,20 @@
 var badRequest = require('./responses/bad-request')
-var conflict = require('./responses/conflict')
 var bcrypt = require('bcrypt-password')
+var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
 var internalError = require('./responses/internal-error')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
 var publisherKeyFor = require('../keys/publisher')
+var publisherPath = require('../paths/publisher')
 var readJSONBody = require('./read-json-body')
 var requireAdministrator = require('./require-administrator')
 var requireAuthorization = require('./require-authorization')
 var sendJSON = require('./responses/send-json')
 var thrice = require('../thrice')
-var validPublisher = require('../validation/publisher')
 var validPassword = require('../validation/password')
+var validPublisher = require('../validation/publisher')
 
 var VERSION = require('../package.json').version
 
@@ -137,6 +138,6 @@ function postPublisher(request, response, parameters, log, level, emit) {
       if (error) { internalError(response, error) }
       else {
         response.statusCode = 201
-        response.setHeader('Location', ( '/publishers/' + name ))
+        response.setHeader('Location', publisherPath(name))
         response.end()
         emit('publisher', name) } }) } }

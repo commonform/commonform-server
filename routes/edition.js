@@ -1,6 +1,7 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var editionKeyFor = require('../keys/edition')
+var editionPath = require('../paths/edition')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
 var getCurrentEdition = require('../queries/get-current-edition')
@@ -79,11 +80,7 @@ function postEdition(request, response, parameters, log, level, emit) {
                             internalError(response, error) }
                           else {
                             response.statusCode = 201
-                            response.setHeader(
-                              'Location',
-                              ( '/publishers/' + publisher +
-                                '/projects/' + project +
-                                '/editions/' + edition ))
+                            response.setHeader('Location', editionPath(publisher, project, edition))
                             response.end()
                             emit('project', publisher, project, edition, digest) } }) } } }) } } }) } } }
       else { badRequest(response, 'invalid project') } }) } }
