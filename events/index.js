@@ -28,6 +28,14 @@ module.exports = function(log, level) {
   eventBus.level = level
   eventBus.log = eventLog
 
+  // Log every event when emitted.
+  var eventNames =
+    [ 'annotation', 'form', 'project',
+      'projectForm', 'subscribed', 'unsubscribed' ]
+  eventNames.forEach(function(eventName) {
+    eventBus.on(eventName, function() {
+      eventLog.info({ event: eventName }) }) })
+
   eventBus
     .on('form', onForm)
     .on('project', onProject)
@@ -52,10 +60,5 @@ module.exports = function(log, level) {
     eventBus
       .on('annotation', sendAnnotationNotifications)
       .on('project', sendProjectNotifications) }
-
-  // Log every event when emitted.
-  eventBus.eventNames().forEach(function(eventName) {
-    eventBus.prependListener(eventName, function() {
-      eventLog.info({ event: eventName }) }) })
 
   return eventBus }
