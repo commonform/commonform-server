@@ -12,11 +12,19 @@ module.exports = function(publisher, project, edition) {
     { publisher: publisher,
       project: project,
       edition: edition }
-  notifyProjectSubscribers(level, log, object) }
+  notifyProjectSubscribers(level, log, object)
+  notifyPublisherSubscribers(level, log, object) }
 
 function notifyProjectSubscribers(level, log, object) {
-  var editionString = editionStringFor(object)
   var keys = [ 'project', object.publisher, object.project ]
+  notifySubscribers(keys, level, log, object) }
+
+function notifyPublisherSubscribers(level, log, object) {
+  var keys = [ 'publisher', object.publisher ]
+  notifySubscribers(keys, level, log, object) }
+
+function notifySubscribers(keys, level, log, object) {
+  var editionString = editionStringFor(object)
   getSubscribers(level, keys, function(error, subscribers) {
     /* istanbul ignore if */
     if (error) { log.error(error) }

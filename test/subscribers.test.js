@@ -21,7 +21,8 @@ var annotation =
 var project = 'nda'
 var edition = '1e'
 var formPath = ( '/forms/' + digest )
-var projectPath = ( '/publishers/' + publisher + '/projects/' + project )
+var publisherPath = ( '/publishers/' + publisher )
+var projectPath = ( publisherPath + '/projects/' + project )
 var editionPath = ( projectPath + '/editions/' + edition )
 
 tape('POST /forms/:digest/subscribers', function(test) {
@@ -180,6 +181,58 @@ tape('DELETE /publishers/:/projects/:/subscribers/:', function(test) {
               done() })
             .end() },
         postProject(publisher, password, port, project, '2e', digest, test) ],
+      function() {
+        setTimeout(
+          function() {
+            mailgun.events.removeAllListeners()
+            test.end() ; closeServer() },
+          500) }) }) })
+
+tape('POST /publishers/:/subscribers/:', function(test) {
+  var subscriptionPath = ( publisherPath + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function(message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        closeServer() ; test.end() })
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST',
+              port: port,
+              path: subscriptionPath,
+              auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        postProject(publisher, password, port, project, edition, digest, test) ],
+      function() { /* pass */ }) }) })
+
+tape('DELETE /publishers/:/subscribers/:', function(test) {
+  var subscriptionPath = ( publisherPath + '/subscribers/' + publisher )
+  server(function(port, closeServer) {
+    mailgun.events
+      .once('message', function() { test.fail('sent notification') })
+    series(
+      [ postForm(port, form, test),
+        function(done) {
+          http.request(
+            { method: 'POST', port: port, path: subscriptionPath, auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        function(done) {
+          http.request(
+            { method: 'DELETE', port: port, path: subscriptionPath, auth: auth })
+            .on('response', function(response) {
+              test.equal(response.statusCode, 204, '204')
+              done() })
+            .end() },
+        postProject(publisher, password, port, project, edition, digest, test) ],
       function() {
         setTimeout(
           function() {
