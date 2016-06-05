@@ -1,9 +1,10 @@
 var s3 = require('../../s3')
+var encode = require('../../keys/encode')
 var VERSION = require('../../package.json').version
 
 /* istanbul ignore next */
 module.exports = function(publisher, project, edition, digest) {
-  var key = ( 'projects/' + [ publisher, project, edition ].join('/') )
+  var key = encode([ 'projects', publisher, project, edition ])
   var log = this.log.child({ log: 's3', key: key })
   //// Check if key already exists.
   s3.headObject({ Key: key }, function (error) {
