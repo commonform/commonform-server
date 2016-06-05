@@ -6,8 +6,8 @@ module.exports = function(level, keys, callback) {
   callback = once(callback)
   var subscribers = [ ]
   level.createReadStream(
-    { gt: keyFor(keys.concat(null)),
-      lt: keyFor(keys.concat(undefined)),
+    { gt: keyFor(keys.concat('')),
+      lt: keyFor(keys.concat('~')),
       keys: true,
       values: false })
     .on('data', function(key) {

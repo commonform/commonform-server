@@ -6,6 +6,7 @@ var sendJSON = require('./responses/send-json')
 module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
     getParents(level, parameters.digest, function(error, parents) {
+      console.log('%s is %j', 'parents', parents)
       /* istanbul ignore if */
       if (error) { internalError(error) }
       else { sendJSON(response, parents) } }) }

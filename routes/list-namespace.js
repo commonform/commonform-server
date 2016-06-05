@@ -9,8 +9,8 @@ module.exports = function(namespace) {
       response.setHeader('Content-Type', 'application/json')
       response.write('[\n')
       level.createReadStream(
-        { gt: encode([ namespace, null ]),
-          lt: encode([ namespace, undefined ]) })
+        { gt: encode([ namespace, '' ]),
+          lt: encode([ namespace, '~' ]) })
         .on('data', function(item) {
           response.write(
             ( ( first ? '' : ',' ) +

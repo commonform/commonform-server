@@ -74,8 +74,8 @@ function getAnnotations(request, response, parameters, log, level) {
           .on('end', function() { response.end('\n]') }) } }) }
   function annotationsStream(digest) {
     return level.createReadStream(
-      { gt: encode([ PREFIX, digest, null ]),
-        lt: encode([ PREFIX, digest, undefined ]) }) } }
+      { gt: encode([ PREFIX, digest, '' ]),
+        lt: encode([ PREFIX, digest, '~' ]) }) } }
 
 function matchesContext(annotation, contexts) {
   return (

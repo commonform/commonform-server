@@ -5,8 +5,8 @@ module.exports = function(prefix) {
   return function(level, name, callback) {
     var results = [ ]
     level.createReadStream(
-      { gt: encode([ prefix, name, null ]),
-        lt: encode([ prefix, name, undefined ]) })
+      { gt: encode([ prefix, name, '' ]),
+        lt: encode([ prefix, name, '~' ]) })
       .on('data', function(item) {
         results.push(decode(item.key)[2]) })
       .on('error',

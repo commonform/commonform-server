@@ -7,8 +7,8 @@ module.exports = function(level, digest, callback) {
   callback = once(callback)
   var projects = [ ]
   level.createReadStream(
-    { gt: encode([ 'form-to-project', digest, null ]),
-      lt: encode([ 'form-to-project', digest, undefined ]) })
+    { gt: encode([ 'form-to-project', digest, '' ]),
+      lt: encode([ 'form-to-project', digest, '~' ]) })
     .on('data', function pushToProjects(item) {
       var decodedKey = decodeKey(item.key)
       projects.push(
@@ -16,7 +16,7 @@ module.exports = function(level, digest, callback) {
           publisher: decodedKey[2],
           project: decodedKey[3],
           edition: decodedKey[4],
-          root: decodedKey[5] }) })
+          root: ( decodedKey[5] === 'true' ) }) })
     .on('error',
         /* istanbul ignore next */
         function yieldError(error) { callback(error) })

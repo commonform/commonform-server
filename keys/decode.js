@@ -1,1 +1,2 @@
-module.exports = require('bytewise/encoding/hex').decode
+module.exports = function(key) {
+  return key.split('/').map(decodeURIComponent) }

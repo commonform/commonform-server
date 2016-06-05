@@ -11,8 +11,8 @@ module.exports = function(request, response, parameters, log, level) {
     var digest = parameters.digest
     var parents = [ ]
     level.createReadStream(
-      { gt: encode([ PREFIX, digest, null ]),
-        lt: encode([ PREFIX, digest, undefined ]) })
+      { gt: encode([ PREFIX, digest, '' ]),
+        lt: encode([ PREFIX, digest, '~' ]) })
       .on('data', function(item) {
         var decoded = decode(item.key)
         parents.push({ heading: decoded[2], parent: decoded[3] }) })

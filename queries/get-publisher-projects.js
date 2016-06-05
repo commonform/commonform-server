@@ -1,11 +1,11 @@
 var decodeKey = require('../keys/decode')
-var makeProjectKey = require('../keys/edition')
+var encode = require('../keys/encode')
 
 module.exports = function(level, publisher, callback) {
   var keys = [ ]
   level.createKeyStream(
-    { gt: makeProjectKey(publisher, null, null),
-      lt: makeProjectKey(publisher, undefined, undefined) })
+    { gt: encode([ 'projects', publisher ]),
+      lt: encode([ 'projects', '~' ]) })
     .on('data', function pushDecodedKey(key) {
       keys.push(decodeKey(key)) })
     .on('error', /* istanbul ignore next */
