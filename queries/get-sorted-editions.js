@@ -12,7 +12,7 @@ module.exports = function(level, publisher, project, callback) {
         { publisher: decodedKey[1],
           project: decodedKey[2],
           edition: decodedKey[3],
-          digest: JSON.parse(item.value).digest }) })
+          digest: JSON.parse(item.value).edition.digest }) })
     .on('error',
       /* istanbul ignore next */
       function yieldError(error) { callback(error) })

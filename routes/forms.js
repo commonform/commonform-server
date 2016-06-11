@@ -1,13 +1,14 @@
-var backupForm = require('../backup/form')
 var badRequest = require('./responses/bad-request')
+var formKeyFor = require('../keys/form')
 var formPath = require('../paths/form')
+var formRecord = require('../records/form')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var normalize = require('commonform-normalize')
 var parallel = require('async.parallel')
-var putForm = require('../queries/put-form')
 var readJSONBody = require('./read-json-body')
 var s3 = require('../s3')
+var thrice = require('../thrice')
 var validForm = require('commonform-validate').form
 
 module.exports = function(request, response, parameters, log, level, emit) {
@@ -18,11 +19,14 @@ module.exports = function(request, response, parameters, log, level, emit) {
         var normalized = normalize(form)
         var digest = normalized.root
         response.log.info({ digest: digest })
-        var putOperations = [ putForm.bind(null, level, digest, form, true) ]
+        var key = formKeyFor(digest)
+        var record = JSON.stringify(formRecord(digest, form, true))
+        var putToLevel = thrice.bind(null, level.put.bind(level, key, record))
+        var putOperations = [ putToLevel ]
         /* istanbul ignore if */
         if (s3) {
-          var writeBackup = backupForm.bind(null, form, digest, normalized, log)
-          putOperations.push(writeBackup) }
+          var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
+          putOperations.push(putBackup) }
         parallel(putOperations, function(error) {
           /* istanbul ignore if */
           if (error) { internalError(response, error) }

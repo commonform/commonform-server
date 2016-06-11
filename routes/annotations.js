@@ -1,6 +1,6 @@
-var annotationPath = require('../paths/annotation')
 var allowAuthorization = require('./allow-authorization')
-var backupAnnotation = require('../backup/annotation')
+var annotationPath = require('../paths/annotation')
+var annotationRecord = require('../records/annotation')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
 var equals = require('array-equal')
@@ -9,13 +9,14 @@ var getAnnotation = require('../queries/get-annotation')
 var getForm = require('./get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
+var keyForAnnotation = require('../keys/annotation')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
 var normalize = require('commonform-normalize')
 var parallel = require('async.parallel')
-var putAnnotation = require('../queries/put-annotation')
 var readJSONBody = require('./read-json-body')
 var s3 = require('../s3')
+var thrice = require('../thrice')
 var unauthorized = require('./responses/unauthorized')
 var url = require('url')
 var uuid = require('uuid')
@@ -106,13 +107,14 @@ function postAnnotation(request, response, parameters, log, level, emit) {
   var byAdministrator = ( request.publisher === 'administrator' )
   readJSONBody(request, response, function(annotation) {
     var put = function() {
-      var putOperations = [ ]
-      var putToLevel = putAnnotation.bind(null, level, annotation)
-      putOperations.push(putToLevel)
+      var key = keyForAnnotation(annotation.uuid)
+      var record = JSON.stringify(annotationRecord(annotation))
+      var putToLevel = thrice.bind(null, level.put.bind(level, key, record))
+      var putOperations = [ putToLevel ]
       /* istanbul ignore if */
       if (s3) {
-        var writeBackup = backupAnnotation.bind(null, annotation, log)
-        putOperations.push(writeBackup) }
+        var putBackup = thrice.bind(null, s3.put.bind(null, key,record, log))
+        putOperations.push(putBackup) }
       parallel(putOperations, function(error) {
         /* istanbul ignore if */
         if (error) { internalError(response, error) }

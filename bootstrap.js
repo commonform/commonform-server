@@ -97,9 +97,9 @@ function postProject(record, log, callback) {
       method: 'POST',
       auth: ( 'administrator:' + password ),
       path:
-        ( '/publishers/' + record.publisher +
-          '/projects/' + record.project +
-          '/editions/' + record.edition ),
+        ( '/publishers/' + record.project.publisher +
+          '/projects/' + record.project.project +
+          '/editions/' + record.project.edition ),
       port: server.port }
   log.info({ event: 'posting' })
   http

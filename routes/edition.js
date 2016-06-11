@@ -1,15 +1,15 @@
-var backupEdition = require('../backup/edition')
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
-var editionKeyFor = require('../keys/edition')
 var editionPath = require('../paths/edition')
+var editionRecord = require('../records/edition')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
 var getCurrentEdition = require('../queries/get-current-edition')
 var getLatestEdition = require('../queries/get-latest-edition')
-var getProject = require('../queries/get-project')
+var getEdition = require('../queries/get-edition')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
+var keyForEdition = require('../keys/edition')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
@@ -21,8 +21,6 @@ var s3 = require('../s3')
 var sendJSON = require('./responses/send-json')
 var thrice = require('../thrice')
 var validProject = require('../validation/project')
-
-var VERSION = require('../package.json').version
 
 module.exports = function(request, response) {
   var method = request.method
@@ -47,9 +45,9 @@ function postEdition(request, response, parameters, log, level, emit) {
         if (!isDigest(digest)) {
           badRequest(response, 'invalid digest') }
         else {
-          var editionKey = editionKeyFor(publisher, project, edition)
+          var editionKey = keyForEdition(publisher, project, edition)
           var formKey = formKeyFor(digest)
-          var value = JSON.stringify({ version: VERSION, digest: digest })
+          var record = JSON.stringify(editionRecord(publisher, project, edition, digest))
           var unlock = lock(level, editionKey, 'w')
           /* istanbul ignore if */
           if (!unlock) { conflict(response) }
@@ -74,11 +72,12 @@ function postEdition(request, response, parameters, log, level, emit) {
                         unlock()
                         conflict(response) }
                       else {
-                        var putToLevel = thrice.bind(null, level.put.bind(level, editionKey, value))
+                        var putToLevel = thrice.bind(null, level.put.bind(level, editionKey, record))
                         var putOperations = [ putToLevel ]
+                        /* istanbul ignore if */
                         if (s3) {
-                          var writeBackup = backupEdition.bind(null, publisher, project, edition, digest, log)
-                          putOperations.push(writeBackup) }
+                          var putBackup = thrice.bind(null, s3.put.bind(null, editionKey, record))
+                          putOperations.push(putBackup) }
                         parallel(putOperations, function(error) {
                           unlock()
                           /* istanbul ignore if */
@@ -101,7 +100,7 @@ function serveProject(request, response, parameters, log, level) {
   else if (edition === 'latest') {
     fetch = getLatestEdition.bind(this, level, publisher, project) }
   else {
-    fetch = getProject.bind(this, level, publisher, project, edition) }
+    fetch = getEdition.bind(this, level, publisher, project, edition) }
   fetch(function(error, project) {
     /* istanbul ignore if */
     if (error) { internalError(response, error) }

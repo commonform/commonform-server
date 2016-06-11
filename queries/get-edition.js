@@ -8,7 +8,7 @@ module.exports = function(level, publisher, project, edition, callback) {
       if (error.notFound) { callback(null, false) }
       else { callback(error) } }
     else {
-      var data = JSON.parse(json)
+      var data = JSON.parse(json).edition
       var result =
         { publisher: publisher,
           project: project,
