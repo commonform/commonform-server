@@ -1,12 +1,10 @@
 var EventEmitter = require('events').EventEmitter
-var backupAnnotation = require('./backup/annotation')
-var backupForm = require('./backup/form')
-var backupProject = require('./backup/project')
 var indexAnnotation = require('./index-annotation')
 var indexDigest = require('./index-digest')
 var indexForm = require('./index-form')
 var indexFormChildren = require('./index-form-children')
 var indexPublisher = require('./index-publisher')
+var mailgun = require('../mailgun')
 var onForm = require('./form')
 var onProject = require('./project')
 var onProjectForm = require('./project-form')
@@ -14,9 +12,6 @@ var sendAnnotationNotifications = require('./notifications/annotation')
 var sendProjectNotifications = require('./notifications/project')
 var subscribed = require('./subscribed')
 var unsubscribed = require('./unsubscribed')
-
-var s3 = require('../s3')
-var mailgun = require('../mailgun')
 
 module.exports = function(log, level) {
   // Create a Pino child log for events.
@@ -47,14 +42,6 @@ module.exports = function(log, level) {
     .on('annotation', indexAnnotation)
     .on('subscribed', subscribed)
     .on('unsubscribed', unsubscribed)
-
-  /* istanbul ignore if */
-  if (s3) {
-    eventLog.info({ event: 'enabling s3' })
-    // Create a Pino child log for S3 backup.
-    eventBus.on('form', backupForm)
-    eventBus.on('project', backupProject)
-    eventBus.on('annotation', backupAnnotation) }
 
   if (mailgun) {
     eventBus

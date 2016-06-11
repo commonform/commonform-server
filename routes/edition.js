@@ -1,3 +1,4 @@
+var backupEdition = require('../backup/edition')
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var editionKeyFor = require('../keys/edition')
@@ -12,13 +13,14 @@ var isDigest = require('is-sha-256-hex-digest')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
+var parallel = require('async.parallel')
 var parseEdition = require('reviewers-edition-parse')
 var readJSONBody = require('./read-json-body')
 var requireAuthorization = require('./require-authorization')
+var s3 = require('../s3')
 var sendJSON = require('./responses/send-json')
 var thrice = require('../thrice')
 var validProject = require('../validation/project')
-var validPublisher = require('../validation/publisher')
 
 var VERSION = require('../package.json').version
 
@@ -72,12 +74,15 @@ function postEdition(request, response, parameters, log, level, emit) {
                         unlock()
                         conflict(response) }
                       else {
-                        var put = level.put.bind(level, editionKey, value)
-                        thrice(put, function(error) {
+                        var putToLevel = thrice.bind(null, level.put.bind(level, editionKey, value))
+                        var putOperations = [ putToLevel ]
+                        if (s3) {
+                          var writeBackup = backupEdition.bind(null, publisher, project, edition, digest, log)
+                          putOperations.push(writeBackup) }
+                        parallel(putOperations, function(error) {
                           unlock()
                           /* istanbul ignore if */
-                          if (error) {
-                            internalError(response, error) }
+                          if (error) { internalError(response, error) }
                           else {
                             response.statusCode = 201
                             response.setHeader('Location', editionPath(publisher, project, edition))

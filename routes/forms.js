@@ -1,10 +1,13 @@
+var backupForm = require('../backup/form')
 var badRequest = require('./responses/bad-request')
 var formPath = require('../paths/form')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var normalize = require('commonform-normalize')
+var parallel = require('async.parallel')
 var putForm = require('../queries/put-form')
 var readJSONBody = require('./read-json-body')
+var s3 = require('../s3')
 var validForm = require('commonform-validate').form
 
 module.exports = function(request, response, parameters, log, level, emit) {
@@ -15,7 +18,12 @@ module.exports = function(request, response, parameters, log, level, emit) {
         var normalized = normalize(form)
         var digest = normalized.root
         response.log.info({ digest: digest })
-        putForm(level, digest, form, true, function(error) {
+        var putOperations = [ putForm.bind(null, level, digest, form, true) ]
+        /* istanbul ignore if */
+        if (s3) {
+          var writeBackup = backupForm.bind(null, form, digest, normalized, log)
+          putOperations.push(writeBackup) }
+        parallel(putOperations, function(error) {
           /* istanbul ignore if */
           if (error) { internalError(response, error) }
           else {

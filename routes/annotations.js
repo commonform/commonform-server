@@ -1,5 +1,6 @@
 var annotationPath = require('../paths/annotation')
 var allowAuthorization = require('./allow-authorization')
+var backupAnnotation = require('../backup/annotation')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
 var equals = require('array-equal')
@@ -11,8 +12,10 @@ var isDigest = require('is-sha-256-hex-digest')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
 var normalize = require('commonform-normalize')
+var parallel = require('async.parallel')
 var putAnnotation = require('../queries/put-annotation')
 var readJSONBody = require('./read-json-body')
+var s3 = require('../s3')
 var unauthorized = require('./responses/unauthorized')
 var url = require('url')
 var uuid = require('uuid')
@@ -100,17 +103,25 @@ function computeContexts(normalized) {
     return result } }
 
 function postAnnotation(request, response, parameters, log, level, emit) {
+  var byAdministrator = ( request.publisher === 'administrator' )
   readJSONBody(request, response, function(annotation) {
     var put = function() {
-      putAnnotation(level, annotation, function(error) {
+      var putOperations = [ ]
+      var putToLevel = putAnnotation.bind(null, level, annotation)
+      putOperations.push(putToLevel)
+      /* istanbul ignore if */
+      if (s3) {
+        var writeBackup = backupAnnotation.bind(null, annotation, log)
+        putOperations.push(writeBackup) }
+      parallel(putOperations, function(error) {
         /* istanbul ignore if */
-        if (error) { internalError(response) }
+        if (error) { internalError(response, error) }
         else {
           response.log.info({ event: 'annotation' })
           response.statusCode = 201
           response.setHeader('Location', annotationPath(annotation.uuid))
           response.end()
-          emit('annotation', annotation) } }) }
+          emit('annotation', annotation, byAdministrator) } }) }
     var authorized =
       ( ( request.publisher === 'administrator' ) ||
         ( request.publisher === annotation.publisher ) )
