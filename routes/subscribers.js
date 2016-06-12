@@ -4,7 +4,9 @@ var internalError = require('./responses/internal-error')
 var keyFor = require('../keys/subscription')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
+var parallel = require('async.parallel')
 var requireAuthorization = require('./require-authorization')
+var s3 = require('../s3')
 var thrice = require('../thrice')
 
 module.exports = function(type, keys) {
@@ -22,16 +24,18 @@ module.exports = function(type, keys) {
     var keyComponents = [ type ]
       .concat(keys.map(function(key) { return parameters[key] }))
     var key = keyFor(keyComponents)
+    var record = true
     var unlock = lock(level, key, 'w')
     /* istanbul ignore if */
-    if (!unlock) {
-      unlock()
-      conflict(response, new Error('locked')) }
+    if (!unlock) { conflict(response, new Error('locked')) }
     else {
-      var put = level.put.bind(level, key, true)
-      thrice(put, function(error) {
+      var putToLevel = thrice.bind(null, level.put.bind(level, key, true))
+      var putOperations = [ putToLevel ]
+      if (s3) {
+        var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
+        putOperations.push(putBackup) }
+      parallel(putOperations, function(error) {
         unlock()
-        /* istanbul ignore if */
         if (error) { internalError(response, error) }
         else {
           response.statusCode = 204
@@ -44,9 +48,7 @@ module.exports = function(type, keys) {
     var key = keyFor(keyComponents)
     var unlock = lock(level, key, 'w')
     /* istanbul ignore if */
-    if (!unlock) {
-      unlock()
-      conflict(response, new Error('locked')) }
+    if (!unlock) { conflict(response, new Error('locked')) }
     else {
       var del = level.del.bind(level, key)
       thrice(del, function(error) {
