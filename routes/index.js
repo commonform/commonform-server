@@ -22,11 +22,11 @@ routes.set('/publishers/:publisher/subscribers/:subscriber',
 
 // Projects
 routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
-routes.set('/publishers/:publisher/projects/:project/editions', require('./project-editions'))
+routes.set('/publishers/:publisher/projects/:project/editions', require('./releases'))
 routes.set('/publishers/:publisher/projects/:project/subscribers/:subscriber',
   subscribers('project', [ 'publisher', 'project', 'subscriber' ]))
 
-// Editions
+// Releases
 routes.set('/publishers/:publisher/projects/:project/editions/:edition', require('./edition'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition/form', require('./edition-form'))
 routes.set('/publishers/:publisher/projects/:project/editions/:edition/subscribers/:subscriber',

@@ -1,6 +1,6 @@
-var unauthorized = require('./responses/unauthorized')
-var parseAuthorization = require('basic-auth')
 var isAdministrator = require('./is-administrator')
+var parseAuthorization = require('basic-auth')
+var unauthorized = require('./responses/unauthorized')
 
 module.exports = function(handler) {
   return function(request, response, parameters, log) {

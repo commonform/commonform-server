@@ -1,5 +1,5 @@
-var methodNotAllowed = require('./responses/method-not-allowed')
 var listNamespace = require('./list-namespace')
+var methodNotAllowed = require('./responses/method-not-allowed')
 
 var listPublishers = listNamespace('publishers')
 

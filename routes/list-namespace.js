@@ -1,5 +1,5 @@
-var encode = require('../keys/encode')
 var decode = require('../keys/decode')
+var encode = require('../keys/encode')
 var methodNotAllowed = require('./responses/method-not-allowed')
 
 module.exports = function(namespace) {

@@ -1,8 +1,8 @@
-var getSortedEditions = require('./get-sorted-editions')
+var getSortedReleases = require('./get-sorted-editions')
 var parseEdition = require('reviewers-edition-parse')
 
 module.exports = function(level, publisher, project, callback) {
-  getSortedEditions(level, publisher, project, function(error, editions) {
+  getSortedReleases(level, publisher, project, function(error, editions) {
     /* istanbul ignore if */
     if (error) { callback(error) }
     else {

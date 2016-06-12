@@ -1,5 +1,5 @@
-var internalError = require('./responses/internal-error')
 var getPublisherProjects = require('../queries/get-publisher-projects')
+var internalError = require('./responses/internal-error')
 
 module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {

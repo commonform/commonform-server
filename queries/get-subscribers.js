@@ -1,5 +1,5 @@
-var keyFor = require('../keys/subscription')
 var decode = require('../keys/decode')
+var keyFor = require('../keys/subscription')
 var once = require('once')
 
 module.exports = function(level, keys, callback) {

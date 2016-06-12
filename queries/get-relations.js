@@ -1,5 +1,5 @@
-var encode = require('../keys/encode')
 var decode = require('../keys/decode')
+var encode = require('../keys/encode')
 
 module.exports = function(prefix) {
   return function(level, name, callback) {

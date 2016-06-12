@@ -1,9 +1,9 @@
 var formPath = require('../paths/form')
-var getCurrentEdition = require('../queries/get-current-edition')
+var getCurrentEdition = require('../queries/get-current-release')
+var getEdition = require('../queries/get-release')
+var getLatestEdition = require('../queries/get-latest-release')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
-var getEdition = require('../queries/get-edition')
-var getLatestEdition = require('../queries/get-latest-edition')
 
 module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {

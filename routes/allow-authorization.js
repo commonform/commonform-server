@@ -1,8 +1,8 @@
+var checkPassword = require('./check-password')
 var internalError = require('./responses/internal-error')
 var isAdministrator = require('./is-administrator')
 var parseAuthorization = require('basic-auth')
 var unauthorized = require('./responses/unauthorized')
-var checkPassword = require('./check-password')
 
 module.exports = function(handler) {
   return function(request, response, parameters, log, level) {
