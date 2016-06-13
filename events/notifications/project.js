@@ -1,48 +1,32 @@
 var editionStringFor = require('../../edition-string')
-var getPublisher = require('../../queries/get-publisher')
-var getSubscribers = require('../../queries/get-subscribers')
-var mailgun = require('../../mailgun')
+var mailEachSubscriber = require('./mail-each-subscriber')
 var spell = require('reviewers-edition-spell')
 
 /* istanbul ignore next */
 module.exports = function(publisher, project, edition) {
   var log = this.log
   var level = this.level
-  var object =
+  var release =
     { publisher: publisher,
       project: project,
       edition: edition }
-  notifyProjectSubscribers(level, log, object)
-  notifyPublisherSubscribers(level, log, object) }
+  notifyProjectSubscribers(level, log, release)
+  notifyPublisherSubscribers(level, log, release) }
 
-function notifyProjectSubscribers(level, log, object) {
-  var keys = [ 'project', object.publisher, object.project ]
-  notifySubscribers(keys, level, log, object) }
+function notifyProjectSubscribers(level, log, release) {
+  var keys = [ 'project', release.publisher, release.project ]
+  notifySubscribers(keys, level, log, release) }
 
-function notifyPublisherSubscribers(level, log, object) {
-  var keys = [ 'publisher', object.publisher ]
-  notifySubscribers(keys, level, log, object) }
+function notifyPublisherSubscribers(level, log, release) {
+  var keys = [ 'publisher', release.publisher ]
+  notifySubscribers(keys, level, log, release) }
 
-function notifySubscribers(keys, level, log, object) {
-  var editionString = editionStringFor(object)
-  getSubscribers(level, keys, function(error, subscribers) {
-    /* istanbul ignore if */
-    if (error) { log.error(error) }
-    else {
-      subscribers.forEach(function(subscriber) {
-        getPublisher(level, subscriber, function(error, subscriber) {
-          /* istanbul ignore if */
-          if (error) { log.error(error) }
-          else {
-            /* istanbul ignore if */
-            if (typeof subscriber.email !== 'string') {
-              log.error(new Error('No e-mail for ' + subscriber.name)) }
-            else {
-              var message =
-                { to: subscriber.email,
-                  subject: ( editionString ),
-                  text:
-                    [ ( object.publisher + ' has published ' +
-                        object.project + ' ' + spell(object.edition)) ]
-                    .join('\n') }
-              mailgun(message, log) } } }) }) } }) }
+function notifySubscribers(keys, level, log, release) {
+  var editionString = editionStringFor(release)
+  mailEachSubscriber(level, log, keys, function() {
+    return (
+      { subject: editionString,
+        text:
+          [ ( release.publisher + ' published ' +
+              release.project + ' ' + spell(release.edition)) ]
+            .join('\n') } ) }) }

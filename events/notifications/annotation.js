@@ -1,9 +1,7 @@
 var editionStringFor = require('../../edition-string')
 var getParents = require('../../queries/get-parents')
 var getProjects = require('../../queries/get-projects')
-var getPublisher = require('../../queries/get-publisher')
-var getSubscribers = require('../../queries/get-subscribers')
-var sendEMail = require('./send-email')
+var mailEachSubscriber = require('./mail-each-subscriber')
 
 /* istanbul ignore next */
 module.exports = function(annotation) {
@@ -20,23 +18,14 @@ function notifyEditionSubscribers(level, log, annotation) {
       var keys =
         [ 'edition',
           project.publisher, project.project, project.edition ]
-      getSubscribers(level, keys, function(error, subscribers) {
-        /* istanbul ignore if */
-        if (error) { log.error(error) }
-        else {
-          subscribers.forEach(function(subscriber) {
-            getPublisher(level, subscriber, function(error, subscriber) {
-              /* istanbul ignore if */
-              if (error) { log.error(error) }
-              else {
-                var message =
-                  { subject: ( 'Annotation to ' + editionString ),
-                    text:
-                      [ ( annotation.publisher +
-                          ' has made a new annotation to ' +
-                          editionString ) ]
-                      .join('\n') }
-                sendEMail(subscriber, message, log) } }) }) } }) }) }) }
+      mailEachSubscriber(level, log, keys, function() {
+        return (
+          { subject: ( 'Annotation to ' + editionString ),
+            text:
+              [ ( annotation.publisher +
+                  ' has made a new annotation to ' +
+                  editionString ) ]
+                .join('\n') } ) }) }) }) }
 
 function notifyFormSubscribers(level, log, annotation) {
   var digest = annotation.context
@@ -46,40 +35,22 @@ function notifyFormSubscribers(level, log, annotation) {
     else {
       [ digest ].concat(parents).forEach(function(context) {
         var keys = [ 'form', context ]
-        getSubscribers(level, keys, function(error, subscribers) {
-          /* istanbul ignore if */
-          if (error) { log.error(error) }
-          else {
-            subscribers.forEach(function(subscriber) {
-              getPublisher(level, subscriber, function(error, subscriber) {
-                /* istanbul ignore if */
-                if (error) { log.error(error) }
-                else {
-                  var message =
-                    { subject: ( 'Annotation to ' + annotation.digest ),
-                      text:
-                        [ ( annotation.publisher +
-                            ' has made a new annotation to ' +
-                            annotation.form ) ]
-                        .join('\n') }
-                  sendEMail(subscriber, message, log) } }) }) } }) }) } }) }
+        mailEachSubscriber(level, log, keys, function() {
+          return (
+            { subject: ( 'Annotation to ' + annotation.digest ),
+              text:
+                [ ( annotation.publisher +
+                    ' has made a new annotation to ' +
+                    annotation.form ) ]
+                  .join('\n') } ) }) }) } }) }
 
 function notifyAnnotationSubscribers(level, log, annotation) {
   var parents = annotation.replyTo
   parents.forEach(function(parent) {
     var keys = [ 'annotation', parent ]
-    getSubscribers(level, keys, function(error, subscribers) {
-      /* istanbul ignore if */
-      if (error) { log.error(error) }
-      else {
-        subscribers.forEach(function(subscriber) {
-          getPublisher(level, subscriber, function(error, subscriber) {
-            /* istanbul ignore if */
-            if (error) { log.error(error) }
-            else {
-              var message =
-                { subject: ( 'Reply to annotation to ' + annotation.digest ),
-                  text:
-                    [ ( annotation.publisher + ' has replied to annotation ' + parent ) ]
-                    .join('\n') }
-              sendEMail(subscriber, message, log) } }) }) } }) }) }
+    mailEachSubscriber(level, log, keys, function() {
+      return (
+        { subject: ( 'Reply to annotation to ' + annotation.digest ),
+          text:
+            [ ( annotation.publisher + ' has replied to annotation ' + parent ) ]
+              .join('\n') } ) }) }) }
