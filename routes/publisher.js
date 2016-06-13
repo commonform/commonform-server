@@ -81,7 +81,7 @@ function putPublisher(request, response, parameters, log, level, emit) {
                   internalError(response, error) }
                 else {
                   var record = JSON.stringify(publisherRecord(name, json.about, json.email, hash))
-                  store(level, emit, unlock, name, key, record, done) } }) } } }) } } }) }
+                  store(level, emit, log, unlock, name, key, record, done) } }) } } }) } } }) }
 
 function postPublisher(request, response, parameters, log, level, emit) {
   var publisher = parameters.publisher
@@ -125,7 +125,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
               var record
               if (alreadyHashed) {
                 record = JSON.stringify(publisherRecord(name, json.about, json.email, json.hash))
-                store(level, emit, unlock, name, key, record, done) }
+                store(level, emit, log, unlock, name, key, record, done) }
               else {
                 bcrypt.hash(json.password, function(error, hash) {
                   /* istanbul ignore if */
@@ -134,14 +134,13 @@ function postPublisher(request, response, parameters, log, level, emit) {
                     internalError(response, error) }
                   else {
                     record = JSON.stringify(publisherRecord(name, json.about, json.email, hash))
-                    store(level, emit, unlock, name, key, record, done) } }) } } } }) } } }) }
+                    store(level, emit, log, unlock, name, key, record, done) } }) } } } }) } } }) }
 
-function store(level, emit, unlock, name, key, record, callback) {
+function store(level, emit, log, unlock, name, key, record, callback) {
   var putToLevel = thrice.bind(null, level.put.bind(level, key, record))
   var putOperations = [ putToLevel ]
-  /* istanbul ignore if */
   if (s3) {
-    var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
+    var putBackup = thrice.bind(null, s3.put.bind(null, key, record, log))
     putOperations.push(putBackup) }
   parallel(putOperations, function(error) {
     unlock()

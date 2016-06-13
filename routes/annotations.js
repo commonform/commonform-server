@@ -111,9 +111,8 @@ function postAnnotation(request, response, parameters, log, level, emit) {
       var record = JSON.stringify(annotationRecord(annotation))
       var putToLevel = thrice.bind(null, level.put.bind(level, key, record))
       var putOperations = [ putToLevel ]
-      /* istanbul ignore if */
       if (s3) {
-        var putBackup = thrice.bind(null, s3.put.bind(null, key,record, log))
+        var putBackup = thrice.bind(null, s3.put.bind(null, key, record, log))
         putOperations.push(putBackup) }
       parallel(putOperations, function(error) {
         /* istanbul ignore if */

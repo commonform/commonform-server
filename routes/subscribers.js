@@ -34,7 +34,7 @@ module.exports = function(type, keys) {
         var putToLevel = thrice.bind(null, level.put.bind(level, key, true))
         var putOperations = [ putToLevel ]
         if (s3) {
-          var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
+          var putBackup = thrice.bind(null, s3.put.bind(null, key, record, log))
           putOperations.push(putBackup) }
         parallel(putOperations, function(error) {
           unlock()

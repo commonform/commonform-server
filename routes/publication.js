@@ -74,9 +74,8 @@ function postPublication(request, response, parameters, log, level, emit) {
                       else {
                         var putToLevel = thrice.bind(null, level.put.bind(level, publicationKey, record))
                         var putOperations = [ putToLevel ]
-                        /* istanbul ignore if */
                         if (s3) {
-                          var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record))
+                          var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record, log))
                           putOperations.push(putBackup) }
                         parallel(putOperations, function(error) {
                           unlock()

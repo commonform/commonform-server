@@ -2,6 +2,7 @@ var concat = require('concat-stream')
 var http = require('http')
 var makeInfiniteStream = require('./infinite-stream')
 var normalize = require('commonform-normalize')
+var s3 = require('../s3')
 var server = require('./server')
 var tape = require('tape')
 
@@ -23,13 +24,17 @@ tape('POST /forms with form', function(test) {
     var form = { content: [ 'Just a test' ] }
     var root = normalize(form).root
     var request = { method: 'POST', path: '/forms', port: port }
+    s3.events
+      .once('put', function(key) {
+        test.assert(key.indexOf(root) !== -1)
+        s3.events.removeAllListeners()
+        done() ; test.end() })
     http
       .request(request, function(response) {
         test.equal(response.statusCode, 201, 'responds 200')
         test.equal(
           response.headers.location, ( '/forms/' + root ),
-          'sets location header')
-          done() ; test.end() })
+          'sets location header') })
       .end(JSON.stringify(form)) }) })
 
 tape('POST /forms with oversized request body', function(test) {
