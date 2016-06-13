@@ -11,8 +11,6 @@ var onProjectForm = require('./project-form')
 var sendAnnotationNotifications = require('./notifications/annotation')
 var sendIncludedNotifications = require('./notifications/included')
 var sendProjectNotifications = require('./notifications/project')
-var subscribed = require('./subscribed')
-var unsubscribed = require('./unsubscribed')
 
 module.exports = function(log, level) {
   // Create a Pino child log for events.
@@ -41,8 +39,6 @@ module.exports = function(log, level) {
     .on('projectForm', indexFormChildren)
     .on('projectForm', indexDigest)
     .on('annotation', indexAnnotation)
-    .on('subscribed', subscribed)
-    .on('unsubscribed', unsubscribed)
 
   if (mailgun) {
     eventBus

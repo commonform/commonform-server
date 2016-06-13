@@ -1,5 +1,5 @@
 var conflict = require('./responses/conflict')
-var exists = require('../queries/exists')
+var decode = require('../keys/decode')
 var internalError = require('./responses/internal-error')
 var keyFor = require('../keys/subscription')
 var lock = require('level-lock')
@@ -13,64 +13,65 @@ module.exports = function(type, keys) {
   return function(request, response) {
     var method = request.method
     if (method === 'POST') {
+      var postSubscriber = makeRecord('subscribed')
       requireAuthorization(postSubscriber).apply(this, arguments) }
     else if (method === 'DELETE') {
+      var deleteSubscriber = makeRecord('unsubscribed')
       requireAuthorization(deleteSubscriber).apply(this, arguments) }
     else if (method === 'GET') {
       requireAuthorization(getSubscriber).apply(this, arguments) }
     else { methodNotAllowed(response) } }
 
-  function postSubscriber(request, response, parameters, log, level, emit) {
-    var keyComponents = [ type ]
-      .concat(keys.map(function(key) { return parameters[key] }))
-    var key = keyFor(keyComponents)
-    var record = true
-    var unlock = lock(level, key, 'w')
-    /* istanbul ignore if */
-    if (!unlock) { conflict(response, new Error('locked')) }
-    else {
-      var putToLevel = thrice.bind(null, level.put.bind(level, key, true))
-      var putOperations = [ putToLevel ]
-      if (s3) {
-        var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
-        putOperations.push(putBackup) }
-      parallel(putOperations, function(error) {
-        unlock()
-        if (error) { internalError(response, error) }
-        else {
-          response.statusCode = 204
-          response.end()
-          emit('subscribed', keyComponents) } }) } }
-
-  function deleteSubscriber(request, response, parameters, log, level, emit) {
-    var keyComponents = [ type ]
-      .concat(keys.map(function(key) { return parameters[key] }))
-    var key = keyFor(keyComponents)
-    var unlock = lock(level, key, 'w')
-    /* istanbul ignore if */
-    if (!unlock) { conflict(response, new Error('locked')) }
-    else {
-      var del = level.del.bind(level, key)
-      thrice(del, function(error) {
-        unlock()
-        /* istanbul ignore if */
-        if (error) { internalError(response, error) }
-        else {
-          response.statusCode = 204
-          response.end()
-          emit('unsubscribed', keyComponents) } }) } }
+  function makeRecord(event) {
+    return function(request, response, parameters, log, level, emit) {
+      var keyComponents = makeComponents(type, keys, parameters, event)
+      var key = keyFor(keyComponents)
+      var record = ''
+      var unlock = lock(level, key, 'w')
+      /* istanbul ignore if */
+      if (!unlock) { conflict(response, new Error('locked')) }
+      else {
+        var putToLevel = thrice.bind(null, level.put.bind(level, key, true))
+        var putOperations = [ putToLevel ]
+        if (s3) {
+          var putBackup = thrice.bind(null, s3.put.bind(null, key, record))
+          putOperations.push(putBackup) }
+        parallel(putOperations, function(error) {
+          unlock()
+          if (error) { internalError(response, error) }
+          else {
+            response.statusCode = 204
+            response.end()
+            emit(event, keyComponents) } }) } } }
 
   function getSubscriber(request, response, parameters, log, level) {
-    var keyComponents = [ type ]
-      .concat(keys.map(function(key) { return parameters[key] }))
-    var key = keyFor(keyComponents)
-    exists(level, key, function(error, exists) {
-      /* istanbul ignore if */
-      if (error) { internalError(response, error) }
-      else {
-        if (exists) {
+    var keyComponents = makeComponents(type, keys, parameters, '')
+    keyComponents.splice(-2, 2)
+    level.createReadStream(
+        { gt: keyFor(keyComponents.concat('')),
+          lt: keyFor(keyComponents.concat('~')),
+          keys: true,
+          values: false,
+          reverse: true,
+          limit: 1 })
+      .on('error', function(error) { internalError(response, error) })
+      .on('data', function(key) {
+        var decoded = decode(key)
+        var action = decoded[decoded.length - 1]
+        if (action === 'subscribed') {
           response.statusCode = 204
           response.end() }
-        else {
-          response.statusCode = 404
-          response.end() } } }) } }
+        else /* if (action === 'unsubscribed') */ {
+          notFound() } })
+      .on('end', notFound)
+    function notFound() {
+      response.statusCode = 404
+      response.end() } } }
+
+function iso8601() { return new Date().toISOString() }
+
+function makeComponents(type, keys, parameters, event) {
+  return [ type ]
+    .concat(keys.map(function(key) { return parameters[key] }))
+    .concat(iso8601())
+    .concat(event) }

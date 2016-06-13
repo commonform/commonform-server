@@ -12,7 +12,15 @@ module.exports = function(level, keys, callback) {
       values: false })
     .on('data', function(key) {
       var decoded = decode(key)
-      subscribers.push(decoded[decoded.length - 1]) })
+      var publisher = decoded[decoded.length - 3]
+      var action = decoded[decoded.length - 1]
+      if (action === 'subscribed') {
+        if (subscribers.indexOf(publisher) === -1) {
+          subscribers.push(publisher) } }
+      else /* if (action === 'unsubscribed') */ {
+        var index = subscribers.indexOf(publisher)
+        if (index !== -1) {
+          subscribers.splice(index, 1) } } })
     .on('error',
       /* istanbul ignore next */
       function(error) { callback(error) })
