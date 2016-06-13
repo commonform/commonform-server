@@ -99,7 +99,7 @@ function postProject(record, log, callback) {
       path:
         ( '/publishers/' + record.project.publisher +
           '/projects/' + record.project.project +
-          '/editions/' + record.project.edition ),
+          '/releases/' + record.project.edition ),
       port: server.port }
   log.info({ event: 'posting' })
   http

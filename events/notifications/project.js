@@ -1,4 +1,4 @@
-var editionStringFor = require('../../edition-string')
+var releaseStringFor = require('../../release-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 var spell = require('reviewers-edition-spell')
 
@@ -22,10 +22,10 @@ function notifyPublisherSubscribers(level, log, release) {
   notifySubscribers(keys, level, log, release) }
 
 function notifySubscribers(keys, level, log, release) {
-  var editionString = editionStringFor(release)
+  var releaseString = releaseStringFor(release)
   mailEachSubscriber(level, log, keys, function() {
     return (
-      { subject: editionString,
+      { subject: releaseString,
         text:
           [ ( release.publisher + ' published ' +
               release.project + ' ' + spell(release.edition)) ]

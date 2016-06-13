@@ -1,4 +1,4 @@
-var editionStringFor = require('../../edition-string')
+var releaseStringFor = require('../../release-string')
 var getParents = require('../../queries/get-parents')
 var getProjects = require('../../queries/get-projects')
 var mailEachSubscriber = require('./mail-each-subscriber')
@@ -8,23 +8,23 @@ module.exports = function(annotation) {
   var log = this.log
   var level = this.level
   notifyFormSubscribers(level, log, annotation)
-  notifyEditionSubscribers(level, log, annotation)
+  notifyReleaseSubscribers(level, log, annotation)
   notifyAnnotationSubscribers(level, log, annotation) }
 
-function notifyEditionSubscribers(level, log, annotation) {
+function notifyReleaseSubscribers(level, log, annotation) {
   getProjects(level, annotation.context, function(error, projects) {
     projects.forEach(function(project) {
-      var editionString = editionStringFor(project)
+      var releaseString = releaseStringFor(project)
       var keys =
-        [ 'edition',
+        [ 'release',
           project.publisher, project.project, project.edition ]
       mailEachSubscriber(level, log, keys, function() {
         return (
-          { subject: ( 'Annotation to ' + editionString ),
+          { subject: ( 'Annotation to ' + releaseString ),
             text:
               [ ( annotation.publisher +
                   ' has made a new annotation to ' +
-                  editionString ) ]
+                  releaseString ) ]
                 .join('\n') } ) }) }) }) }
 
 function notifyFormSubscribers(level, log, annotation) {

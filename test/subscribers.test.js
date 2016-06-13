@@ -137,7 +137,7 @@ tape('PATCH /forms/:digest/subscribers/:', function(test) {
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 
-tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
+tape('POST /publishers/:/projects/:/releases/:/subscribers', function(test) {
   server(function(port, closeServer) {
     mailgun.events
       .once('message', function(message) {
@@ -151,7 +151,7 @@ tape('POST /publishers/:/projects/:/editions/:/subscribers', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { /* pass */ }) }) })
 
-tape('DELETE /publishers/:/projects/:/editions/:/subscribers', function(test) {
+tape('DELETE /publishers/:/projects/:/releases/:/subscribers', function(test) {
   server(function(port, closeServer) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })

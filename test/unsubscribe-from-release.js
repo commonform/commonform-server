@@ -8,7 +8,7 @@ module.exports = function(port, subscriber, password, test, publisher, project, 
         path:
           ( '/publishers/' + publisher +
             '/projects/' + project +
-            '/editions/' + edition +
+            '/releases/' + edition +
             '/subscribers/' + subscriber ),
         auth: ( subscriber + ':' + password ) })
       .on('response', function(response) {

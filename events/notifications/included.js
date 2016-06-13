@@ -1,4 +1,4 @@
-var editionStringFor = require('../../edition-string')
+var releaseStringFor = require('../../release-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 
 module.exports = function(publisher, project, edition, digest) {
@@ -9,7 +9,7 @@ module.exports = function(publisher, project, edition, digest) {
     { publisher: publisher,
       project: project,
       edition: edition }
-  var releaseString = editionStringFor(release)
+  var releaseString = releaseStringFor(release)
   mailEachSubscriber(level, log, keys, function() {
     return (
       { subject: ( digest + ' in ' + releaseString ),
