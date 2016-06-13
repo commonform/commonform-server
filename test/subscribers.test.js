@@ -7,13 +7,13 @@ var postProject = require('./post-project')
 var series = require('async-series')
 var server = require('./server')
 var subscribeToAnnotation = require('./subscribe-to-annotation')
-var subscribeToEdition = require('./subscribe-to-release')
+var subscribeToEdition = require('./subscribe-to-publication')
 var subscribeToForm = require('./subscribe-to-form')
 var subscribeToProject = require('./subscribe-to-project')
 var subscribeToPublisher = require('./subscribe-to-publisher')
 var tape = require('tape')
 var unsubscribeFromAnnotation = require('./unsubscribe-from-annotation')
-var unsubscribeFromEdition = require('./unsubscribe-from-release')
+var unsubscribeFromEdition = require('./unsubscribe-from-publication')
 var unsubscribeFromForm = require('./unsubscribe-from-form')
 var unsubscribeFromProject = require('./unsubscribe-from-project')
 var unsubscribeFromPublisher = require('./unsubscribe-from-publisher')
@@ -137,7 +137,7 @@ tape('PATCH /forms/:digest/subscribers/:', function(test) {
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 
-tape('POST /publishers/:/projects/:/releases/:/subscribers', function(test) {
+tape('POST /publishers/:/projects/:/publications/:/subscribers', function(test) {
   server(function(port, closeServer) {
     mailgun.events
       .once('message', function(message) {
@@ -151,7 +151,7 @@ tape('POST /publishers/:/projects/:/releases/:/subscribers', function(test) {
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { /* pass */ }) }) })
 
-tape('DELETE /publishers/:/projects/:/releases/:/subscribers', function(test) {
+tape('DELETE /publishers/:/projects/:/publications/:/subscribers', function(test) {
   server(function(port, closeServer) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })

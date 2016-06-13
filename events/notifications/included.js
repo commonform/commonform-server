@@ -1,18 +1,18 @@
-var releaseStringFor = require('../../release-string')
+var publicationStringFor = require('../../publication-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 
 module.exports = function(publisher, project, edition, digest) {
   var log = this.log
   var level = this.level
   var keys = [ 'form', digest ]
-  var release =
+  var publication =
     { publisher: publisher,
       project: project,
       edition: edition }
-  var releaseString = releaseStringFor(release)
+  var publicationString = publicationStringFor(publication)
   mailEachSubscriber(level, log, keys, function() {
     return (
-      { subject: ( digest + ' in ' + releaseString ),
+      { subject: ( digest + ' in ' + publicationString ),
         text:
-          [ ( digest + ' was included in ' + releaseString ) ]
+          [ ( digest + ' was included in ' + publicationString ) ]
             .join('\n') } ) }) }

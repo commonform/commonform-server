@@ -22,15 +22,15 @@ routes.set('/publishers/:publisher/subscribers/:subscriber',
 
 // Projects
 routes.set('/publishers/:publisher/projects', require('./publisher-projects'))
-routes.set('/publishers/:publisher/projects/:project/releases', require('./releases'))
+routes.set('/publishers/:publisher/projects/:project/publications', require('./publications'))
 routes.set('/publishers/:publisher/projects/:project/subscribers/:subscriber',
   subscribers('project', [ 'publisher', 'project', 'subscriber' ]))
 
-// Releases
-routes.set('/publishers/:publisher/projects/:project/releases/:edition', require('./release'))
-routes.set('/publishers/:publisher/projects/:project/releases/:edition/form', require('./release-form'))
-routes.set('/publishers/:publisher/projects/:project/releases/:edition/subscribers/:subscriber',
-  subscribers('release', [ 'publisher', 'project', 'edition', 'subscriber' ]))
+// Publications
+routes.set('/publishers/:publisher/projects/:project/publications/:edition', require('./publication'))
+routes.set('/publishers/:publisher/projects/:project/publications/:edition/form', require('./publication-form'))
+routes.set('/publishers/:publisher/projects/:project/publications/:edition/subscribers/:subscriber',
+  subscribers('publication', [ 'publisher', 'project', 'edition', 'subscriber' ]))
 
 // Annotations
 routes.set('/annotations', require('./annotations'))

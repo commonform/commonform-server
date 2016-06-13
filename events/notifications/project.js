@@ -1,4 +1,4 @@
-var releaseStringFor = require('../../release-string')
+var publicationStringFor = require('../../publication-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 var spell = require('reviewers-edition-spell')
 
@@ -6,27 +6,27 @@ var spell = require('reviewers-edition-spell')
 module.exports = function(publisher, project, edition) {
   var log = this.log
   var level = this.level
-  var release =
+  var publication =
     { publisher: publisher,
       project: project,
       edition: edition }
-  notifyProjectSubscribers(level, log, release)
-  notifyPublisherSubscribers(level, log, release) }
+  notifyProjectSubscribers(level, log, publication)
+  notifyPublisherSubscribers(level, log, publication) }
 
-function notifyProjectSubscribers(level, log, release) {
-  var keys = [ 'project', release.publisher, release.project ]
-  notifySubscribers(keys, level, log, release) }
+function notifyProjectSubscribers(level, log, publication) {
+  var keys = [ 'project', publication.publisher, publication.project ]
+  notifySubscribers(keys, level, log, publication) }
 
-function notifyPublisherSubscribers(level, log, release) {
-  var keys = [ 'publisher', release.publisher ]
-  notifySubscribers(keys, level, log, release) }
+function notifyPublisherSubscribers(level, log, publication) {
+  var keys = [ 'publisher', publication.publisher ]
+  notifySubscribers(keys, level, log, publication) }
 
-function notifySubscribers(keys, level, log, release) {
-  var releaseString = releaseStringFor(release)
+function notifySubscribers(keys, level, log, publication) {
+  var publicationString = publicationStringFor(publication)
   mailEachSubscriber(level, log, keys, function() {
     return (
-      { subject: releaseString,
+      { subject: publicationString,
         text:
-          [ ( release.publisher + ' published ' +
-              release.project + ' ' + spell(release.edition)) ]
+          [ ( publication.publisher + ' published ' +
+              publication.project + ' ' + spell(publication.edition)) ]
             .join('\n') } ) }) }

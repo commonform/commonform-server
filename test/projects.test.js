@@ -10,7 +10,7 @@ var tape = require('tape')
 var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -18,7 +18,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition', function
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     var request =
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -36,7 +36,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition', function
             .end(JSON.stringify({ digest: digest })) } ],
       function() { done() ; test.end() }) }) })
 
-tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', function(test) {
+tape('POST /publishers/$other-publisher/projects/$project/publications/$edition', function(test) {
   var otherPublisher = 'bob'
   var project = 'nda'
   var edition = '1e'
@@ -44,7 +44,7 @@ tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', fu
   var path =
     ( '/publishers/' + otherPublisher +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -57,7 +57,7 @@ tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', fu
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', function(test) {
+tape('POST /publishers/$other-publisher/projects/$project/publications/$edition', function(test) {
   var otherPublisher = 'bob'
   var project = 'nda'
   var edition = '1e'
@@ -65,7 +65,7 @@ tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', fu
   var path =
     ( '/publishers/' + otherPublisher +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -78,7 +78,7 @@ tape('POST /publishers/$other-publisher/projects/$project/releases/$edition', fu
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/publisher/projects/$project/releases/$edition for unknown publisher', function(test) {
+tape('POST /publishers/publisher/projects/$project/publications/$edition for unknown publisher', function(test) {
   var publisher = 'charlie'
   var password = 'charlie\'s password'
   var project = 'nda'
@@ -87,7 +87,7 @@ tape('POST /publishers/publisher/projects/$project/releases/$edition for unknown
   var path =
     ( '/publishers/' + publisher +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( publisher + ':' + password ),
@@ -100,13 +100,13 @@ tape('POST /publishers/publisher/projects/$project/releases/$edition for unknown
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition with bad body', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition with bad body', function(test) {
   var project = 'nda'
   var edition = '1e'
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -121,7 +121,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with bad b
           test.end() })) })
       .end(JSON.stringify({})) }) })
 
-tape('POST /publishers/$publisher/projects/$invalid-project/releases/$edition', function(test) {
+tape('POST /publishers/$publisher/projects/$invalid-project/publications/$edition', function(test) {
   test.plan(2)
   var publisher = 'ana'
   var password = 'ana\'s password'
@@ -131,7 +131,7 @@ tape('POST /publishers/$publisher/projects/$invalid-project/releases/$edition', 
   var path =
     ( '/publishers/' + publisher +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( publisher + ':' + password ),
@@ -146,7 +146,7 @@ tape('POST /publishers/$publisher/projects/$invalid-project/releases/$edition', 
           test.end() })) })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition with missing form', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition with missing form', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
   var project = 'nda'
@@ -155,7 +155,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with missi
   var path =
     ( '/publishers/' + publisher +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( publisher + ':' + password ),
@@ -170,14 +170,14 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with missi
           test.end() })) })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$invalid-edition', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$invalid-edition', function(test) {
   var project = 'da'
   var edition = '1.0.0'
   var digest = 'a'.repeat(64)
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -192,14 +192,14 @@ tape('POST /publishers/$publisher/projects/$project/releases/$invalid-edition', 
           test.end() })) })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition with invalid digest', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition with invalid digest', function(test) {
   var project = 'da'
   var edition = '1e'
   var digest = 'blah'
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -214,14 +214,14 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with inval
           test.end() })) })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition with invalid JSON', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition with invalid JSON', function(test) {
   var project = 'nda'
   var edition = '1e'
   var digest = 'a'.repeat(64)
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -236,14 +236,14 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with inval
           test.end() })) })
       .end('The form is ' + digest) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition as other publisher', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition as other publisher', function(test) {
   var project = 'nda'
   var edition = '1e'
   var digest = 'a'.repeat(64)
   var path =
     ( '/publishers/' + 'bob' +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -256,7 +256,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition as other p
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$edition with bad password', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$edition with bad password', function(test) {
   var badPassword = 'not ana\'s password'
   var project = 'nda'
   var edition = '1e'
@@ -264,7 +264,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with bad p
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     http.request(
       { auth: ( PUBLISHER + ':' + badPassword ),
@@ -277,7 +277,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$edition with bad p
         test.end() })
       .end(JSON.stringify({ digest: digest })) }) })
 
-tape('POST /publishers/$publisher/projects/$project/releases/$existing', function(test) {
+tape('POST /publishers/$publisher/projects/$project/publications/$existing', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -285,7 +285,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$existing', functio
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     var request =
       { auth: ( PUBLISHER + ':' + PASSWORD ),
@@ -302,7 +302,7 @@ tape('POST /publishers/$publisher/projects/$project/releases/$existing', functio
             .end(JSON.stringify({ digest: digest })) } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/$nonexistent', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/$nonexistent', function(test) {
   var PUBLISHER = 'ana'
   var project = 'nda'
   var edition = '1e'
@@ -313,14 +313,14 @@ tape('GET /publishers/$publisher/projects/$project/releases/$nonexistent', funct
         path:
           ( '/publishers/' + PUBLISHER +
             '/projects/' + project +
-            '/releases/' + edition ) },
+            '/publications/' + edition ) },
       function(response) {
         test.equal(response.statusCode, 404, '404')
         done()
         test.end() })
       .end() }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/$existing', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/$existing', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -328,7 +328,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/$existing', function
   var path =
     ( '/publishers/' + PUBLISHER +
       '/projects/' + project +
-      '/releases/' + edition )
+      '/publications/' + edition )
   server(function(port, done) {
     series(
       [ postForm(port, form, test),
@@ -369,7 +369,7 @@ tape('GET /publishers/$publisher/projects', function(test) {
                 done() })) }) } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/current', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/current', function(test) {
   var project = 'nda'
   var edition = '2e'
   var form = { content: [ 'A test form' ] }
@@ -384,7 +384,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/current', function(t
               path:
                 ( '/publishers/' + PUBLISHER +
                   '/projects/' + project +
-                  '/releases/current' ) },
+                  '/publications/current' ) },
             function(response) {
               response.pipe(concat(function(buffer) {
                 var responseBody = JSON.parse(buffer)
@@ -392,7 +392,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/current', function(t
                 done() })) }) } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/latest', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/latest', function(test) {
   var project = 'nda'
   var edition = '2e'
   var form = { content: [ 'A test form' ] }
@@ -408,7 +408,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/latest', function(te
               path:
                 ( '/publishers/' + PUBLISHER +
                   '/projects/' + project +
-                  '/releases/latest' ) },
+                  '/publications/latest' ) },
             function(response) {
               response.pipe(concat(function(buffer) {
                 var responseBody = JSON.parse(buffer)
@@ -416,7 +416,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/latest', function(te
                 done() })) }) } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/$existing/form', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/$existing/form', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -432,7 +432,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/$existing/form', fun
               path:
                 ( '/publishers/' + PUBLISHER +
                   '/projects/' + project +
-                  '/releases/' + edition +
+                  '/publications/' + edition +
                   '/form' ) },
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
@@ -443,7 +443,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/$existing/form', fun
             .end() } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/current/form', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/current/form', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -459,7 +459,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/current/form', funct
               path:
                 ( '/publishers/' + PUBLISHER +
                   '/projects/' + project +
-                  '/releases/current/form' ) },
+                  '/publications/current/form' ) },
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
               test.equal(
@@ -469,7 +469,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/current/form', funct
             .end() } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /publishers/$publisher/projects/$project/releases/latest/form', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications/latest/form', function(test) {
   var project = 'nda'
   var edition = '1e'
   var form = { content: [ 'A test form' ] }
@@ -485,7 +485,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/latest/form', functi
               path:
                 ( '/publishers/' + PUBLISHER +
                   '/projects/' + project +
-                  '/releases/latest/form' ) },
+                  '/publications/latest/form' ) },
             function(response) {
               test.equal(response.statusCode, 301, 'GET 301')
               test.equal(
@@ -495,7 +495,7 @@ tape('GET /publishers/$publisher/projects/$project/releases/latest/form', functi
             .end() } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('PUT /publishers/$publisher/projects/$project/releases/$edition', function(test) {
+tape('PUT /publishers/$publisher/projects/$project/publications/$edition', function(test) {
   var edition = '1e'
   var project = 'nda'
   server(function(port, done) {
@@ -505,14 +505,14 @@ tape('PUT /publishers/$publisher/projects/$project/releases/$edition', function(
         path:
           ( '/publishers/' + PUBLISHER +
             '/projects/' + project +
-            '/releases/' + edition ) },
+            '/publications/' + edition ) },
       function(response) {
         test.equal(response.statusCode, 405, '405')
         done()
         test.end() })
       .end() }) })
 
-tape('PUT /publishers/$publisher/projects/$project/releases/$edition/form', function(test) {
+tape('PUT /publishers/$publisher/projects/$project/publications/$edition/form', function(test) {
   var PUBLISHER = 'ana'
   var project = 'nda'
   var edition = '1e'
@@ -523,7 +523,7 @@ tape('PUT /publishers/$publisher/projects/$project/releases/$edition/form', func
         path:
           ( '/publishers/' + PUBLISHER +
             '/projects/' + project +
-            '/releases/' + edition +
+            '/publications/' + edition +
             '/form' ) },
       function(response) {
         test.equal(response.statusCode, 405, '405')

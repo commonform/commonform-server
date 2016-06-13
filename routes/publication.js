@@ -1,15 +1,15 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
-var releasePath = require('../paths/release')
-var releaseRecord = require('../records/release')
+var publicationPath = require('../paths/publication')
+var publicationRecord = require('../records/publication')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
-var getCurrentRelease = require('../queries/get-current-release')
-var getRelease = require('../queries/get-release')
-var getLatestRelease = require('../queries/get-latest-release')
+var getCurrentPublication = require('../queries/get-current-publication')
+var getPublication = require('../queries/get-publication')
+var getLatestPublication = require('../queries/get-latest-publication')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
-var keyForRelease = require('../keys/release')
+var keyForPublication = require('../keys/publication')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
@@ -26,10 +26,10 @@ module.exports = function(request, response) {
   var method = request.method
   if (method === 'GET') { serveProject.apply(this, arguments) }
   else if (method === 'POST') {
-    requireAuthorization(postRelease).apply(this, arguments) }
+    requireAuthorization(postPublication).apply(this, arguments) }
   else { methodNotAllowed(response) } }
 
-function postRelease(request, response, parameters, log, level, emit) {
+function postPublication(request, response, parameters, log, level, emit) {
   var publisher = parameters.publisher
   var project = parameters.project
   var edition = parameters.edition
@@ -45,10 +45,10 @@ function postRelease(request, response, parameters, log, level, emit) {
         if (!isDigest(digest)) {
           badRequest(response, 'invalid digest') }
         else {
-          var releaseKey = keyForRelease(publisher, project, edition)
+          var publicationKey = keyForPublication(publisher, project, edition)
           var formKey = formKeyFor(digest)
-          var record = JSON.stringify(releaseRecord(publisher, project, edition, digest))
-          var unlock = lock(level, releaseKey, 'w')
+          var record = JSON.stringify(publicationRecord(publisher, project, edition, digest))
+          var unlock = lock(level, publicationKey, 'w')
           /* istanbul ignore if */
           if (!unlock) { conflict(response) }
           else {
@@ -62,21 +62,21 @@ function postRelease(request, response, parameters, log, level, emit) {
                   unlock()
                   badRequest(response, 'unknown form') }
                 else {
-                  exists(level, releaseKey, function(error, releaseExists) {
+                  exists(level, publicationKey, function(error, publicationExists) {
                     /* istanbul ignore if */
                     if (error) {
                       unlock()
                       internalError(response, error) }
                     else {
-                      if (releaseExists) {
+                      if (publicationExists) {
                         unlock()
                         conflict(response) }
                       else {
-                        var putToLevel = thrice.bind(null, level.put.bind(level, releaseKey, record))
+                        var putToLevel = thrice.bind(null, level.put.bind(level, publicationKey, record))
                         var putOperations = [ putToLevel ]
                         /* istanbul ignore if */
                         if (s3) {
-                          var putBackup = thrice.bind(null, s3.put.bind(null, releaseKey, record))
+                          var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record))
                           putOperations.push(putBackup) }
                         parallel(putOperations, function(error) {
                           unlock()
@@ -84,7 +84,7 @@ function postRelease(request, response, parameters, log, level, emit) {
                           if (error) { internalError(response, error) }
                           else {
                             response.statusCode = 201
-                            response.setHeader('Location', releasePath(publisher, project, edition))
+                            response.setHeader('Location', publicationPath(publisher, project, edition))
                             response.end()
                             emit('project', publisher, project, edition, digest) } }) } } }) } } }) } } }
       else { badRequest(response, 'invalid project') } }) } }
@@ -96,11 +96,11 @@ function serveProject(request, response, parameters, log, level) {
   var edition = parameters.edition
   var fetch
   if (edition === 'current') {
-    fetch = getCurrentRelease.bind(this, level, publisher, project) }
+    fetch = getCurrentPublication.bind(this, level, publisher, project) }
   else if (edition === 'latest') {
-    fetch = getLatestRelease.bind(this, level, publisher, project) }
+    fetch = getLatestPublication.bind(this, level, publisher, project) }
   else {
-    fetch = getRelease.bind(this, level, publisher, project, edition) }
+    fetch = getPublication.bind(this, level, publisher, project, edition) }
   fetch(function(error, project) {
     /* istanbul ignore if */
     if (error) { internalError(response, error) }

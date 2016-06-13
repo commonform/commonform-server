@@ -10,7 +10,7 @@ module.exports =
           path:
             ( '/publishers/' + publisher +
               '/projects/' + project +
-              '/releases/' + edition ) })
+              '/publications/' + edition ) })
         .on('response', function(response) {
           test.equal(
             response.statusCode, 201,

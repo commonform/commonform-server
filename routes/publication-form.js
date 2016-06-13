@@ -1,7 +1,7 @@
 var formPath = require('../paths/form')
-var getCurrentRelease = require('../queries/get-current-release')
-var getRelease = require('../queries/get-release')
-var getLatestRelease = require('../queries/get-latest-release')
+var getCurrentPublication = require('../queries/get-current-publication')
+var getPublication = require('../queries/get-publication')
+var getLatestPublication = require('../queries/get-latest-publication')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
 
@@ -12,11 +12,11 @@ module.exports = function(request, response, parameters, log, level) {
     var edition = parameters.edition
     var fetch
     if (edition === 'current') {
-      fetch = getCurrentRelease.bind(this, level, publisher, project) }
+      fetch = getCurrentPublication.bind(this, level, publisher, project) }
     else if (edition === 'latest') {
-      fetch = getLatestRelease.bind(this, level, publisher, project) }
+      fetch = getLatestPublication.bind(this, level, publisher, project) }
     else {
-      fetch = getRelease.bind(this, level, publisher, project, edition) }
+      fetch = getPublication.bind(this, level, publisher, project, edition) }
     fetch(function(error, edition) {
       /* istanbul ignore if */
       if (error) { internalError(response, error) }

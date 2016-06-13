@@ -3,12 +3,12 @@ var http = require('http')
 module.exports = function(port, subscriber, password, test, publisher, project, edition) {
   return function(callback) {
     http.request(
-      { method: 'DELETE',
+      { method: 'POST',
         port: port,
         path:
           ( '/publishers/' + publisher +
             '/projects/' + project +
-            '/releases/' + edition +
+            '/publications/' + edition +
             '/subscribers/' + subscriber ),
         auth: ( subscriber + ':' + password ) })
       .on('response', function(response) {

@@ -7,7 +7,7 @@ var tape = require('tape')
 var postForm = require('./post-form')
 var postProject = require('./post-project')
 
-tape('GET /publishers/$publisher/projects/$project/releases', function(test) {
+tape('GET /publishers/$publisher/projects/$project/publications', function(test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
   var form = { content: [ 'A test form' ] }
@@ -21,23 +21,23 @@ tape('GET /publishers/$publisher/projects/$project/releases', function(test) {
           http.get(
             { method: 'GET',
               port: port,
-              path: '/publishers/ana/projects/nda/releases' },
+              path: '/publishers/ana/projects/nda/publications' },
             function(response) {
               concat(test, response, function(body) {
                 test.deepEqual(
                   body, [ '1e', '1e1u' ],
-                  'GET releases JSON')
+                  'GET publications JSON')
                 done() }) }) } ],
       function finish() {
         closeServer()
         test.end() }) }) })
 
-tape('PUT /publishers/$publisher/projects/$project/releases', function(test) {
+tape('PUT /publishers/$publisher/projects/$project/publications', function(test) {
   server(function(port, done) {
     http.request(
       { method: 'PUT',
         port: port,
-        path: '/publishers/ana/projects/nda/releases' },
+        path: '/publishers/ana/projects/nda/publications' },
       function(response) {
         test.equal(
           response.statusCode, 405,
