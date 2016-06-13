@@ -3,7 +3,7 @@ var getParents = require('../../queries/get-parents')
 var getProjects = require('../../queries/get-projects')
 var getPublisher = require('../../queries/get-publisher')
 var getSubscribers = require('../../queries/get-subscribers')
-var mailgun = require('../../mailgun')
+var sendEMail = require('./send-email')
 
 /* istanbul ignore next */
 module.exports = function(annotation) {
@@ -83,11 +83,3 @@ function notifyAnnotationSubscribers(level, log, annotation) {
                     [ ( annotation.publisher + ' has replied to annotation ' + parent ) ]
                     .join('\n') }
               sendEMail(subscriber, message, log) } }) }) } }) }) }
-
-function sendEMail(subscriber, message, log) {
-  /* istanbul ignore if */
-  if (typeof subscriber.email !== 'string') {
-    log.error(new Error('No e-mail for ' + subscriber.name)) }
-  else {
-    message.to = subscriber.email
-    mailgun(message, log) } }

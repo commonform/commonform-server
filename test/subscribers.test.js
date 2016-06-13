@@ -30,7 +30,7 @@ var annotation =
 var project = 'nda'
 var edition = '1e'
 
-tape('POST /forms/:digest/subscribers', function(test) {
+tape('POST /forms/:digest/subscribers > annotation notification', function(test) {
   server(function(port, done) {
     mailgun.events
       .once('message', function(message) {
@@ -41,6 +41,19 @@ tape('POST /forms/:digest/subscribers', function(test) {
       [ postForm(port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         postAnnotation(publisher, password, port, annotation, test) ],
+      function() { /* pass */ }) }) })
+
+tape('POST /forms/:digest/subscribers > published notification', function(test) {
+  server(function(port, done) {
+    mailgun.events
+      .once('message', function(message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        done() ; test.end() })
+    series(
+      [ postForm(port, form, test),
+        subscribeToForm(port, publisher, password, test, digest),
+        postProject(publisher, password, port, project, edition, digest, test) ],
       function() { /* pass */ }) }) })
 
 tape('DELETE /forms/:digest/subscribers', function(test) {
