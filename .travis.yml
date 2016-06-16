@@ -6,6 +6,7 @@ sudo: false
 script:
   - "npm run coverage"
   - "npm run nsp"
+  - "npm run licenses"
 addons:
   apt:
     sources: [ "ubuntu-toolchain-r-test" ]
