@@ -91,15 +91,23 @@ function postForm(record, log, callback) {
     .end(JSON.stringify(record.form)) }
 
 function postProject(record, log, callback) {
+  var publication = record.publication
+  var path = (
+    '/' +
+    [ 'publishers',
+      publication.publisher,
+      'projects',
+      publication.project,
+      'publications',
+      publication.edition ]
+      .map(encodeURIComponent)
+      .join('/') )
   var request =
     { protocol: server.protocol,
       host: server.hostname,
       method: 'POST',
       auth: ( 'administrator:' + password ),
-      path:
-        ( '/publishers/' + record.project.publisher +
-          '/projects/' + record.project.project +
-          '/publications/' + record.project.edition ),
+      path: path,
       port: server.port }
   log.info({ event: 'posting' })
   http
@@ -108,7 +116,7 @@ function postProject(record, log, callback) {
       if (status === 201) { log.info({ event: 'wrote' }) }
       else { log.error({ event: 'write error', status: status }) }
       callback() })
-    .end(JSON.stringify({ digest: record.digest })) }
+    .end(JSON.stringify({ digest: publication.digest })) }
 
 function postAnnotation(record, log, callback) {
   var request =
