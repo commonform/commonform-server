@@ -2,6 +2,7 @@ var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var publicationPath = require('../paths/publication')
 var publicationRecord = require('../records/publication')
+var encode = require('../keys/encode')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
 var getCurrentPublication = require('../queries/get-current-publication')
@@ -72,7 +73,14 @@ function postPublication(request, response, parameters, log, level, emit) {
                         unlock()
                         conflict(response) }
                       else {
-                        var putToLevel = thrice.bind(null, level.put.bind(level, publicationKey, record))
+                        var batch = [
+                          { type: 'put',
+                            key: publicationKey,
+                            value: record },
+                          { type: 'put',
+                            key: encode([ 'publisher', publisher ]),
+                            value: '' } ]
+                        var putToLevel = thrice.bind(null, level.batch.bind(level, batch))
                         var putOperations = [ putToLevel ]
                         if (s3) {
                           var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record, log))

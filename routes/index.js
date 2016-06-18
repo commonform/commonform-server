@@ -15,7 +15,6 @@ routes.set('/forms/:digest/subscribers/:subscriber',
   subscribers('form', [ 'digest', 'subscriber' ]))
 
 // Publishers
-routes.set('/publishers', require('./publishers'))
 routes.set('/publishers/:publisher', require('./publisher'))
 routes.set('/publishers/:publisher/subscribers/:subscriber',
   subscribers('publisher', [ 'publisher', 'subscriber' ]))
@@ -40,7 +39,7 @@ routes.set('/annotations/:uuid/subscribers/:subscriber',
 
 // Terms, Headings, and other Namespaces
 var listNamespace = require('./list-namespace')
-var namespaces = [ 'heading', 'term', 'digest' ]
+var namespaces = [ 'heading', 'term', 'digest', 'publisher' ]
 namespaces.forEach(function(namespace) {
   var pattern = ( '/' + namespace + 's')
   routes.set(pattern, listNamespace(namespace)) })
