@@ -20,6 +20,6 @@ module.exports = function(namespace) {
           /* istanbul ignore next */
           function(error) {
             log.error(error)
-            response.end('\n]') })
-        .on('end', function() { response.end('\n]') }) }
+            response.end(']') })
+        .on('end', function() { response.end(']') }) }
     else { methodNotAllowed(response) } } }
