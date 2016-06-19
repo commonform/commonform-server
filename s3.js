@@ -37,7 +37,7 @@ else {
             var parameters =
               { Key: key,
                 ContentType: 'application/json',
-                Body: JSON.stringify(value) }
+                Body: value }
              s3.putObject(parameters, function(error) {
                if (error) { callback(error) }
                else {
