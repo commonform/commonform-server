@@ -12,7 +12,7 @@ var http = (
     : require('http') )
 
 if (!process.env.hasOwnProperty('ADMINISTRATOR_PASSWORD')) {
-  process.stderr.write('Set ADMINISTRATOR_PASSWORD')
+  process.stderr.write('Set ADMINISTRATOR_PASSWORD\n')
   process.exit(1) }
 
 var password = process.env.ADMINISTRATOR_PASSWORD
