@@ -6,6 +6,10 @@ if (!url) {
   process.exit(1) }
 
 var server = require('url').parse(url)
+var http = (
+  server.protocol === 'https:'
+    ? require('https')
+    : require('http') )
 
 if (!process.env.hasOwnProperty('ADMINISTRATOR_PASSWORD')) {
   process.stderr.write('Set ADMINISTRATOR_PASSWORD')
@@ -13,7 +17,6 @@ if (!process.env.hasOwnProperty('ADMINISTRATOR_PASSWORD')) {
 
 var password = process.env.ADMINISTRATOR_PASSWORD
 
-var http = require('http')
 var log = require('pino')()
 var s3 = require('./s3')
 
@@ -76,8 +79,7 @@ function eachObject(prefix, log, iterator, marker, callback) {
 
 function postForm(record, log, callback) {
   var request =
-    { protocol: server.protocol,
-      host: server.hostname,
+    { host: server.hostname,
       method: 'POST',
       path: '/forms',
       port: server.port }

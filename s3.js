@@ -43,5 +43,6 @@ else {
                else {
                  log.info({ event: 'wrote', key: key })
                  callback() } }) }
-          else { callback(error) } } }) }
+          else { callback(error) } }
+        else { callback() } }) }
       module.exports = s3 } }
