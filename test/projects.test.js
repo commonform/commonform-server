@@ -531,7 +531,7 @@ tape('PUT /publishers/$publisher/projects/$project/publications/$edition/form', 
         test.end() })
       .end() }) })
 
-tape('GET /forms/$form/projects', function(test) {
+tape('GET /forms/$form/publications', function(test) {
   var form = { content: [ 'A test form' ] }
   var digest = normalize(form).root
   server(function(port, done) {
@@ -541,10 +541,10 @@ tape('GET /forms/$form/projects', function(test) {
         postProject('ana', 'ana\'s password', port, 'nda', '1e', digest, test),
         postProject('ana', 'ana\'s password', port, 'nondisclosure', '1e', digest, test),
         postProject('bob', 'bob\'s password', port, 'conf', '3e', digest, test),
-        function getProjects(done) {
+        function getPublications(done) {
           http.get(
             { port: port,
-              path: ( '/forms/' + digest + '/projects' ) },
+              path: ( '/forms/' + digest + '/publications' ) },
             function(response) {
               response.pipe(concat(function(buffer) {
                 var responseBody = JSON.parse(buffer)
@@ -568,11 +568,11 @@ tape('GET /forms/$form/projects', function(test) {
                       edition: '3e',
                       root: true,
                       digest: digest } ],
-                  'GET projects JSON')
+                  'GET publications JSON')
                 done() })) }) } ],
       function finish() { done() ; test.end() }) }) })
 
-tape('GET /forms/$form/projects for a child form', function(test) {
+tape('GET /forms/$form/publications for a child form', function(test) {
   var project = 'nda'
   var edition = '1e'
   var child = { content: [ 'A test form' ] }
@@ -583,10 +583,10 @@ tape('GET /forms/$form/projects for a child form', function(test) {
     series(
       [ postForm(port, parent, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, parentDigest, test),
-        function getProjects(done) {
+        function getPublications(done) {
           http.get(
             { port: port,
-              path: ( '/forms/' + childDigest + '/projects' ) },
+              path: ( '/forms/' + childDigest + '/publications' ) },
             function(response) {
               response.pipe(concat(function(buffer) {
                 var responseBody = JSON.parse(buffer)
@@ -597,6 +597,6 @@ tape('GET /forms/$form/projects for a child form', function(test) {
                       edition: edition,
                       root: false,
                       digest: childDigest } ],
-                  'GET projects JSON')
+                  'GET publications JSON')
                 done() })) }) } ],
       function finish() { done() ; test.end() }) }) })

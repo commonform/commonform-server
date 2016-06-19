@@ -1,6 +1,6 @@
 var publicationStringFor = require('../../publication-string')
 var getParents = require('../../queries/get-parents')
-var getProjects = require('../../queries/get-projects')
+var getPublications = require('../../queries/get-publications')
 var mailEachSubscriber = require('./mail-each-subscriber')
 
 /* istanbul ignore next */
@@ -12,7 +12,7 @@ module.exports = function(annotation) {
   notifyAnnotationSubscribers(level, log, annotation) }
 
 function notifyPublicationSubscribers(level, log, annotation) {
-  getProjects(level, annotation.context, function(error, projects) {
+  getPublications(level, annotation.context, function(error, projects) {
     projects.forEach(function(project) {
       var publicationString = publicationStringFor(project)
       var keys =

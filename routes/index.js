@@ -8,7 +8,7 @@ routes.set('/', require('./metadata'))
 // Forms
 routes.set('/forms', require('./forms'))
 routes.set('/forms/:digest', require('./form'))
-routes.set('/forms/:digest/projects', require('./form-projects'))
+routes.set('/forms/:digest/publications', require('./form-publications'))
 routes.set('/forms/:digest/parents', require('./form-parents'))
 routes.set('/forms/:digest/headings', require('./form-headings'))
 routes.set('/forms/:digest/subscribers/:subscriber',
