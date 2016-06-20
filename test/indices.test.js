@@ -65,6 +65,34 @@ tape('GET /terms/$term/uses', function(test) {
             .end() } ],
       function() { closeServer() ; test.end() }) }) })
 
+tape('GET /terms/$term_with_space/uses', function(test) {
+  var formA = { content: [ 'Give us ',{ use: 'More Money' } ] }
+  var digestA = normalize(formA).root
+  var formB = { content: [ 'Give me ',{ use: 'More Money' } ] }
+  var digestB = normalize(formB).root
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, formA, test),
+        postForm(port, formB, test),
+        postProject(port, 'uses', '1e', digestA, test),
+        function getDefinitions(done) {
+          http.request(
+            { method: 'GET',
+              port: port,
+              path: '/terms/More%20Money/uses' },
+            function(response) {
+              concat(test, response, function(body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  ( body.indexOf(digestA) !== -1 ),
+                  'serves project form digest')
+                test.assert(
+                  ( body.indexOf(digestB) === -1 ),
+                  'does not serve non-project form digest')
+                done() }) })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
 tape('GET /forms/$digest/parents', function(test) {
   var child = { content: [ 'Some content' ] }
   var childDigest = normalize(child).root
@@ -136,6 +164,34 @@ tape('GET /headings/$heading/forms', function(test) {
             { method: 'GET',
               port: port,
               path: ( '/headings/' + heading + '/forms' ) },
+            function(response) {
+              concat(test, response, function(body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  body.some(function(element) {
+                    return (
+                      ( element.digest === childDigest ) &&
+                      ( element.parent === parentDigest ) ) }),
+                  'serves parent')
+                done() }) })
+            .end() } ],
+      function() { closeServer() ; test.end() }) }) })
+
+tape('GET /headings/$heading_with_space/forms', function(test) {
+  var heading = 'X Heading'
+  var child = { content: [ 'Some content' ] }
+  var childDigest = normalize(child).root
+  var parent = { content: [ { heading: heading, form: child } ] }
+  var parentDigest = normalize(parent).root
+  server(function(port, closeServer) {
+    series(
+      [ postForm(port, parent, test),
+        postProject(port, 'parent', '1e', parentDigest, test),
+        function getParents(done) {
+          http.request(
+            { method: 'GET',
+              port: port,
+              path: ( '/headings/' + encodeURIComponent(heading) + '/forms' ) },
             function(response) {
               concat(test, response, function(body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')

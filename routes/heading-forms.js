@@ -8,7 +8,7 @@ var PREFIX = 'heading-for-form-in-form'
 
 module.exports = function(request, response, parameters, log, level) {
   if (request.method === 'GET') {
-    var heading = parameters.heading
+    var heading = decodeURIComponent(parameters.heading)
     var parents = [ ]
     level.createReadStream(
       { gt: encode([ PREFIX, heading, '' ]),

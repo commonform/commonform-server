@@ -5,7 +5,7 @@ var sendJSON = require('./responses/send-json')
 module.exports = function(prefix, parameter) {
   var getMatches = getRelations(prefix)
   return function(request, response, parameters, log, level) {
-    var name = parameters[parameter]
+    var name = decodeURIComponent(parameters[parameter])
     getMatches(level, name, function(error, results) {
       /* istanbul ignore if */
       if (error) { internalError(response, error) }
