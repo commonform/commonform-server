@@ -1,11 +1,12 @@
 var compareEdition = require('reviewers-edition-compare')
+var encode = require('../keys/encode')
 var decode = require('../keys/decode')
 
 module.exports = function(level, publisher, project, callback) {
   var publications = [ ]
   level.createReadStream(
-    { gt: 'projects/',
-      lt: 'projects/~' })
+    { gt: encode([ 'projects', publisher, project, '' ]),
+      lt: encode([ 'projects', publisher, project, '~' ]) })
     .on('data', function pushToPublications(item) {
       var decodedKey = decode(item.key)
       publications.push(

@@ -534,9 +534,13 @@ tape('PUT /publishers/$publisher/projects/$project/publications/$edition/form', 
 tape('GET /forms/$form/publications', function(test) {
   var form = { content: [ 'A test form' ] }
   var digest = normalize(form).root
+  var otherForm = { content: [ 'Another test form' ] }
+  var otherDigest = normalize(otherForm).root
   server(function(port, done) {
     series(
       [ postForm(port, form, test),
+        postForm(port, otherForm, test),
+        postProject('ana', 'ana\'s password', port, 'wrong', '1e', otherDigest, test),
         postProject('ana', 'ana\'s password', port, 'nda', '1e1d', digest, test),
         postProject('ana', 'ana\'s password', port, 'nda', '1e', digest, test),
         postProject('ana', 'ana\'s password', port, 'nondisclosure', '1e', digest, test),
