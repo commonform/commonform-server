@@ -1,7 +1,7 @@
 {
   "name": "commonform-server",
   "description": "Common Form library server",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "bin": {
     "bootstrap-commonform-server": "./bootstrap.js",
