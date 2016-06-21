@@ -52,7 +52,10 @@ require('async-series')(
       if (error) { process.stderr.write(error + '\n') }
       else { log.info({ event: 'done' }) } })
 
-var CONCURRENCY = 10
+var CONCURRENCY = (
+  'CONCURRENCY' in process.env
+    ? parseInt(process.env.CONCURRENCY)
+    : 10 )
 
 function eachObject(prefix, log, iterator, marker, callback) {
   var doneListing = false
