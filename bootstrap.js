@@ -27,14 +27,30 @@ if (!s3) {
   process.exit(1) }
 
 var formsLog = log.child({ type: 'forms' })
-eachObject('forms/', formsLog, postForm, false, function() {
-  formsLog.info({ event: 'done' })
-  var projectsLog = log.child({ type: 'projects' })
-  eachObject('projects/', projectsLog, postProject, false, function() {
-    projectsLog.info({ event: 'done' })
-    var annotationsLog = log.child({ type: 'annotations' })
-    eachObject('annotations/', annotationsLog, postAnnotation, false, function() {
-      log.info({ event: 'done' }) }) }) })
+var projectsLog = log.child({ type: 'projects' })
+var annotationsLog = log.child({ type: 'annotations' })
+var publishersLog = log.child({ type: 'publisher '})
+
+require('async-series')(
+  [ function(done) {
+      eachObject('forms/', formsLog, postForm, false, function() {
+        formsLog.info({ event: 'done' })
+        done() }) },
+    function(done) {
+      eachObject('projects/', projectsLog, postProject, false, function() {
+        projectsLog.info({ event: 'done' })
+        done() }) },
+    function(done) {
+      eachObject('annotations/', annotationsLog, postAnnotation, false, function() {
+        annotationsLog.info({ event: 'done' })
+        done() }) },
+    function(done) {
+      eachObject('publishers/', publishersLog, postPublisher, false, function() {
+        publishersLog.info({ event: 'done' })
+        done() }) } ],
+    function(error) {
+      if (error) { process.stderr.write(error + '\n') }
+      else { log.info({ event: 'done' }) } })
 
 var CONCURRENCY = 10
 
@@ -127,6 +143,23 @@ function postAnnotation(record, log, callback) {
       method: 'POST',
       auth: ( 'administrator:' + password ),
       path: '/annotations',
+      port: server.port }
+  log.info({ event: 'posting' })
+  http
+    .request(request, function(response) {
+      var status = response.statusCode
+      if (status === 201) { log.info({ event: 'wrote' }) }
+      else { log.error({ event: 'write error', status: status }) }
+      callback() })
+    .end(JSON.stringify({ digest: record.digest })) }
+
+function postPublisher(record, log, callback) {
+  var request =
+    { protocol: server.protocol,
+      host: server.hostname,
+      method: 'POST',
+      auth: ( 'administrator:' + password ),
+      path: '/publishers',
       port: server.port }
   log.info({ event: 'posting' })
   http

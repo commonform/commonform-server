@@ -124,7 +124,7 @@ function postPublisher(request, response, parameters, log, level, emit) {
             else {
               var record
               if (alreadyHashed) {
-                record = JSON.stringify(publisherRecord(name, json.about, json.email, json.hash))
+                record = JSON.stringify(publisherRecord(name, json.about, json.email, json.password))
                 store(level, emit, log, unlock, name, key, record, done) }
               else {
                 bcrypt.hash(json.password, function(error, hash) {
