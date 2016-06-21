@@ -159,7 +159,7 @@ function postPublisher(record, log, callback) {
       host: server.hostname,
       method: 'POST',
       auth: ( 'administrator:' + password ),
-      path: '/publishers',
+      path: ( '/publishers/' + record.name ),
       port: server.port }
   log.info({ event: 'posting' })
   http
