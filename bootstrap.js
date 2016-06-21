@@ -168,4 +168,4 @@ function postPublisher(record, log, callback) {
       if (status === 201) { log.info({ event: 'wrote' }) }
       else { log.error({ event: 'write error', status: status }) }
       callback() })
-    .end(JSON.stringify({ digest: record.digest })) }
+    .end(JSON.stringify(record.publisher)) }
