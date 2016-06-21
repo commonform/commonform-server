@@ -29,7 +29,7 @@ if (!s3) {
 var formsLog = log.child({ type: 'forms' })
 var projectsLog = log.child({ type: 'projects' })
 var annotationsLog = log.child({ type: 'annotations' })
-var publishersLog = log.child({ type: 'publisher '})
+var publishersLog = log.child({ type: 'publishers'})
 
 require('async-series')(
   [ function(done) {
@@ -159,9 +159,8 @@ function postPublisher(record, log, callback) {
       host: server.hostname,
       method: 'POST',
       auth: ( 'administrator:' + password ),
-      path: ( '/publishers/' + record.name ),
+      path: ( '/publishers/' + record.publisher.name ),
       port: server.port }
-  log.info({ event: 'posting' })
   http
     .request(request, function(response) {
       var status = response.statusCode
