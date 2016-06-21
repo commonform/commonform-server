@@ -38,7 +38,7 @@ tape('POST /forms/:digest/subscribers > annotation notification', function(test)
         mailgun.events.removeAllListeners()
         done() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { /* pass */ }) }) })
@@ -51,7 +51,7 @@ tape('POST /forms/:digest/subscribers > published notification', function(test) 
         mailgun.events.removeAllListeners()
         done() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         postProject(publisher, password, port, project, edition, digest, test) ],
       function() { /* pass */ }) }) })
@@ -61,7 +61,7 @@ tape('DELETE /forms/:digest/subscribers', function(test) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         unsubscribeFromForm(port, publisher, password, test, digest),
         postAnnotation(publisher, password, port, annotation, test) ],
@@ -76,7 +76,7 @@ tape('GET /forms/:digest/subscribers/:', function(test) {
   var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         function(done) {
           http.get(
@@ -100,7 +100,7 @@ tape('GET /forms/:digest/subscribers/:not-subscribed', function(test) {
   var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           http.get(
             { port: port,
@@ -123,7 +123,7 @@ tape('PATCH /forms/:digest/subscribers/:', function(test) {
   var subscriptionPath = ( '/forms/' + digest + '/subscribers/' + publisher )
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         function(done) {
           http.request(
@@ -145,7 +145,7 @@ tape('POST /publishers/:/projects/:/publications/:/subscribers', function(test) 
         mailgun.events.removeAllListeners()
         closeServer() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postProject(publisher, password, port, project, edition, digest, test),
         subscribeToEdition(port, publisher, password, test, publisher, project, edition),
         postAnnotation(publisher, password, port, annotation, test) ],
@@ -156,7 +156,7 @@ tape('DELETE /publishers/:/projects/:/publications/:/subscribers', function(test
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postProject(publisher, password, port, project, edition, digest, test),
         subscribeToEdition(port, publisher, password, test, publisher, project, edition),
         unsubscribeFromEdition(port, publisher, password, test, publisher, project, edition),
@@ -176,7 +176,7 @@ tape('POST /publishers/:/projects/:/subscribers/:', function(test) {
         mailgun.events.removeAllListeners()
         closeServer() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postProject(publisher, password, port, project, edition, digest, test),
         subscribeToProject(port, publisher, password, test, publisher, project),
         postProject(publisher, password, port, project, '2e', digest, test) ],
@@ -187,7 +187,7 @@ tape('DELETE /publishers/:/projects/:/subscribers/:', function(test) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postProject(publisher, password, port, project, edition, digest, test),
         subscribeToProject(port, publisher, password, test, publisher, project),
         unsubscribeFromProject(port, publisher, password, test, publisher, project),
@@ -207,7 +207,7 @@ tape('POST /publishers/:/subscribers/:', function(test) {
         mailgun.events.removeAllListeners()
         closeServer() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToPublisher(port, publisher, password, test, publisher),
         postProject(publisher, password, port, project, edition, digest, test) ],
       function() { /* pass */ }) }) })
@@ -217,7 +217,7 @@ tape('DELETE /publishers/:/subscribers/:', function(test) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         subscribeToPublisher(port, publisher, password, test, publisher),
         unsubscribeFromPublisher(port, publisher, password, test, publisher),
         postProject(publisher, password, port, project, edition, digest, test) ],
@@ -238,7 +238,7 @@ tape('POST /annotations/:/subscribers/:', function(test) {
         mailgun.events.removeAllListeners()
         closeServer() ; test.end() })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function annotate(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
@@ -260,7 +260,7 @@ tape('DELETE /annotation/:/subscribers/:', function(test) {
     mailgun.events
       .once('message', function() { test.fail('sent notification') })
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function annotate(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {

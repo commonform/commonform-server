@@ -161,7 +161,7 @@ tape('POST /publishers/:name for existing', function(test) {
       .end(JSON.stringify(body)) }) })
 
 tape('PUT /publishers/:name to update', function(test) {
-  var user = 'ana'
+  var publisher = 'ana'
   var password = 'ana\'s password'
   var newPassword = 'evil mastodon hoary cup'
   var body =
@@ -172,11 +172,11 @@ tape('PUT /publishers/:name to update', function(test) {
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         // Change password.
         function(done) {
           http.request(
-            { auth: ( user + ':' + password ),
+            { auth: ( publisher + ':' + password ),
               method: 'PUT',
               port: port,
               path: '/publishers/ana' })
@@ -427,7 +427,7 @@ tape('GET /publishers', function(test) {
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm('ana', 'ana\'s password', port, form, test),
         postProject('ana', 'ana\'s password', port, 'x', '1e', digest, test),
         postProject('bob', 'bob\'s password', port, 'y', '1e', digest, test),
         function(done) {

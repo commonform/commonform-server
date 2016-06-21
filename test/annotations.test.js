@@ -8,9 +8,10 @@ var server = require('./server')
 var tape = require('tape')
 var uuid = require('uuid')
 
+var publisher = 'ana'
+var password = 'ana\'s password'
+
 tape('POST /annotations', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var child = { content: [ 'The child' ] }
   var childDigest = normalize(child).root
   var parent = { content: [ { form: child } ] }
@@ -23,13 +24,11 @@ tape('POST /annotations', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(publisher, password, port, parent, test),
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with invalid annotation', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var form = { content: [ 'The form' ] }
   var digest = normalize(form).root
   var annotation =
@@ -38,7 +37,7 @@ tape('POST /annotations with invalid annotation', function(test) {
       text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           http.request(
             { method: 'POST',
@@ -69,7 +68,7 @@ tape('POST /annotations without authorization', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           http.request(
             { method: 'POST',
@@ -96,13 +95,11 @@ tape('POST /annotations as administrator', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postAnnotation(publisher, password, port, annotation, test) ],
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations for another publisher', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var child = { content: [ 'The child' ] }
   var childDigest = normalize(child).root
   var parent = { content: [ { form: child } ] }
@@ -115,7 +112,7 @@ tape('POST /annotations for another publisher', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(publisher, password, port, parent, test),
         function(done) {
           http.request(
             { method: 'POST',
@@ -129,8 +126,6 @@ tape('POST /annotations for another publisher', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with bad password', function(test) {
-  var publisher = 'ana'
-  var password = 'not ana\'s password'
   var form = { content: [ 'The form' ] }
   var digest = normalize(form).root
   var annotation = {
@@ -141,12 +136,12 @@ tape('POST /annotations with bad password', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           http.request(
             { method: 'POST',
               port: port,
-              auth: ( publisher + ':' + password ),
+              auth: ( publisher + ':' + password + 'x' ),
               path: '/annotations' })
             .on('response', function(response) {
               test.equal(response.statusCode, 401, '401')
@@ -155,8 +150,6 @@ tape('POST /annotations with bad password', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with form not in context', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var a = { content: [ 'A form' ] }
   var aDigest = normalize(a).root
   var b = { content: [ 'Another form' ] }
@@ -169,8 +162,8 @@ tape('POST /annotations with form not in context', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, a, test),
-        postForm(port, b, test),
+      [ postForm(publisher, password, port, a, test),
+        postForm(publisher, password, port, b, test),
         function(done) {
           http.request(
             { method: 'POST',
@@ -192,8 +185,6 @@ tape('POST /annotations with form not in context', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with reply', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var child = { content: [ 'The child' ] }
   var childDigest = normalize(child).root
   var parent = { content: [ { form: child } ] }
@@ -207,7 +198,7 @@ tape('POST /annotations with reply', function(test) {
   var reply
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(publisher, password, port, parent, test),
         function(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
@@ -223,8 +214,6 @@ tape('POST /annotations with reply', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with reply to nonexistent', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var form = { content: [ 'The child' ] }
   var digest = normalize(form).root
   var annotation = {
@@ -235,7 +224,7 @@ tape('POST /annotations with reply to nonexistent', function(test) {
     text: 'Not good' }
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           http.request(
             { method: 'POST',
@@ -249,8 +238,6 @@ tape('POST /annotations with reply to nonexistent', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with mismatched context', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var child = { content: [ 'The child' ] }
   var childDigest = normalize(child).root
   var parent = { content: [ { form: child } ] }
@@ -265,7 +252,7 @@ tape('POST /annotations with mismatched context', function(test) {
   reply.context = childDigest
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(publisher, password, port, parent, test),
         function(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
@@ -291,8 +278,6 @@ tape('POST /annotations with mismatched context', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('POST /annotations with unknown context', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var form = { content: [ 'The child' ] }
   var digest = normalize(form).root
   var annotation = {
@@ -320,8 +305,6 @@ tape('POST /annotations with unknown context', function(test) {
       .end(JSON.stringify(annotation)) }) })
 
 tape('GET /annotation/:uuid', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var child = { content: [ 'The child' ] }
   var childDigest = normalize(child).root
   var parent = { content: [ { form: child } ] }
@@ -335,7 +318,7 @@ tape('GET /annotation/:uuid', function(test) {
   var uuid
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(publisher, password, port, parent, test),
         function(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
@@ -352,8 +335,6 @@ tape('GET /annotation/:uuid', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('DELETE /annotation/:uuid', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   var form = { content: [ 'The form' ] }
   var digest = normalize(form).root
   var annotation = {
@@ -365,7 +346,7 @@ tape('DELETE /annotation/:uuid', function(test) {
   var uuid
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         function(done) {
           postAnnotation(publisher, password, port, annotation, test)(withLocation)
           function withLocation(error, location) {
@@ -423,8 +404,6 @@ tape('DELETE /annotations', function(test) {
       .end() }) })
 
 tape('GET /annotations?context=digest', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   // Forms
   var forms = { }
   //   A <<< context
@@ -467,8 +446,8 @@ tape('GET /annotations?context=digest', function(test) {
           text: ( 'Annotation of ' + form + ' in context of ' + context ) } })
   server(function(port, done) {
     series(
-      [ postForm(port, forms.a, test),
-        postForm(port, forms.x, test),
+      [ postForm(publisher, password, port, forms.a, test),
+        postForm(publisher, password, port, forms.x, test),
         postAnnotation(publisher, password, port, annotations.DinB, test),
         postAnnotation(publisher, password, port, annotations.DinX, test),
         postAnnotation(publisher, password, port, annotations.DinA, test),
@@ -508,8 +487,6 @@ tape('GET /annotations?context=digest', function(test) {
       function() { done() ; test.end() }) }) })
 
 tape('GET /annotations?context=digest&form=digest', function(test) {
-  var publisher = 'ana'
-  var password = 'ana\'s password'
   // Forms
   var forms = { }
   //   A <<< context
@@ -552,8 +529,8 @@ tape('GET /annotations?context=digest&form=digest', function(test) {
           text: ( 'Annotation of ' + form + ' in context of ' + context ) } })
   server(function(port, done) {
     series(
-      [ postForm(port, forms.a, test),
-        postForm(port, forms.x, test),
+      [ postForm(publisher, password, port, forms.a, test),
+        postForm(publisher, password, port, forms.x, test),
         postAnnotation(publisher, password, port, annotations.DinB, test),
         postAnnotation(publisher, password, port, annotations.DinX, test),
         postAnnotation(publisher, password, port, annotations.DinA, test),
@@ -605,8 +582,8 @@ tape('GET /annotations?context=digest&form=not_in_context', function(test) {
   // Annotations
   server(function(port, done) {
     series(
-      [ postForm(port, forms.a, test),
-        postForm(port, forms.b, test),
+      [ postForm(publisher, password, port, forms.a, test),
+        postForm(publisher, password, port, forms.b, test),
         function(done) {
           http.get(
             { port: port,

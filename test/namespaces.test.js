@@ -15,7 +15,7 @@ tape('GET /digests', function(test) {
   var digest = normalize(form).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
         function(done) {
           http.get(
@@ -42,7 +42,7 @@ tape('GET /headings', function(test) {
   var digest = normalize(form).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
         function(done) {
           http.get(
@@ -61,7 +61,7 @@ tape('GET /headings', function(test) {
   var parentDigest = normalize(parent).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(PUBLISHER, PASSWORD, port, parent, test),
         postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', parentDigest, test),
         function(done) {
           http.get(
@@ -81,7 +81,7 @@ tape('GET /terms', function(test) {
   var digest = normalize(form).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
         function(done) {
           http.get(
@@ -99,7 +99,7 @@ tape('GET /terms', function(test) {
   var digest = normalize(form).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
         function(done) {
           http.get(

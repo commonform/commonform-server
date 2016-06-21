@@ -26,7 +26,7 @@ tape('POST /publishers/$publisher/projects/$project/publications/$edition', func
         port: port,
         path: path }
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         function putProject(done) {
           http.request(request)
             .on('response', function(response) {
@@ -293,7 +293,7 @@ tape('POST /publishers/$publisher/projects/$project/publications/$existing', fun
         port: port,
         path: path }
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function putProjectAgain(done) {
           http.request(request, function(response) {
@@ -331,7 +331,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/$existing', func
       '/publications/' + edition )
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.get(
@@ -353,7 +353,7 @@ tape('GET /publishers/$publisher/projects', function(test) {
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.get(
@@ -376,7 +376,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/current', functi
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.get(
@@ -399,7 +399,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/latest', functio
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.get(
@@ -423,7 +423,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/$existing/form',
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.request(
@@ -450,7 +450,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/current/form', f
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.request(
@@ -476,7 +476,7 @@ tape('GET /publishers/$publisher/projects/$project/publications/latest/form', fu
   var digest = normalize(form).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function getProject(done) {
           http.request(
@@ -538,8 +538,8 @@ tape('GET /forms/$form/publications', function(test) {
   var otherDigest = normalize(otherForm).root
   server(function(port, done) {
     series(
-      [ postForm(port, form, test),
-        postForm(port, otherForm, test),
+      [ postForm(PUBLISHER, PASSWORD, port, form, test),
+        postForm(PUBLISHER, PASSWORD, port, otherForm, test),
         postProject('ana', 'ana\'s password', port, 'wrong', '1e', otherDigest, test),
         postProject('ana', 'ana\'s password', port, 'nda', '1e1d', digest, test),
         postProject('ana', 'ana\'s password', port, 'nda', '1e', digest, test),
@@ -585,7 +585,7 @@ tape('GET /forms/$form/publications for a child form', function(test) {
   var childDigest = normalize(child).root
   server(function(port, done) {
     series(
-      [ postForm(port, parent, test),
+      [ postForm(PUBLISHER, PASSWORD, port, parent, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, parentDigest, test),
         function getPublications(done) {
           http.get(

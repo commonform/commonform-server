@@ -5,7 +5,7 @@ var isAdministrator = require('./is-administrator')
 var parseAuthorization = require('basic-auth')
 var unauthorized = require('./responses/unauthorized')
 
-module.exports = function(handler) {
+module.exports = function(handler, anyPublisher) {
   return function(request, response, parameters, log, level) {
     var handlerArguments = arguments
     function allow() { handler.apply(this, handlerArguments) }
@@ -20,10 +20,10 @@ module.exports = function(handler) {
         request.publisher = 'administrator'
         allow() }
       else {
-        if (parsed.name !== publisher) { forbidden(response) }
+        if (!anyPublisher && parsed.name !== publisher) { forbidden(response) }
         else {
           checkPassword(
-            level, publisher, parsed.pass, response,
+            level, parsed.name, parsed.pass, response,
             function(error, valid) {
               /* istanbul ignore if */
               if (error) { internalError(response, error) }

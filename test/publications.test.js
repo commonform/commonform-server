@@ -14,7 +14,7 @@ tape('GET /publishers/$publisher/projects/$project/publications', function(test)
   var digest = normalize(form).root
   server(function(port, closeServer) {
     series(
-      [ postForm(port, form, test),
+      [ postForm(publisher, password, port, form, test),
         postProject(publisher, password, port, 'nda', '1e', digest, test),
         postProject(publisher, password, port, 'nda', '1e1u', digest, test),
         function(done) {
