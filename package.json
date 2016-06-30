@@ -44,6 +44,7 @@
     "licensee": "^1.1.0",
     "memdown": "^1.1.2",
     "nsp": "^2.4.0",
+    "standard": "^7.1.2",
     "tape": "^4.5.1",
     "temporary-directory": "^1.0.2"
   },
@@ -55,6 +56,7 @@
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
     "nsp": "nsp check",
-    "licenses": "licensee || true"
+    "licenses": "licensee || true",
+    "lint": "standard"
   }
 }

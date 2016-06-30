@@ -1,2 +1,3 @@
-module.exports = function(uuid) {
-  return ( '/annotations/' + uuid ) }
+module.exports = function (uuid) {
+  return '/annotations/' + uuid
+}

@@ -23,94 +23,116 @@ var sendJSON = require('./responses/send-json')
 var thrice = require('../thrice')
 var validProject = require('../validation/project')
 
-module.exports = function(request, response) {
+module.exports = function (request, response) {
   var method = request.method
-  if (method === 'GET') { serveProject.apply(this, arguments) }
+  if (method === 'GET') serveProject.apply(this, arguments)
   else if (method === 'POST') {
-    requireAuthorization(postPublication).apply(this, arguments) }
-  else { methodNotAllowed(response) } }
+    requireAuthorization(postPublication).apply(this, arguments)
+  } else methodNotAllowed(response)
+}
 
-function postPublication(request, response, parameters, log, level, emit) {
+function postPublication (request, response, parameters, log, level, emit) {
   var publisher = parameters.publisher
   var project = parameters.project
   var edition = parameters.edition
   var parsedEdition = parseEdition(edition)
-  if (parsedEdition === false) {
-    badRequest(response, 'invalid edition') }
+  if (parsedEdition === false) badRequest(response, 'invalid edition')
   else if (!validProject(project)) {
-    badRequest(response, 'invalid project name') }
-  else {
-    readJSONBody(request, response, function(json) {
+    badRequest(response, 'invalid project name')
+  } else {
+    readJSONBody(request, response, function (json) {
       if (json.hasOwnProperty('digest')) {
         var digest = json.digest
         if (!isDigest(digest)) {
-          badRequest(response, 'invalid digest') }
-        else {
+          badRequest(response, 'invalid digest')
+        } else {
           var publicationKey = keyForPublication(publisher, project, edition)
           var formKey = formKeyFor(digest)
           var record = JSON.stringify(publicationRecord(publisher, project, edition, digest))
           var unlock = lock(level, publicationKey, 'w')
           /* istanbul ignore if */
-          if (!unlock) { conflict(response) }
+          if (!unlock) conflict(response)
           else {
-            exists(level, formKey, function(error, formExists) {
+            exists(level, formKey, function (error, formExists) {
               /* istanbul ignore if */
               if (error) {
                 unlock()
-                internalError(response, error) }
-              else {
+                internalError(response, error)
+              } else {
                 if (!formExists) {
                   unlock()
-                  badRequest(response, 'unknown form') }
-                else {
-                  exists(level, publicationKey, function(error, publicationExists) {
+                  badRequest(response, 'unknown form')
+                } else {
+                  exists(level, publicationKey, function (error, publicationExists) {
                     /* istanbul ignore if */
                     if (error) {
                       unlock()
-                      internalError(response, error) }
-                    else {
+                      internalError(response, error)
+                    } else {
                       if (publicationExists) {
                         unlock()
-                        conflict(response) }
-                      else {
+                        conflict(response)
+                      } else {
                         var batch = [
-                          { type: 'put',
+                          {
+                            type: 'put',
                             key: publicationKey,
-                            value: record },
-                          { type: 'put',
-                            key: encode([ 'publisher', publisher ]),
-                            value: '' } ]
+                            value: record
+                          },
+                          {
+                            type: 'put',
+                            key: encode(['publisher', publisher]),
+                            value: ''
+                          }
+                        ]
                         var putToLevel = thrice.bind(null, level.batch.bind(level, batch))
-                        var putOperations = [ putToLevel ]
+                        var putOperations = [putToLevel]
                         if (s3) {
                           var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record, log))
-                          putOperations.push(putBackup) }
-                        parallel(putOperations, function(error) {
+                          putOperations.push(putBackup)
+                        }
+                        parallel(putOperations, function (error) {
                           unlock()
                           /* istanbul ignore if */
-                          if (error) { internalError(response, error) }
+                          if (error) internalError(response, error)
                           else {
                             response.statusCode = 201
                             response.setHeader('Location', publicationPath(publisher, project, edition))
                             response.end()
-                            emit('project', publisher, project, edition, digest) } }) } } }) } } }) } } }
-      else { badRequest(response, 'invalid project') } }) } }
+                            emit('project', publisher, project, edition, digest)
+                          }
+                        })
+                      }
+                    }
+                  })
+                }
+              }
+            })
+          }
+        }
+      } else badRequest(response, 'invalid project')
+    })
+  }
+}
 
-
-function serveProject(request, response, parameters, log, level) {
+function serveProject (request, response, parameters, log, level) {
   var publisher = parameters.publisher
   var project = parameters.project
   var edition = parameters.edition
   var fetch
   if (edition === 'current') {
-    fetch = getCurrentPublication.bind(this, level, publisher, project) }
-  else if (edition === 'latest') {
-    fetch = getLatestPublication.bind(this, level, publisher, project) }
-  else {
-    fetch = getPublication.bind(this, level, publisher, project, edition) }
-  fetch(function(error, project) {
+    fetch = getCurrentPublication.bind(this, level, publisher, project)
+  } else if (edition === 'latest') {
+    fetch = getLatestPublication.bind(this, level, publisher, project)
+  } else {
+    fetch = getPublication.bind(this, level, publisher, project, edition)
+  }
+  fetch(function (error, project) {
     /* istanbul ignore if */
-    if (error) { internalError(response, error) }
+    if (error) internalError(response, error)
     else {
-      if (project) { sendJSON(response, project) }
-      else { notFound(response) } } }) }
+      if (project) sendJSON(response, project)
+      else notFound(response)
+    }
+  })
+}

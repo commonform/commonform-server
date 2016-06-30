@@ -1,3 +1,4 @@
-module.exports = function(response) {
+module.exports = function (response) {
   response.statusCode = 413
-  response.end() }
+  response.end()
+}

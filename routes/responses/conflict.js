@@ -1,3 +1,4 @@
-module.exports = function conflict(response) {
+module.exports = function conflict (response) {
   response.statusCode = 409
-  response.end() }
+  response.end()
+}

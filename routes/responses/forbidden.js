@@ -1,3 +1,4 @@
-module.exports = function(response) {
+module.exports = function (response) {
   response.statusCode = 403
-  response.end() }
+  response.end()
+}

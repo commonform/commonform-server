@@ -1,2 +1,3 @@
-module.exports = function(array) {
-  return array.map(encodeURIComponent).join('/') }
+module.exports = function (array) {
+  return array.map(encodeURIComponent).join('/')
+}

@@ -12,33 +12,40 @@ var publisherKeyFor = require('../keys/publisher')
 
 var PUBLSIHERS = require('./publishers.json')
 
-module.exports = function(callback, port) {
-  port = ( port || 0 )
-  var logStream = ( ( port === 0 ) ? devnull() : process.stdout )
-  var log = pino({ name: 'test' }, logStream)
-  var level = levelup('', { db: memdown })
+module.exports = function (callback, port) {
+  port = port || 0
+  var logStream = port === 0 ? devnull() : process.stdout
+  var log = pino({name: 'test'}, logStream)
+  var level = levelup('', {db: memdown})
   if (process.env.LOG_PUTS) {
-    level.on('put', function(key, value) {
-      var printable = (
-        value === undefined
-          ? 'undefined'
-          : JSON.parse(value))
-      process.stdout.write(
-        format('put %j = %j', decode(key), printable)) }) }
-  var batch = PUBLSIHERS.map(function(publisher) {
-    return (
-      { type: 'put',
-        key: publisherKeyFor(publisher.name),
-        value: JSON.stringify(
-          { version: 'test',
-            publisher: publisher }) }) })
-  level.batch(batch, function(error) {
+    level.on('put', function (key, value) {
+      var printable = value === undefined
+        ? 'undefined'
+        : JSON.parse(value)
+      process.stdout.write(format('put %j = %j', decode(key), printable))
+    })
+  }
+  var batch = PUBLSIHERS.map(function (publisher) {
+    return {
+      type: 'put',
+      key: publisherKeyFor(publisher.name),
+      value: JSON.stringify({
+        version: 'test',
+        publisher: publisher
+      })
+    }
+  })
+  level.batch(batch, function (error) {
     if (error) {
       process.stderr.write('Error writing test publishers')
-      process.exit(1) }
-    else {
-      http.createServer(handler(log, level))
-        .listen(port, function() {
-          callback(
-            this.address().port,
-            this.close.bind(this)) }) } }) }
+      process.exit(1)
+    } else {
+      http.createServer(handler(log, level)).listen(port, function () {
+        callback(
+          this.address().port,
+          this.close.bind(this)
+        )
+      })
+    }
+  })
+}

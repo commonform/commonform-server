@@ -4,29 +4,33 @@ var notFound = require('./routes/responses/not-found')
 var url = require('url')
 var uuid = require('uuid')
 
-var TIMEOUT = ( parseInt(process.env.TIMEOUT) || 5000 )
+var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 
-module.exports = function(log, level) {
+module.exports = function (log, level) {
   var eventBus = require('./events')(log, level)
   var emit = eventBus.emit.bind(eventBus)
   var routes = require('./routes')
-  return function requestHandler(request, response) {
+  return function requestHandler (request, response) {
     // Create a Pino child log for this HTTP response, marked with a
     // random UUID.
-    response.log = log.child({ log: uuid.v4() })
+    response.log = log.child({log: uuid.v4()})
     response.log.info(request)
-    response.on('finish', function() { response.log.info(response) })
+    response.on('finish', function () {
+      response.log.info(response)
+    })
 
-    response.setTimeout(TIMEOUT, function() {
-      response.log.error({ event: 'timeout' })
+    response.setTimeout(TIMEOUT, function () {
+      response.log.error({event: 'timeout'})
       response.statusCode = 408
       response.removeAllListeners()
-      response.end() })
+      response.end()
+    })
 
     // Route the request.
     var parsed = url.parse(request.url)
     var route = routes.get(parsed.pathname)
     if (route.handler) {
-      route.handler(request, response, route.params, log, level, emit) }
-    else {
-      notFound(response) } } }
+      route.handler(request, response, route.params, log, level, emit)
+    } else notFound(response)
+  }
+}

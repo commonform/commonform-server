@@ -12,23 +12,26 @@ var sendAnnotationNotifications = require('./notifications/annotation')
 var sendIncludedNotifications = require('./notifications/included')
 var sendProjectNotifications = require('./notifications/project')
 
-module.exports = function(log, level) {
+module.exports = function (log, level) {
   // Create a Pino child log for events.
-  var eventLog = log.child({ log: 'events' })
+  var eventLog = log.child({log: 'events'})
 
   // An event bus. Used to trigger indexing and other processing of form
   // and project data posted by users.
-  var eventBus = new EventEmitter
+  var eventBus = new EventEmitter()
   eventBus.level = level
   eventBus.log = eventLog
 
   // Log every event when emitted.
-  var eventNames =
-    [ 'annotation', 'form', 'project',
-      'projectForm', 'subscribed', 'unsubscribed' ]
-  eventNames.forEach(function(eventName) {
-    eventBus.on(eventName, function() {
-      eventLog.info({ event: eventName }) }) })
+  var eventNames = [
+    'annotation', 'form', 'project',
+    'projectForm', 'subscribed', 'unsubscribed'
+  ]
+  eventNames.forEach(function (eventName) {
+    eventBus.on(eventName, function () {
+      eventLog.info({event: eventName})
+    })
+  })
 
   eventBus
     .on('form', onForm)
@@ -44,6 +47,8 @@ module.exports = function(log, level) {
     eventBus
       .on('annotation', sendAnnotationNotifications)
       .on('project', sendProjectNotifications)
-      .on('projectForm', sendIncludedNotifications) }
+      .on('projectForm', sendIncludedNotifications)
+  }
 
-  return eventBus }
+  return eventBus
+}

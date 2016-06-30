@@ -1,4 +1,6 @@
-module.exports = function(argument) {
+module.exports = function (argument) {
   return (
-    ( typeof argument === 'string' ) &&
-    /^[a-z0-9-]+$/.test(argument) ) }
+    typeof argument === 'string' &&
+    /^[a-z0-9-]+$/.test(argument)
+  )
+}

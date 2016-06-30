@@ -1,2 +1,3 @@
-module.exports = function(digest) {
-  return ( '/forms/' + digest ) }
+module.exports = function (digest) {
+  return '/forms/' + digest
+}
