@@ -6,7 +6,7 @@ var uuid = require('uuid')
 
 var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 
-module.exports = function (log, level) {
+module.exports = function (version, log, level, logServer) {
   var eventBus = require('./events')(log, level)
   var emit = eventBus.emit.bind(eventBus)
   var routes = require('./routes')

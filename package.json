@@ -35,7 +35,8 @@
     "reviewers-edition-compare": "^1.0.4",
     "reviewers-edition-parse": "^2.0.5",
     "reviewers-edition-spell": "^1.0.2",
-    "uuid": "^2.0.2"
+    "uuid": "^2.0.2",
+    "yargs": "^4.7.1"
   },
   "devDependencies": {
     "concat-stream": "^1.5.1",
@@ -46,6 +47,7 @@
     "nsp": "^2.4.0",
     "standard": "^7.1.2",
     "tape": "^4.5.1",
+    "tcp-log-server": "^6.0.0",
     "temporary-directory": "^1.0.2"
   },
   "license": "Apache-2.0",

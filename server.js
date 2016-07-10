@@ -8,13 +8,26 @@ var path = require('path')
 var pino = require('pino')
 var uuid = require('uuid')
 
-var description = meta.name + '@' + meta.version + '#' + uuid.v4()
+var version = meta.version
+var description = meta.name + '@' + version + '#' + uuid.v4()
 var log = pino({name: description})
 
-var directory = path.resolve(
-  process.cwd(),
-  process.env.LEVELDB || meta.name + '.leveldb'
-)
+var argv = require('yargs')
+.usage('Usage: commonform-server [options]')
+.describe('log-host', 'tcp-log-server host')
+.default('log-host', 'localhost')
+.alias('log-host', 's')
+.describe('log-port', 'tcp-log-server port')
+.alias('log-port', 'p')
+.default('level', meta.name + '.leveldb')
+.alias('level', 'l')
+.describe('level', 'LevelDB directory')
+.demand(['log-port'])
+.help()
+.version(version)
+.argv
+
+var directory = path.resolve(process.cwd(), argv.level)
 levelup(directory, {db: leveldown}, function (error, level) {
   if (error) {
     log.fatal({event: 'level'}, error)
