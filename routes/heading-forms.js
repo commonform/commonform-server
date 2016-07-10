@@ -14,13 +14,13 @@ module.exports = function (request, response, parameters, log, level) {
       gt: encode([PREFIX, heading, '']),
       lt: encode([PREFIX, heading, '~'])
     })
-      .on('data', function (item) {
-        var decoded = decode(item.key)
-        parents.push({digest: decoded[2], parent: decoded[3]})
-      })
-      .once('error',
-        /* istanbul ignore next */
-        function (error) { internalError(error) })
-      .once('end', function () { sendJSON(response, parents) })
+    .on('data', function (item) {
+      var decoded = decode(item.key)
+      parents.push({digest: decoded[2], parent: decoded[3]})
+    })
+    .once('error',
+      /* istanbul ignore next */
+      function (error) { internalError(error) })
+    .once('end', function () { sendJSON(response, parents) })
   } else methodNotAllowed(response)
 }

@@ -62,22 +62,22 @@ module.exports = function (type, keys) {
       reverse: true,
       limit: 1
     })
-      .once('error', function (error) { internalError(response, error) })
-      .once('data', function (key) {
-        var decoded = decode(key)
-        var action = decoded[decoded.length - 1]
-        if (action === 'subscribed') {
-          response.statusCode = 204
-          response.end()
-        } else /* if (action === 'unsubscribed') */ {
-          notFound()
-        }
-      })
-      .once('end', notFound)
-      function notFound () {
-        response.statusCode = 404
+    .once('error', function (error) { internalError(response, error) })
+    .once('data', function (key) {
+      var decoded = decode(key)
+      var action = decoded[decoded.length - 1]
+      if (action === 'subscribed') {
+        response.statusCode = 204
         response.end()
+      } else /* if (action === 'unsubscribed') */ {
+        notFound()
       }
+    })
+    .once('end', notFound)
+    function notFound () {
+      response.statusCode = 404
+      response.end()
+    }
   }
 }
 

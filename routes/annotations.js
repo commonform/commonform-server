@@ -71,21 +71,21 @@ function getAnnotations (request, response, parameters, log, level) {
         var first = true
         response.write('[\n')
         stream
-          .on('data', function (item) {
-            var annotation = JSON.parse(item.value)
-            if (matchesContext(annotation, contexts)) {
-              response.write((first ? '' : ',') + item.value + '\n')
-              first = false
-            }
-          })
-          .once('error',
-            /* istanbul ignore next */
-            function (error) {
-              log.error(error)
-              response.end('\n]')
-            }
-          )
-          .once('end', function () { response.end('\n]') })
+        .on('data', function (item) {
+          var annotation = JSON.parse(item.value)
+          if (matchesContext(annotation, contexts)) {
+            response.write((first ? '' : ',') + item.value + '\n')
+            first = false
+          }
+        })
+        .once('error',
+          /* istanbul ignore next */
+          function (error) {
+            log.error(error)
+            response.end('\n]')
+          }
+        )
+        .once('end', function () { response.end('\n]') })
       }
     })
   }

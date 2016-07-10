@@ -34,20 +34,20 @@ module.exports = function (log, level) {
   })
 
   eventBus
-    .on('form', onForm)
-    .on('project', onProject)
-    .on('project', indexPublisher)
-    .on('projectForm', onProjectForm)
-    .on('projectForm', indexForm)
-    .on('projectForm', indexFormChildren)
-    .on('projectForm', indexDigest)
-    .on('annotation', indexAnnotation)
+  .on('form', onForm)
+  .on('project', onProject)
+  .on('project', indexPublisher)
+  .on('projectForm', onProjectForm)
+  .on('projectForm', indexForm)
+  .on('projectForm', indexFormChildren)
+  .on('projectForm', indexDigest)
+  .on('annotation', indexAnnotation)
 
   if (mailgun) {
     eventBus
-      .on('annotation', sendAnnotationNotifications)
-      .on('project', sendProjectNotifications)
-      .on('projectForm', sendIncludedNotifications)
+    .on('annotation', sendAnnotationNotifications)
+    .on('project', sendProjectNotifications)
+    .on('projectForm', sendIncludedNotifications)
   }
 
   return eventBus

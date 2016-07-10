@@ -100,8 +100,8 @@ function eachObject (prefix, log, iterator, marker, callback) {
       if (error) log.error({event: 'query error'}, error)
       else {
         var keys = data.Contents
-          .map(function (element) { return element.Key })
-          .filter(function (key) { return !key.endsWith('/') })
+        .map(function (element) { return element.Key })
+        .filter(function (key) { return !key.endsWith('/') })
         // Push keys to the object queue for processing.
         keys.forEach(function (key) { objectQueue.push(key) })
         // Fetch additional keys if this response did not list all.
@@ -127,13 +127,13 @@ function postForm (record, log, callback) {
   }
   log.info({event: 'posting'})
   http.request(request)
-    .once('response', function (response) {
-      var status = response.statusCode
-      if (status === 201) log.info({event: 'wrote'})
-      else log.error({event: 'write error', status: status})
-      callback()
-    })
-    .end(JSON.stringify(record.form))
+  .once('response', function (response) {
+    var status = response.statusCode
+    if (status === 201) log.info({event: 'wrote'})
+    else log.error({event: 'write error', status: status})
+    callback()
+  })
+  .end(JSON.stringify(record.form))
 }
 
 function postProject (record, log, callback) {
@@ -148,8 +148,8 @@ function postProject (record, log, callback) {
       'publications',
       publication.edition
     ]
-      .map(encodeURIComponent)
-      .join('/')
+    .map(encodeURIComponent)
+    .join('/')
   )
   var request = {
     protocol: server.protocol,
@@ -161,14 +161,14 @@ function postProject (record, log, callback) {
   }
   log.info({event: 'posting'})
   http
-    .request(request)
-    .once('response', function (response) {
-      var status = response.statusCode
-      if (status === 201) log.info({event: 'wrote'})
-      else log.error({event: 'write error', status: status})
-      callback()
-    })
-    .end(JSON.stringify({digest: publication.digest}))
+  .request(request)
+  .once('response', function (response) {
+    var status = response.statusCode
+    if (status === 201) log.info({event: 'wrote'})
+    else log.error({event: 'write error', status: status})
+    callback()
+  })
+  .end(JSON.stringify({digest: publication.digest}))
 }
 
 function postAnnotation (record, log, callback) {
@@ -182,14 +182,14 @@ function postAnnotation (record, log, callback) {
   }
   log.info({event: 'posting'})
   http
-    .request(request)
-    .once('response', function (response) {
-      var status = response.statusCode
-      if (status === 201) log.info({event: 'wrote'})
-      else log.error({event: 'write error', status: status})
-      callback()
-    })
-    .end(JSON.stringify({digest: record.digest}))
+  .request(request)
+  .once('response', function (response) {
+    var status = response.statusCode
+    if (status === 201) log.info({event: 'wrote'})
+    else log.error({event: 'write error', status: status})
+    callback()
+  })
+  .end(JSON.stringify({digest: record.digest}))
 }
 
 function postPublisher (record, log, callback) {
@@ -202,12 +202,12 @@ function postPublisher (record, log, callback) {
     port: server.port
   }
   http
-    .request(request)
-    .once('response', function (response) {
-      var status = response.statusCode
-      if (status === 201) log.info({event: 'wrote'})
-      else log.error({event: 'write error', status: status})
-      callback()
-    })
-    .end(JSON.stringify(record.publisher))
+  .request(request)
+  .once('response', function (response) {
+    var status = response.statusCode
+    if (status === 201) log.info({event: 'wrote'})
+    else log.error({event: 'write error', status: status})
+    callback()
+  })
+  .end(JSON.stringify(record.publisher))
 }

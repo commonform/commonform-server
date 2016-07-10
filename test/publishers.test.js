@@ -328,16 +328,16 @@ tape('PUT /publishers/:name with weak password', function (test) {
       test.equal(response.statusCode, 400, 'PUT 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.same(
-            Buffer.concat(buffer).toString(),
-            'invalid password',
-            'serves "invalid password"'
-          )
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        test.same(
+          Buffer.concat(buffer).toString(),
+          'invalid password',
+          'serves "invalid password"'
+        )
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(body))
   })
 })
@@ -426,15 +426,15 @@ tape('POST /publishers/:name without password', function (test) {
       test.equal(response.statusCode, 400, 'POST 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        test.equal(
+          Buffer.concat(buffer).toString(), 'invalid publisher',
+          'responds "invalid publisher"'
+        )
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(body))
   })
 })
@@ -454,15 +454,15 @@ tape('POST /publishers/:name without e-mail', function (test) {
       test.equal(response.statusCode, 400, 'POST 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        test.equal(
+          Buffer.concat(buffer).toString(), 'invalid publisher',
+          'responds "invalid publisher"'
+        )
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(body))
   })
 })
@@ -486,15 +486,15 @@ tape('POST /publishers/:name with bad e-mail', function (test) {
       test.equal(response.statusCode, 400, 'POST 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        test.equal(
+          Buffer.concat(buffer).toString(), 'invalid publisher',
+          'responds "invalid publisher"'
+        )
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(body))
   })
 })
@@ -518,16 +518,16 @@ tape('POST /publishers/:name with insecure password', function (test) {
       test.equal(response.statusCode, 400, 'POST 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.same(
-            Buffer.concat(buffer).toString(),
-            'invalid password',
-            'serves "invalid password"'
-          )
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        test.same(
+          Buffer.concat(buffer).toString(),
+          'invalid password',
+          'serves "invalid password"'
+        )
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(body))
   })
 })

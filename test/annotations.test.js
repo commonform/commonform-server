@@ -60,12 +60,12 @@ tape('POST /annotations with invalid annotation', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-              .on('data', function (chunk) { buffer.push(chunk) })
-              .once('end', function () {
-                var body = Buffer.concat(buffer).toString()
-                test.equal(body, 'Invalid annotation', 'invalid')
-                done()
-              })
+            .on('data', function (chunk) { buffer.push(chunk) })
+            .once('end', function () {
+              var body = Buffer.concat(buffer).toString()
+              test.equal(body, 'Invalid annotation', 'invalid')
+              done()
+            })
           }).end(JSON.stringify(annotation))
         }
       ],
@@ -241,15 +241,15 @@ tape('POST /annotations with form not in context', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-              .on('data', function (chunk) { buffer.push(chunk) })
-              .once('end', function () {
-                var body = Buffer.concat(buffer).toString()
-                test.equal(
-                  body, 'Form not in context',
-                  'form not in context'
-                )
-                done()
-              })
+            .on('data', function (chunk) { buffer.push(chunk) })
+            .once('end', function () {
+              var body = Buffer.concat(buffer).toString()
+              test.equal(
+                body, 'Form not in context',
+                'form not in context'
+              )
+              done()
+            })
           }).end(JSON.stringify(annotation))
         }
       ],
@@ -382,12 +382,12 @@ tape('POST /annotations with mismatched context', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-              .on('data', function (chunk) { buffer.push(chunk) })
-              .once('end', function () {
-                var body = Buffer.concat(buffer).toString()
-                test.equal(body, 'Does not match parent', 'does not match')
-                done()
-              })
+            .on('data', function (chunk) { buffer.push(chunk) })
+            .once('end', function () {
+              var body = Buffer.concat(buffer).toString()
+              test.equal(body, 'Does not match parent', 'does not match')
+              done()
+            })
           }).end(JSON.stringify(reply))
         }
       ],
@@ -421,13 +421,13 @@ tape('POST /annotations with unknown context', function (test) {
       test.equal(response.statusCode, 400, '400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          var body = Buffer.concat(buffer).toString()
-          test.equal(body, 'Unknown context', 'unknown context')
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        var body = Buffer.concat(buffer).toString()
+        test.equal(body, 'Unknown context', 'unknown context')
+        done()
+        test.end()
+      })
     }).end(JSON.stringify(annotation))
   })
 })
@@ -818,16 +818,16 @@ tape('GET /annotations?context=digest&form=not_in_context', function (test) {
             test.equal(response.statusCode, 400, 'GET 400')
             var buffer = []
             response
-              .on('data', function (chunk) { buffer.push(chunk) })
-              .once('end', function () {
-                var body = Buffer.concat(buffer).toString()
-                test.equal(
-                  body,
-                  digests.b + ' not in ' + digests.a,
-                  'form not in context'
-                )
-                done()
-              })
+            .on('data', function (chunk) { buffer.push(chunk) })
+            .once('end', function () {
+              var body = Buffer.concat(buffer).toString()
+              test.equal(
+                body,
+                digests.b + ' not in ' + digests.a,
+                'form not in context'
+              )
+              done()
+            })
           }).end()
         }
       ],
@@ -846,13 +846,13 @@ tape('GET /annotations?context=nonexistent', function (test) {
       test.equal(response.statusCode, 400, 'GET 400')
       var buffer = []
       response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          var body = Buffer.concat(buffer).toString()
-          test.equal(body, 'Unknown form', 'unknown form')
-          done()
-          test.end()
-        })
+      .on('data', function (chunk) { buffer.push(chunk) })
+      .once('end', function () {
+        var body = Buffer.concat(buffer).toString()
+        test.equal(body, 'Unknown form', 'unknown form')
+        done()
+        test.end()
+      })
     }).end()
   })
 })
