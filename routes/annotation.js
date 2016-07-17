@@ -10,12 +10,12 @@ module.exports = function (request, response, params, log, level) {
     var uuid = params.uuid
     if (!isUUID(uuid)) notFound(response)
     else {
-      getAnnotation(level, uuid, function (error, value) {
+      getAnnotation(level, uuid, function (error, annotation) {
         if (error) {
           /* istanbul ignore else */
           if (error.notFound) notFound(response)
           else internalError(response, error)
-        } else sendJSON(response, JSON.parse(value).annotation)
+        } else sendJSON(response, annotation)
       })
     }
   } else methodNotAllowed(response)

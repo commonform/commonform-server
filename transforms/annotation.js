@@ -1,9 +1,20 @@
+var keyForAnnotation = require('../keys/annotation')
 var encode = require('../keys/encode')
-
-var PREFIX = 'form-has-annotation'
 
 module.exports = function (entry, done) {
   var annotation = entry.data
-  var key = encode([PREFIX, annotation.form, annotation.uuid])
-  done(null, [{key: key, value: annotation}])
+  done(null, [
+    {
+      key: keyForAnnotation(annotation.uuid),
+      value: annotation
+    },
+    {
+      key: encode([
+        'form-has-annotation',
+        annotation.form,
+        annotation.uuid
+      ]),
+      value: annotation
+    }
+  ])
 }

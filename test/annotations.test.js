@@ -108,34 +108,6 @@ tape('POST /annotations without authorization', function (test) {
   })
 })
 
-tape('POST /annotations as administrator', function (test) {
-  var form = {content: ['The child']}
-  var digest = normalize(form).root
-  var publisher = 'administrator'
-  var password = process.env.ADMINISTRATOR_PASSWORD
-  var annotation = {
-    publisher: 'bob',
-    form: digest,
-    context: digest,
-    replyTo: [],
-    uuid: uuid.v4(),
-    timestamp: Date.now().toString(),
-    text: 'Not good'
-  }
-  server(function (port, done) {
-    series(
-      [
-        postForm(port, form, test),
-        postAnnotation(publisher, password, port, annotation, test)
-      ],
-      function () {
-        done()
-        test.end()
-      }
-    )
-  })
-})
-
 tape('POST /annotations for another publisher', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'

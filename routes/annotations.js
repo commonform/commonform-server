@@ -44,7 +44,6 @@ function getAnnotations (request, response, parameters, log, level) {
         if (error.notFound) badRequest(response, 'Unknown form')
         else internalError(response, error)
       } else {
-        context = JSON.parse(context).form
         var contexts = computeContexts(normalize(context))
         if (hasForm) {
           if (query.form in contexts) {
@@ -72,9 +71,9 @@ function getAnnotations (request, response, parameters, log, level) {
         response.write('[\n')
         stream
         .on('data', function (item) {
-          var annotation = JSON.parse(item.value)
+          var annotation = item.value
           if (matchesContext(annotation, contexts)) {
-            response.write((first ? '' : ',') + item.value + '\n')
+            response.write((first ? '' : ',') + JSON.stringify(item.value) + '\n')
             first = false
           }
         })
@@ -127,82 +126,59 @@ function computeContexts (normalized) {
 function postAnnotation (request, response, parameters, log, level, write) {
   readJSONBody(request, response, function (annotation) {
     var put = function () {
-      var key = keyForAnnotation(annotation.uuid)
-      var record = JSON.stringify(annotationRecord(annotation))
-      var putToLevel = thrice.bind(null, level.put.bind(level, key, record))
-      var putOperations = [putToLevel]
-      if (s3) {
-        var putBackup = thrice.bind(null, s3.put.bind(null, key, record, log))
-        putOperations.push(putBackup)
-      }
-      parallel(putOperations, function (error) {
-        /* istanbul ignore if */
-        if (error) internalError(response, error)
+      var entry = {type: 'annotation', data: annotation}
+      write(entry, function (error) {
+        if (error) internalError(response, 'internal error')
         else {
-          response.log.info({event: 'annotation'})
-          var entry = {type: 'annotation', data: annotation}
-          write(entry, function (error) {
-            if (error) internalError(response, 'internal error')
-            else {
-              response.statusCode = 204
-              response.setHeader('Location', annotationPath(annotation.uuid))
-              response.end()
-            }
-          })
+          response.statusCode = 204
+          response.setHeader('Location', annotationPath(annotation.uuid))
+          response.end()
         }
       })
     }
-    var authorized = (
-      request.publisher === 'administrator' ||
-      request.publisher === annotation.publisher
-    )
-    if (request.publisher === 'administrator') put()
-    else {
-      if (!validAnnotation(annotation)) {
-        badRequest(response, 'Invalid annotation')
-      } else if (!authorized) {
-        if (request.publisher === false) unauthorized(response)
-        else forbidden(response)
-      } else {
-        annotation.uuid = uuid.v4()
-        response.log.info({event: 'uuid', uuid: annotation.uuid})
-        annotation.timestamp = Date.now().toString()
-        // Does the server have the context form?
-        getForm(level, annotation.context, function (error, context) {
-          if (error) {
-            /* istanbul ignore else */
-            if (error.notFound) badRequest(response, 'Unknown context')
-            else internalError(response, error)
+    var authorized = request.publisher === annotation.publisher
+    if (!validAnnotation(annotation)) {
+      badRequest(response, 'Invalid annotation')
+    } else if (!authorized) {
+      if (request.publisher === false) unauthorized(response)
+      else forbidden(response)
+    } else {
+      annotation.uuid = uuid.v4()
+      response.log.info({event: 'uuid', uuid: annotation.uuid})
+      annotation.timestamp = Date.now().toString()
+      // Does the server have the context form?
+      getForm(level, annotation.context, function (error, context) {
+        if (error) {
+          /* istanbul ignore else */
+          if (error.notFound) badRequest(response, 'Unknown context')
+          else internalError(response, error)
+        } else {
+          // Is the annotated form within the context?
+          var childrenDigests = Object.keys(normalize(context))
+          if (childrenDigests.indexOf(annotation.form) === -1) {
+            badRequest(response, 'Form not in context')
           } else {
-            // Is the annotated form within the context?
-            context = JSON.parse(context)
-            var childrenDigests = Object.keys(normalize(context.form))
-            if (childrenDigests.indexOf(annotation.form) === -1) {
-              badRequest(response, 'Form not in context')
-            } else {
-              if (annotation.replyTo.length !== 0) {
-                getAnnotation(level, annotation.replyTo[0], function (error, stored) {
-                  if (error) {
-                    /* istanbul ignore else */
-                    if (error.notFound) badRequest(response, 'Invalid replyTo')
-                    else internalError(response, error)
-                  } else {
-                    var prior = JSON.parse(stored).annotation
-                    var sameTarget = (
-                      annotation.context === prior.context &&
-                      annotation.form === prior.form &&
-                      equals(annotation.replyTo.slice(1), prior.replyTo)
-                    )
-                    if (!sameTarget) {
-                      badRequest(response, 'Does not match parent')
-                    } else put()
-                  }
-                })
-              } else put()
-            }
+            if (annotation.replyTo.length !== 0) {
+              getAnnotation(level, annotation.replyTo[0], function (error, prior) {
+                if (error) {
+                  /* istanbul ignore else */
+                  if (error.notFound) badRequest(response, 'Invalid replyTo')
+                  else internalError(response, error)
+                } else {
+                  var sameTarget = (
+                    annotation.context === prior.context &&
+                    annotation.form === prior.form &&
+                    equals(annotation.replyTo.slice(1), prior.replyTo)
+                  )
+                  if (!sameTarget) {
+                    badRequest(response, 'Does not match parent')
+                  } else put()
+                }
+              })
+            } else put()
           }
-        })
-      }
+        }
+      })
     }
   })
 }

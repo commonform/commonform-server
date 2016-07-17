@@ -8,6 +8,6 @@ module.exports = function (level, publisher, callback) {
       /* istanbul ignore else */
       if (error.notFound) callback(null, false)
       else callback(error)
-    } else callback(null, JSON.parse(record).publisher)
+    } else callback(null, record.publisher)
   })
 }

@@ -9,7 +9,7 @@ module.exports = function (publisher, password, port, annotation, test) {
       auth: publisher + ':' + password
     }
     http.request(options, function (response) {
-      test.equal(response.statusCode, 201, 'POST annotation')
+      test.equal(response.statusCode, 204, 'POST annotation')
       if (callback) callback(null, response.headers.location)
     }).end(JSON.stringify(annotation))
   }

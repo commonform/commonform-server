@@ -14,7 +14,7 @@ module.exports = function (level, publisher, project, callback) {
       publisher: decodedKey[1],
       project: decodedKey[2],
       edition: decodedKey[3],
-      digest: JSON.parse(item.value).publication.digest
+      digest: item.value.publication.digest
     })
   })
   .once('error',
