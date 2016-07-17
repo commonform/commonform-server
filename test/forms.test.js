@@ -2,7 +2,6 @@ var concat = require('concat-stream')
 var http = require('http')
 var makeInfiniteStream = require('./infinite-stream')
 var normalize = require('commonform-normalize')
-var s3 = require('../s3')
 var server = require('./server')
 var tape = require('tape')
 
