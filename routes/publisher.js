@@ -88,6 +88,7 @@ function putPublisher (request, response, parameters, log, level, write) {
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204
+                      response.setHeader('Location', '/publishers/' + name)
                       response.end()
                     }
                   })
@@ -147,6 +148,7 @@ function postPublisher (request, response, parameters, log, level, write) {
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204
+                      response.setHeader('Location', '/publishers/' + name)
                       response.end()
                     }
                   })

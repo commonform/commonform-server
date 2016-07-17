@@ -384,33 +384,6 @@ tape('PUT /publishers/:name with bad Authorization', function (test) {
   })
 })
 
-tape('POST /publishers/:name with hashed password', function (test) {
-  var body = {
-    email: 'charlie@example.com',
-    about: '',
-    hash: '$2a$10$IGrb1Nzx/EkeTN07QF7HGeS/yl2gWbKrG9Lx0zDgqI71gI2EO4Cdy'
-  }
-  var user = 'administrator'
-  var password = process.env.ADMINISTRATOR_PASSWORD
-  server(function (port, done) {
-    var options = {
-      auth: user + ':' + password,
-      method: 'POST',
-      port: port,
-      path: '/publishers/charlie'
-    }
-    http.request(options, function (response) {
-      test.equal(response.statusCode, 204, 'POST 204')
-      test.equal(
-        response.headers.location, '/publishers/charlie',
-        'Location'
-      )
-      done()
-      test.end()
-    }).end(JSON.stringify(body))
-  })
-})
-
 tape('POST /publishers/:name without password', function (test) {
   var body = {email: 'charlie@example.com', about: ''}
   var user = 'administrator'
