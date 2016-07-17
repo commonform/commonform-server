@@ -1,0 +1,25 @@
+{
+  "form": [
+    "digest",
+    "subscriber"
+  ],
+  "publisher": [
+    "publisher",
+    "subscriber"
+  ],
+  "project": [
+    "publisher",
+    "project",
+    "subscriber"
+  ],
+  "publication": [
+    "publisher",
+    "project",
+    "edition",
+    "subscriber"
+  ],
+  "annotation": [
+    "uuid",
+    "subscriber"
+  ]
+}

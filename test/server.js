@@ -1,51 +1,94 @@
 process.env.ADMINISTRATOR_PASSWORD = 'test'
 
-var decode = require('../keys/decode')
-var devnull = require('dev-null')
-var format = require('util').format
-var handler = require('../')
+var AbstractBlobStore = require('abstract-blob-store')
+var EventEmitter = require('events').EventEmitter
+var TCPLogClient = require('tcp-log-client')
+var devNull = require('dev-null')
+var makeRequestHandler = require('../')
 var http = require('http')
+var levelLogs = require('level-logs')
 var levelup = require('levelup')
 var memdown = require('memdown')
+var net = require('net')
 var pino = require('pino')
-var publisherKeyFor = require('../keys/publisher')
+var sha256 = require('sha256')
+var tcpLogServer = require('tcp-log-server')
 
-var PUBLSIHERS = require('./publishers.json')
+var VERSION = require('../package.json').version
+var PUBLISHERS = require('./publishers.json')
 
-module.exports = function (callback, port) {
-  port = port || 0
-  var logStream = port === 0 ? devnull() : process.stdout
-  var log = pino({name: 'test'}, logStream)
-  var level = levelup('', {db: memdown})
-  if (process.env.LOG_PUTS) {
-    level.on('put', function (key, value) {
-      var printable = value === undefined
-        ? 'undefined'
-        : JSON.parse(value)
-      process.stdout.write(format('put %j = %j', decode(key), printable))
+module.exports = setupServers
+
+function setupServers (callback) {
+  // Clear LevelUP in-memory storage back-end for each test.
+  memdown.clearGlobalStore()
+  // Start a tcp-log-server.
+  setupLogServer(function (logServer) {
+    var port = logServer.address().port
+    // Start an HTTP server connected to the log server.
+    setupHTTPServer(port, function (httpServer) {
+      // Provide the server objects to the test.
+      callback(httpServer.address().port, function close () {
+        httpServer.close()
+        logServer.close()
+      })
     })
-  }
-  var batch = PUBLSIHERS.map(function (publisher) {
-    return {
-      type: 'put',
-      key: publisherKeyFor(publisher.name),
-      value: JSON.stringify({
-        version: 'test',
-        publisher: publisher
-      })
-    }
   })
-  level.batch(batch, function (error) {
-    if (error) {
-      process.stderr.write('Error writing test publishers')
-      process.exit(1)
-    } else {
-      http.createServer(handler(log, level)).listen(port, function () {
-        callback(
-          this.address().port,
-          this.close.bind(this)
-        )
-      })
-    }
+}
+
+function setupHTTPServer (logServerPort, callback) {
+  // Use an in-memory LevelUP storage back-end.
+  var level = levelup('server', {db: memdown, valueEncoding: 'json'})
+  //  Pipe log messages to nowhere.
+  var log = pino({}, devNull())
+  var server
+  // Create a client for the tcp-log-server.
+  var logClient = new TCPLogClient({server: {port: logServerPort}})
+  // Start the HTTP server when the log client catches up with the log.
+  .once('current', function () {
+    server.listen(0, function () {
+      callback(this)
+    })
+  })
+  // Created the HTTP server.
+  var handler = makeRequestHandler(VERSION, log, level, logClient)
+  server = http.createServer(handler)
+  .once('close', function () {
+    level.close()
+    logClient.destroy()
+  })
+  // Connect the log client.
+  logClient.connect()
+  // Create test publishers.
+  logClient.on('ready', function () {
+    PUBLISHERS.forEach(function (publisher) {
+      logClient.write({
+        version: '0.0.0',
+        type: 'publisher',
+        data: publisher
+      }, noop)
+    })
+  })
+}
+
+function noop () { }
+
+function setupLogServer (callback) {
+  // Use an in-memory LevelUP storage back-end.
+  var level = levelup('log', {db: memdown})
+  var logs = levelLogs(level, {valueEncoding: 'json'})
+  // Use an in-memory blob store.
+  var blobs = new AbstractBlobStore()
+  // Pipe log messages to nowhere.
+  var log = pino({}, devNull())
+  var emitter = new EventEmitter()
+  var handler = tcpLogServer(log, logs, blobs, emitter, sha256)
+  // Starts the TCP server.
+  net.createServer(handler)
+  .once('close', function () {
+    level.close()
+  })
+  .listen(0, function () {
+    callback(this)
   })
 }

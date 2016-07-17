@@ -1,15 +1,10 @@
-var conflict = require('./responses/conflict')
 var decode = require('../keys/decode')
 var internalError = require('./responses/internal-error')
 var keyFor = require('../keys/subscription')
-var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
-var parallel = require('async.parallel')
 var requireAuthorization = require('./require-authorization')
-var s3 = require('../s3')
-var thrice = require('../thrice')
 
-module.exports = function (type, keys) {
+module.exports = function (to, keys) {
   return function (request, response) {
     var method = request.method
     if (method === 'POST') {
@@ -23,36 +18,25 @@ module.exports = function (type, keys) {
     } else methodNotAllowed(response)
   }
 
-  function makeRecord (event) {
-    return function (request, response, parameters, log, level, emit) {
-      var keyComponents = makeComponents(type, keys, parameters, event)
-      var key = keyFor(keyComponents)
-      var record = ''
-      var unlock = lock(level, key, 'w')
-      /* istanbul ignore if */
-      if (!unlock) conflict(response, new Error('locked'))
-      else {
-        var putToLevel = thrice.bind(null, level.put.bind(level, key, true))
-        var putOperations = [putToLevel]
-        if (s3) {
-          var putBackup = thrice.bind(null, s3.put.bind(null, key, record, log))
-          putOperations.push(putBackup)
+  function makeRecord (type) {
+    return function (request, response, parameters, log, level, write) {
+      var data = {to: to, date: iso8601()}
+      keys.forEach(function (key) {
+        data[key] = parameters[key]
+      })
+      var entry = {type: type, data: data}
+      write(entry, function (error) {
+        if (error) internalError(response, error)
+        else {
+          response.statusCode = 204
+          response.end()
         }
-        parallel(putOperations, function (error) {
-          unlock()
-          if (error) internalError(response, error)
-          else {
-            response.statusCode = 204
-            response.end()
-            emit(event, keyComponents)
-          }
-        })
-      }
+      })
     }
   }
 
   function getSubscriber (request, response, parameters, log, level) {
-    var keyComponents = makeComponents(type, keys, parameters, '')
+    var keyComponents = makeComponents(to, keys, parameters, '')
     keyComponents.splice(-2, 2)
     level.createReadStream({
       gt: keyFor(keyComponents.concat('')),

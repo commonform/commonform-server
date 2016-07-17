@@ -31,7 +31,8 @@ tape('POST /annotations', function (test) {
       function () {
         done()
         test.end()
-      })
+      }
+    )
   })
 })
 

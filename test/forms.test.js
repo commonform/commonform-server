@@ -27,18 +27,14 @@ tape('POST /forms with form', function (test) {
     var form = {content: ['Just a test']}
     var root = normalize(form).root
     var request = {method: 'POST', path: '/forms', port: port}
-    s3.events.once('put', function (key) {
-      test.assert(key.indexOf(root) !== -1)
-      s3.events.removeAllListeners()
-      done()
-      test.end()
-    })
     http.request(request, function (response) {
-      test.equal(response.statusCode, 201, 'responds 200')
+      test.equal(response.statusCode, 204, 'responds 200')
       test.equal(
         response.headers.location, '/forms/' + root,
         'sets location header'
       )
+      done()
+      test.end()
     }).end(JSON.stringify(form))
   })
 })
@@ -215,28 +211,31 @@ tape('GET /forms/$posted', function (test) {
     var root = normalize(form).root
     var post = {method: 'POST', path: '/forms', port: port}
     http.request(post, function (response) {
-      test.equal(response.statusCode, 201, 'responds 201')
+      test.equal(response.statusCode, 204, 'responds 204')
       var get = {path: '/forms/' + root, port: port}
-      http.request(get, function (response) {
-        test.equal(
-          response.headers['content-type'], 'application/json',
-          'sets Content-Type'
-        )
-        response.pipe(concat(function (buffer) {
-          test.same(JSON.parse(buffer), form, 'serves the posted form')
-          test.assert(
-            'cache-control' in response.headers,
-            'Cache-Control'
+      setTimeout(function () {
+        http.request(get, function (response) {
+          test.equal(response.statusCode, 200, '200')
+          test.equal(
+            response.headers['content-type'], 'application/json',
+            'sets Content-Type'
           )
-          var cacheControl = response.headers['cache-control']
-          test.assert(
-            cacheControl && cacheControl.indexOf('max-age') !== -1,
-            'max-age'
-          )
-          done()
-          test.end()
-        }))
-      }).end()
+          response.pipe(concat(function (buffer) {
+            test.same(JSON.parse(buffer), form, 'serves the posted form')
+            test.assert(
+              'cache-control' in response.headers,
+              'Cache-Control'
+            )
+            var cacheControl = response.headers['cache-control']
+            test.assert(
+              cacheControl && cacheControl.indexOf('max-age') !== -1,
+              'max-age'
+            )
+            done()
+            test.end()
+          }))
+        }).end()
+      }, 10)
     }).end(JSON.stringify(form))
   })
 })
@@ -248,18 +247,20 @@ tape('GET /forms/$child_of_posted', function (test) {
     var childDigest = normalize(child).root
     var post = {method: 'POST', path: '/forms', port: port}
     http.request(post, function (response) {
-      test.equal(response.statusCode, 201, 'responds 201')
+      test.equal(response.statusCode, 204, 'responds 204')
       var get = {path: '/forms/' + childDigest, port: port}
       http.request(get, function (response) {
         test.equal(
           response.headers['content-type'], 'application/json',
           'sets Content-Type'
         )
-        response.pipe(concat(function (buffer) {
-          test.same(JSON.parse(buffer), child, 'serves the child form')
-          done()
-          test.end()
-        }))
+        setTimeout(function () {
+          response.pipe(concat(function (buffer) {
+            test.same(JSON.parse(buffer), child, 'serves the child form')
+            done()
+            test.end()
+          }))
+        }, 10)
       }).end()
     }).end(JSON.stringify(parent))
   })
@@ -274,7 +275,7 @@ tape('GET /forms/$great_grandchild_of_posted', function (test) {
     var digest = normalize(greatgrandchild).root
     var post = {method: 'POST', path: '/forms', port: port}
     http.request(post, function (response) {
-      test.equal(response.statusCode, 201, 'responds 201')
+      test.equal(response.statusCode, 204, 'responds 204')
       setTimeout(function checkGetRequest () {
         var get = {path: '/forms/' + digest, port: port}
         http.request(get, function (response) {

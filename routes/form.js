@@ -19,7 +19,7 @@ module.exports = function (request, response, params, log, level) {
           else internalError(response, error)
         } else {
           cache(response)
-          sendJSON(response, JSON.parse(value).form)
+          sendJSON(response, value)
         }
       })
     } else methodNotAllowed(response)

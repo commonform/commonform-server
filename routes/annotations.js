@@ -124,8 +124,7 @@ function computeContexts (normalized) {
   }
 }
 
-function postAnnotation (request, response, parameters, log, level, emit) {
-  var byAdministrator = request.publisher === 'administrator'
+function postAnnotation (request, response, parameters, log, level, write) {
   readJSONBody(request, response, function (annotation) {
     var put = function () {
       var key = keyForAnnotation(annotation.uuid)
@@ -141,10 +140,15 @@ function postAnnotation (request, response, parameters, log, level, emit) {
         if (error) internalError(response, error)
         else {
           response.log.info({event: 'annotation'})
-          response.statusCode = 201
-          response.setHeader('Location', annotationPath(annotation.uuid))
-          response.end()
-          emit('annotation', annotation, byAdministrator)
+          var entry = {type: 'annotation', data: annotation}
+          write(entry, function (error) {
+            if (error) internalError(response, 'internal error')
+            else {
+              response.statusCode = 204
+              response.setHeader('Location', annotationPath(annotation.uuid))
+              response.end()
+            }
+          })
         }
       })
     }

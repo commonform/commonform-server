@@ -1,8 +1,6 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var publicationPath = require('../paths/publication')
-var publicationRecord = require('../records/publication')
-var encode = require('../keys/encode')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
 var getCurrentPublication = require('../queries/get-current-publication')
@@ -14,13 +12,10 @@ var keyForPublication = require('../keys/publication')
 var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
-var parallel = require('async.parallel')
 var parseEdition = require('reviewers-edition-parse')
 var readJSONBody = require('./read-json-body')
 var requireAuthorization = require('./require-authorization')
-var s3 = require('../s3')
 var sendJSON = require('./responses/send-json')
-var thrice = require('../thrice')
 var validProject = require('../validation/project')
 
 module.exports = function (request, response) {
@@ -31,7 +26,7 @@ module.exports = function (request, response) {
   } else methodNotAllowed(response)
 }
 
-function postPublication (request, response, parameters, log, level, emit) {
+function postPublication (request, response, parameters, log, level, write) {
   var publisher = parameters.publisher
   var project = parameters.project
   var edition = parameters.edition
@@ -48,7 +43,6 @@ function postPublication (request, response, parameters, log, level, emit) {
         } else {
           var publicationKey = keyForPublication(publisher, project, edition)
           var formKey = formKeyFor(digest)
-          var record = JSON.stringify(publicationRecord(publisher, project, edition, digest))
           var unlock = lock(level, publicationKey, 'w')
           /* istanbul ignore if */
           if (!unlock) conflict(response)
@@ -73,33 +67,22 @@ function postPublication (request, response, parameters, log, level, emit) {
                         unlock()
                         conflict(response)
                       } else {
-                        var batch = [
-                          {
-                            type: 'put',
-                            key: publicationKey,
-                            value: record
-                          },
-                          {
-                            type: 'put',
-                            key: encode(['publisher', publisher]),
-                            value: ''
+                        var entry = {
+                          type: 'publication',
+                          data: {
+                            publisher: publisher,
+                            project: project,
+                            edition: edition,
+                            digest: digest
                           }
-                        ]
-                        var putToLevel = thrice.bind(null, level.batch.bind(level, batch))
-                        var putOperations = [putToLevel]
-                        if (s3) {
-                          var putBackup = thrice.bind(null, s3.put.bind(null, publicationKey, record, log))
-                          putOperations.push(putBackup)
                         }
-                        parallel(putOperations, function (error) {
+                        write(entry, function (error) {
                           unlock()
-                          /* istanbul ignore if */
-                          if (error) internalError(response, error)
+                          if (error) internalError(error, 'internal error')
                           else {
-                            response.statusCode = 201
+                            response.statusCode = 204
                             response.setHeader('Location', publicationPath(publisher, project, edition))
                             response.end()
-                            emit('project', publisher, project, edition, digest)
                           }
                         })
                       }

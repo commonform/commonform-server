@@ -9,14 +9,4 @@ module.exports = function (publisher, project, edition, digest, normalized) {
     /* istanbul ignore if */
     if (error) log.error(error)
   })
-  normalized[digest].content.forEach(function (element) {
-    if (element.hasOwnProperty('digest')) {
-      var childDigest = element.digest
-      var childKey = formToProjectKey(childDigest, publisher, project, edition, false)
-      level.put(childKey, undefined, function (error) {
-        /* istanbul ignore if */
-        if (error) log.error(error)
-      })
-    }
-  })
 }
