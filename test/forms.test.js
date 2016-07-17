@@ -213,29 +213,27 @@ tape('GET /forms/$posted', function (test) {
     http.request(post, function (response) {
       test.equal(response.statusCode, 204, 'responds 204')
       var get = {path: '/forms/' + root, port: port}
-      setTimeout(function () {
-        http.request(get, function (response) {
-          test.equal(response.statusCode, 200, '200')
-          test.equal(
-            response.headers['content-type'], 'application/json',
-            'sets Content-Type'
+      http.request(get, function (response) {
+        test.equal(response.statusCode, 200, '200')
+        test.equal(
+          response.headers['content-type'], 'application/json',
+          'sets Content-Type'
+        )
+        response.pipe(concat(function (buffer) {
+          test.same(JSON.parse(buffer), form, 'serves the posted form')
+          test.assert(
+            'cache-control' in response.headers,
+            'Cache-Control'
           )
-          response.pipe(concat(function (buffer) {
-            test.same(JSON.parse(buffer), form, 'serves the posted form')
-            test.assert(
-              'cache-control' in response.headers,
-              'Cache-Control'
-            )
-            var cacheControl = response.headers['cache-control']
-            test.assert(
-              cacheControl && cacheControl.indexOf('max-age') !== -1,
-              'max-age'
-            )
-            done()
-            test.end()
-          }))
-        }).end()
-      }, 10)
+          var cacheControl = response.headers['cache-control']
+          test.assert(
+            cacheControl && cacheControl.indexOf('max-age') !== -1,
+            'max-age'
+          )
+          done()
+          test.end()
+        }))
+      }).end()
     }).end(JSON.stringify(form))
   })
 })
@@ -254,13 +252,11 @@ tape('GET /forms/$child_of_posted', function (test) {
           response.headers['content-type'], 'application/json',
           'sets Content-Type'
         )
-        setTimeout(function () {
-          response.pipe(concat(function (buffer) {
-            test.same(JSON.parse(buffer), child, 'serves the child form')
-            done()
-            test.end()
-          }))
-        }, 10)
+        response.pipe(concat(function (buffer) {
+          test.same(JSON.parse(buffer), child, 'serves the child form')
+          done()
+          test.end()
+        }))
       }).end()
     }).end(JSON.stringify(parent))
   })
