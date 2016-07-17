@@ -26,6 +26,11 @@ module.exports = function (level, keys, callback) {
   })
   .once('error',
     /* istanbul ignore next */
-    function (error) { callback(error) })
-  .once('end', function () { callback(null, subscribers.sort()) })
+    function (error) {
+      callback(error)
+    }
+  )
+  .once('end', function () {
+    callback(null, subscribers.sort())
+  })
 }

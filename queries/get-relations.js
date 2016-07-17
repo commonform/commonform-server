@@ -13,7 +13,12 @@ module.exports = function (prefix) {
     })
     .once('error',
       /* istanbul ignore next */
-      function (error) { callback(error) })
-    .once('end', function () { callback(null, results) })
+      function (error) {
+        callback(error)
+      }
+    )
+    .once('end', function () {
+      callback(null, results)
+    })
   }
 }

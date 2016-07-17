@@ -8,8 +8,8 @@ module.exports = function (level, digest, callback) {
   callback = once(callback)
   var parents = []
   level.createReadStream({
-    gt: encode([ PREFIX, digest, '' ]),
-    lt: encode([ PREFIX, digest, '~' ])
+    gt: encode([PREFIX, digest, '']),
+    lt: encode([PREFIX, digest, '~'])
   })
   .on('data', function (item) {
     var decoded = decode(item.key)
@@ -20,6 +20,11 @@ module.exports = function (level, digest, callback) {
   })
   .once('error',
     /* istanbul ignore next */
-    function (error) { callback(error) })
-  .once('end', function () { callback(null, parents) })
+    function (error) {
+      callback(error)
+    }
+  )
+  .once('end', function () {
+    callback(null, parents)
+  })
 }

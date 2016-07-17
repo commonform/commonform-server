@@ -9,7 +9,6 @@ var getLatestPublication = require('../queries/get-latest-publication')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var keyForPublication = require('../keys/publication')
-var lock = require('level-lock')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
 var parseEdition = require('reviewers-edition-parse')
@@ -43,55 +42,41 @@ function postPublication (request, response, parameters, log, level, write) {
         } else {
           var publicationKey = keyForPublication(publisher, project, edition)
           var formKey = formKeyFor(digest)
-          var unlock = lock(level, publicationKey, 'w')
-          /* istanbul ignore if */
-          if (!unlock) conflict(response)
-          else {
-            exists(level, formKey, function (error, formExists) {
-              /* istanbul ignore if */
-              if (error) {
-                unlock()
-                internalError(response, error)
-              } else {
-                if (!formExists) {
-                  unlock()
-                  badRequest(response, 'unknown form')
-                } else {
-                  exists(level, publicationKey, function (error, publicationExists) {
-                    /* istanbul ignore if */
-                    if (error) {
-                      unlock()
-                      internalError(response, error)
-                    } else {
-                      if (publicationExists) {
-                        unlock()
-                        conflict(response)
-                      } else {
-                        var entry = {
-                          type: 'publication',
-                          data: {
-                            publisher: publisher,
-                            project: project,
-                            edition: edition,
-                            digest: digest
-                          }
+          exists(level, formKey, function (error, formExists) {
+            /* istanbul ignore if */
+            if (error) internalError(response, error)
+            else {
+              if (!formExists) badRequest(response, 'unknown form')
+              else {
+                exists(level, publicationKey, function (error, publicationExists) {
+                  /* istanbul ignore if */
+                  if (error) internalError(response, error)
+                  else {
+                    if (publicationExists) conflict(response)
+                    else {
+                      var entry = {
+                        type: 'publication',
+                        data: {
+                          publisher: publisher,
+                          project: project,
+                          edition: edition,
+                          digest: digest
                         }
-                        write(entry, function (error) {
-                          unlock()
-                          if (error) internalError(error, 'internal error')
-                          else {
-                            response.statusCode = 204
-                            response.setHeader('Location', publicationPath(publisher, project, edition))
-                            response.end()
-                          }
-                        })
                       }
+                      write(entry, function (error) {
+                        if (error) internalError(error, 'internal error')
+                        else {
+                          response.statusCode = 204
+                          response.setHeader('Location', publicationPath(publisher, project, edition))
+                          response.end()
+                        }
+                      })
                     }
-                  })
-                }
+                  }
+                })
               }
-            })
-          }
+            }
+          })
         }
       } else badRequest(response, 'invalid project')
     })

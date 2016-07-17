@@ -22,7 +22,10 @@ module.exports = function (level, digest, callback) {
   })
   .once('error',
     /* istanbul ignore next */
-    function yieldError (error) { callback(error) })
+    function yieldError (error) {
+      callback(error)
+    }
+  )
   .once('end', function yieldProjects () {
     projects.sort(compareProjects)
     callback(null, projects)

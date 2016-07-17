@@ -359,10 +359,12 @@ tape('POST /publishers/$publisher/projects/$project/publications/$existing', fun
         postForm(port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function putProjectAgain (done) {
-          http.request(request, function (response) {
-            test.equal(response.statusCode, 409, 'Second POST 409')
-            done()
-          }).end(JSON.stringify({digest: digest}))
+          setTimeout(function () {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 409, 'Second POST 409')
+              done()
+            }).end(JSON.stringify({digest: digest}))
+          }, 1000)
         }
       ],
       function finish () {

@@ -1,41 +1,40 @@
 var encode = require('../keys/encode')
 var formKeyFor = require('../keys/form')
 var formToProjectKey = require('../keys/form-to-project')
+var keyForPublication = require('../keys/publication')
 var normalize = require('commonform-normalize')
 
 module.exports = function (entry, done) {
-  var publisher = entry.data.publisher
-  var project = entry.data.project
-  var edition = entry.data.edition
-  var digest = entry.data.digest
-  var batch = []
-  var projectKey = formToProjectKey(digest, publisher, project, edition, digest)
-  batch.push({key: projectKey})
+  var publication = entry.data
+  var publisher = publication.publisher
+  var project = publication.project
+  var edition = publication.edition
+  var digest = publication.digest
+  var batch = [
+    {
+      key: keyForPublication(publisher, project, edition),
+      value: entry.data
+    },
+    {key: encode(['publisher', publisher])}
+  ]
   var formKey = formKeyFor(digest)
   this.level.get(formKey, function (error, form) {
     if (error) done(error)
     else {
       var normalized = normalize(form)
-      normalized[digest].content.forEach(function (element) {
-        if (element.hasOwnProperty('digest')) {
-        }
-      })
-      var batch = []
       indexRelations(digest, normalized, batch)
       recurse(digest, normalized, batch, [
         indexDigest,
         function indexFormToProject (digest, normalized, batch) {
-          if (digest !== normalized.root) {
-            batch.push({
-              key: formToProjectKey(
-                digest,
-                publisher,
-                project,
-                edition,
-                false
-              )
-            })
-          }
+          batch.push({
+            key: formToProjectKey(
+              digest,
+              publisher,
+              project,
+              edition,
+              digest === normalized.root
+            )
+          })
         },
         indexContentElements
       ])

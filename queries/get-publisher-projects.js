@@ -7,9 +7,14 @@ module.exports = function (level, publisher, callback) {
     gt: encode(['projects', publisher]),
     lt: encode(['projects', '~'])
   })
-  .on('data', function (key) { keys.push(decodeKey(key)) })
+  .on('data', function (key) {
+    keys.push(decodeKey(key))
+  })
   .once('error', /* istanbul ignore next */
-    function (error) { callback(error) })
+    function (error) {
+      callback(error)
+    }
+  )
   .once('end', function () {
     var projectNames = keys.reduce(function (projectNames, key) {
       var projectName = key[2]
