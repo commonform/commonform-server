@@ -11,6 +11,8 @@ var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 var migrations = require('./migrations')
 
 module.exports = function (version, serverLog, level, dataLog) {
+  var transform = through2.obj(entryToLevelUPBatch)
+  transform.level = level
   pump(
     dataLog.readStream,
     through2.obj(function pullOutVersion (chunk, _, done) {
@@ -23,7 +25,7 @@ module.exports = function (version, serverLog, level, dataLog) {
     through2.obj(function (chunk, _, done) {
       done(null, chunk.entry)
     }),
-    through2.obj(entryToLevelUPBatch),
+    transform,
     through2.obj(function (operations, _, done) {
       operations.forEach(function (operation) {
         operation.type = 'put'
