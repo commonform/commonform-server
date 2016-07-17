@@ -32,7 +32,7 @@ tape('POST /publishers/$publisher/projects/$project/publications/$edition', func
         postForm(port, form, test),
         function putProject (done) {
           http.request(request, function (response) {
-            test.equal(response.statusCode, 201, '201')
+            test.equal(response.statusCode, 204, '204')
             test.equal(response.headers.location, path, 'Location')
             done()
           }).end(JSON.stringify({digest: digest}))

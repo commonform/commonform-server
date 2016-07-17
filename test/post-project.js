@@ -15,7 +15,7 @@ module.exports =
       }
       http.request(options, function (response) {
         test.equal(
-          response.statusCode, 201,
+          response.statusCode, 204,
           'POST ' + publisher + ':' + project + '@' + edition
         )
         if (callback) callback()

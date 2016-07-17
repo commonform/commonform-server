@@ -66,7 +66,7 @@ tape('POST /publishers/:name with password', function (test) {
       path: '/publishers/charlie'
     }
     http.request(options, function (response) {
-      test.equal(response.statusCode, 201, 'POST 201')
+      test.equal(response.statusCode, 204, 'POST 204')
       test.equal(
         response.headers.location, '/publishers/charlie',
         'Location'
@@ -111,7 +111,7 @@ tape('GET /publishers/:name for existing', function (test) {
       path: '/publishers/charlie'
     }
     http.request(options, function (response) {
-      test.equal(response.statusCode, 201, 'POST 201')
+      test.equal(response.statusCode, 204, 'POST 204')
       var location = response.headers.location
       test.equal(
         location, '/publishers/charlie',
@@ -400,7 +400,7 @@ tape('POST /publishers/:name with hashed password', function (test) {
       path: '/publishers/charlie'
     }
     http.request(options, function (response) {
-      test.equal(response.statusCode, 201, 'POST 201')
+      test.equal(response.statusCode, 204, 'POST 204')
       test.equal(
         response.headers.location, '/publishers/charlie',
         'Location'
