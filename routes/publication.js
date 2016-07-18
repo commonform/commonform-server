@@ -73,6 +73,7 @@ function postPublication (request, response, parameters, log, level, write) {
                           response.statusCode = 204
                           response.setHeader('Location', publicationPath(publisher, project, edition))
                           response.end()
+                          /* istanbul ignore else */
                           if (mailgun) {
                             sendIncludedNotifications(
                               publisher, project, edition, digest,
