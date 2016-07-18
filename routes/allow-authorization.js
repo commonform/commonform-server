@@ -7,7 +7,9 @@ module.exports = function (handler) {
   return function (request, response, parameters, log, level) {
     var handlerArguments = arguments
     request.publisher = false
-    function done () { handler.apply(this, handlerArguments) }
+    function done () {
+      handler.apply(this, handlerArguments)
+    }
     var parsed = parseAuthorization(request)
     if (parsed === undefined) done()
     else {

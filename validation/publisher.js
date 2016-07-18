@@ -1,6 +1,6 @@
 var isEMail = require('email-validator').validate
 
-var requiredKeys = [ 'name', 'about', 'email', 'password' ]
+var requiredKeys = ['name', 'about', 'email', 'password']
 
 module.exports = function (argument) {
   /* istanbul ignore if */
@@ -25,7 +25,9 @@ module.exports = function (argument) {
     // No extra keys
     keys.length === requiredKeys.length
   )
-  function has (key) { return argument.hasOwnProperty(key) }
+  function has (key) {
+    return argument.hasOwnProperty(key)
+  }
 }
 
 function validPublisherName (argument) {

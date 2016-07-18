@@ -78,7 +78,9 @@ function indexContentElements (digest, normalized, batch) {
         push(['heading', heading])
         push(['heading-in-form', heading, digest])
         push(['heading-for-form-in-form', heading, childDigest, digest])
-        push(['form-under-heading-in-form', childDigest, heading, digest])
+        push(
+          ['form-under-heading-in-form', childDigest, heading, digest]
+        )
       }
     }
   })
@@ -107,7 +109,9 @@ function childrenOf (digest, normalized) {
   return recurseRelations(digest, normalized, [], [])
 }
 
-function recurseRelations (parentDigest, normalized, parents, relationships) {
+function recurseRelations (
+  parentDigest, normalized, parents, relationships
+) {
   var form = normalized[parentDigest]
   form.content.forEach(function (element) {
     if (element.hasOwnProperty('digest')) {
@@ -120,7 +124,9 @@ function recurseRelations (parentDigest, normalized, parents, relationships) {
           depth: depth
         })
       })
-      recurseRelations(childDigest, normalized, childParents, relationships)
+      recurseRelations(
+        childDigest, normalized, childParents, relationships
+      )
     }
   })
   return relationships

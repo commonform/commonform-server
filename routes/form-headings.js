@@ -16,11 +16,16 @@ module.exports = function (request, response, parameters, log, level) {
     })
     .on('data', function (item) {
       var decoded = decode(item.key)
-      parents.push({heading: decoded[2], parent: decoded[3]})
+      parents.push({
+        heading: decoded[2],
+        parent: decoded[3]
+      })
     })
-    .once('error',
-      /* istanbul ignore next */
-      function (error) { internalError(error) })
-    .once('end', function () { sendJSON(response, parents) })
+    .once('error', /* istanbul ignore next */ function (error) {
+      internalError(error)
+    })
+    .once('end', function () {
+      sendJSON(response, parents)
+    })
   } else methodNotAllowed(response)
 }

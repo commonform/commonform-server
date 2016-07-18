@@ -61,13 +61,16 @@ tape('POST /annotations with invalid annotation', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-            .on('data', function (chunk) { buffer.push(chunk) })
+            .on('data', function (chunk) {
+              buffer.push(chunk)
+            })
             .once('end', function () {
               var body = Buffer.concat(buffer).toString()
               test.equal(body, 'Invalid annotation', 'invalid')
               done()
             })
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -93,11 +96,16 @@ tape('POST /annotations without authorization', function (test) {
       [
         postForm(port, form, test),
         function (done) {
-          var options = {method: 'POST', port: port, path: '/annotations'}
+          var options = {
+            method: 'POST',
+            port: port,
+            path: '/annotations'
+          }
           http.request(options, function (response) {
             test.equal(response.statusCode, 401, '401')
             done()
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -136,7 +144,8 @@ tape('POST /annotations for another publisher', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 403, '403')
             done()
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -173,7 +182,8 @@ tape('POST /annotations with bad password', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 401, '401')
             done()
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -214,7 +224,9 @@ tape('POST /annotations with form not in context', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-            .on('data', function (chunk) { buffer.push(chunk) })
+            .on('data', function (chunk) {
+              buffer.push(chunk)
+            })
             .once('end', function () {
               var body = Buffer.concat(buffer).toString()
               test.equal(
@@ -223,7 +235,8 @@ tape('POST /annotations with form not in context', function (test) {
               )
               done()
             })
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -254,7 +267,9 @@ tape('POST /annotations with reply', function (test) {
       [
         postForm(port, parent, test),
         function (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             reply = {
@@ -305,7 +320,8 @@ tape('POST /annotations with reply to nonexistent', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 400, '400')
             done()
-          }).end(JSON.stringify(annotation))
+          })
+          .end(JSON.stringify(annotation))
         }
       ],
       function () {
@@ -337,7 +353,9 @@ tape('POST /annotations with mismatched context', function (test) {
       [
         postForm(port, parent, test),
         function (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             reply.replyTo = [location.replace('/annotations/', '')]
@@ -355,13 +373,19 @@ tape('POST /annotations with mismatched context', function (test) {
             test.equal(response.statusCode, 400, '400')
             var buffer = []
             response
-            .on('data', function (chunk) { buffer.push(chunk) })
+            .on('data', function (chunk) {
+              buffer.push(chunk)
+            })
             .once('end', function () {
               var body = Buffer.concat(buffer).toString()
-              test.equal(body, 'Does not match parent', 'does not match')
+              test.equal(
+                body, 'Does not match parent',
+                'does not match'
+              )
               done()
             })
-          }).end(JSON.stringify(reply))
+          })
+          .end(JSON.stringify(reply))
         }
       ],
       function () {
@@ -382,7 +406,8 @@ tape('POST /annotations with unknown context', function (test) {
     form: digest,
     context: digest,
     replyTo: [],
-    text: 'Not good' }
+    text: 'Not good'
+  }
   server(function (port, done) {
     var options = {
       method: 'POST',
@@ -394,14 +419,17 @@ tape('POST /annotations with unknown context', function (test) {
       test.equal(response.statusCode, 400, '400')
       var buffer = []
       response
-      .on('data', function (chunk) { buffer.push(chunk) })
+      .on('data', function (chunk) {
+        buffer.push(chunk)
+      })
       .once('end', function () {
         var body = Buffer.concat(buffer).toString()
         test.equal(body, 'Unknown context', 'unknown context')
         done()
         test.end()
       })
-    }).end(JSON.stringify(annotation))
+    })
+    .end(JSON.stringify(annotation))
   })
 })
 
@@ -425,7 +453,9 @@ tape('GET /annotation/:uuid', function (test) {
       [
         postForm(port, parent, test),
         function (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             uuid = location.replace('/annotations/', '')
@@ -440,7 +470,8 @@ tape('GET /annotation/:uuid', function (test) {
               test.equal(body.text, annotation.text, 'serves text')
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -469,7 +500,9 @@ tape('DELETE /annotation/:uuid', function (test) {
       [
         postForm(port, form, test),
         function (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             uuid = location.replace('/annotations/', '')
@@ -485,7 +518,8 @@ tape('DELETE /annotation/:uuid', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 405, '405')
             done()
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -503,7 +537,8 @@ tape('GET /annotation/:not_a_uuid', function (test) {
       test.equal(response.statusCode, 404, '404')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -514,7 +549,8 @@ tape('GET /annotation/:nonexistent', function (test) {
       test.equal(response.statusCode, 404, '404')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -525,7 +561,8 @@ tape('GET /annotations without query', function (test) {
       test.equal(response.statusCode, 400, 'GET 400')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -536,7 +573,8 @@ tape('DELETE /annotations', function (test) {
       test.equal(response.statusCode, 405, 'DELETE 405')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -558,7 +596,13 @@ tape('GET /annotations?context=digest', function (test) {
   forms.d = {content: ['This is D']}
   forms.c = {content: [{form: forms.d}]}
   forms.b = {content: [{form: forms.c}]}
-  forms.a = {content: [{form: forms.b}, {form: forms.e}, {form: forms.g}]}
+  forms.a = {
+    content: [
+      {form: forms.b},
+      {form: forms.e},
+      {form: forms.g}
+    ]
+  }
   //   X <<< not context
   //   +-D
   forms.x = {content: ['This is X', {form: forms.d}]}
@@ -592,11 +636,21 @@ tape('GET /annotations?context=digest', function (test) {
       [
         postForm(port, forms.a, test),
         postForm(port, forms.x, test),
-        postAnnotation(publisher, password, port, annotations.DinB, test),
-        postAnnotation(publisher, password, port, annotations.DinX, test),
-        postAnnotation(publisher, password, port, annotations.DinA, test),
-        postAnnotation(publisher, password, port, annotations.FinF, test),
-        postAnnotation(publisher, password, port, annotations.AinA, test),
+        postAnnotation(
+          publisher, password, port, annotations.DinB, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.DinX, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.DinA, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.FinF, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.AinA, test
+        ),
         function (done) {
           var options = {
             port: port,
@@ -638,7 +692,8 @@ tape('GET /annotations?context=digest', function (test) {
               )
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -667,7 +722,13 @@ tape('GET /annotations?context=digest&form=digest', function (test) {
   forms.d = {content: ['This is D']}
   forms.c = {content: [{form: forms.d}]}
   forms.b = {content: [{form: forms.c}]}
-  forms.a = {content: [{form: forms.b}, {form: forms.e}, {form: forms.g}]}
+  forms.a = {
+    content: [
+      {form: forms.b},
+      {form: forms.e},
+      {form: forms.g}
+    ]
+  }
   //   X <<< not context
   //   +-D
   forms.x = {content: ['This is X', {form: forms.d}]}
@@ -701,11 +762,21 @@ tape('GET /annotations?context=digest&form=digest', function (test) {
       [
         postForm(port, forms.a, test),
         postForm(port, forms.x, test),
-        postAnnotation(publisher, password, port, annotations.DinB, test),
-        postAnnotation(publisher, password, port, annotations.DinX, test),
-        postAnnotation(publisher, password, port, annotations.DinA, test),
-        postAnnotation(publisher, password, port, annotations.FinF, test),
-        postAnnotation(publisher, password, port, annotations.AinA, test),
+        postAnnotation(
+          publisher, password, port, annotations.DinB, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.DinX, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.DinA, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.FinF, test
+        ),
+        postAnnotation(
+          publisher, password, port, annotations.AinA, test
+        ),
         function (done) {
           var options = {
             port: port,
@@ -751,7 +822,8 @@ tape('GET /annotations?context=digest&form=digest', function (test) {
               )
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -762,70 +834,82 @@ tape('GET /annotations?context=digest&form=digest', function (test) {
   })
 })
 
-tape('GET /annotations?context=digest&form=not_in_context', function (test) {
-  // Forms
-  var forms = {}
-  forms.a = {content: ['This is A']}
-  forms.b = {content: ['This is B']}
-  // Digests
-  var digests = {}
-  Object.keys(forms).forEach(function (key) {
-    digests[key] = normalize(forms[key]).root
-  })
-  // Annotations
-  server(function (port, done) {
-    series(
-      [
-        postForm(port, forms.a, test),
-        postForm(port, forms.b, test),
-        function (done) {
-          var options = {
-            port: port,
-            path: (
-              '/annotations' +
-              '?' + 'context=' + digests.a +
-              '&' + 'form=' + digests.b
-            )
-          }
-          http.request(options, function (response) {
-            test.equal(response.statusCode, 400, 'GET 400')
-            var buffer = []
-            response
-            .on('data', function (chunk) { buffer.push(chunk) })
-            .once('end', function () {
-              var body = Buffer.concat(buffer).toString()
-              test.equal(
-                body,
-                digests.b + ' not in ' + digests.a,
-                'form not in context'
+tape(
+  'GET /annotations?context=digest&form=not_in_context',
+  function (test) {
+    // Forms
+    var forms = {}
+    forms.a = {content: ['This is A']}
+    forms.b = {content: ['This is B']}
+    // Digests
+    var digests = {}
+    Object.keys(forms).forEach(function (key) {
+      digests[key] = normalize(forms[key]).root
+    })
+    // Annotations
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, forms.a, test),
+          postForm(port, forms.b, test),
+          function (done) {
+            var options = {
+              port: port,
+              path: (
+                '/annotations' +
+                '?' + 'context=' + digests.a +
+                '&' + 'form=' + digests.b
               )
-              done()
+            }
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 400, 'GET 400')
+              var buffer = []
+              response
+              .on('data', function (chunk) {
+                buffer.push(chunk)
+              })
+              .once('end', function () {
+                var body = Buffer.concat(buffer).toString()
+                test.equal(
+                  body,
+                  digests.b + ' not in ' + digests.a,
+                  'form not in context'
+                )
+                done()
+              })
             })
-          }).end()
-        }
-      ],
-      function () {
-        done()
-        test.end()
-      })
-  })
-})
+            .end()
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        })
+    })
+  }
+)
 
 tape('GET /annotations?context=nonexistent', function (test) {
   server(function (port, done) {
     var digest = 'a'.repeat(64)
-    var options = {port: port, path: '/annotations?context=' + digest}
+    var options = {
+      port: port,
+      path: '/annotations?context=' + digest
+    }
     http.request(options, function (response) {
       test.equal(response.statusCode, 400, 'GET 400')
       var buffer = []
       response
-      .on('data', function (chunk) { buffer.push(chunk) })
+      .on('data', function (chunk) {
+        buffer.push(chunk)
+      })
       .once('end', function () {
         var body = Buffer.concat(buffer).toString()
         test.equal(body, 'Unknown form', 'unknown form')
         done()
         test.end()
       })
-    }).end()
+    })
+    .end()
   })
 })

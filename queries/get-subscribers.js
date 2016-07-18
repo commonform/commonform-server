@@ -16,12 +16,9 @@ module.exports = function (level, keys, callback) {
     var publisher = decoded[decoded.length - 1]
     subscribers.push(publisher)
   })
-  .once('error',
-    /* istanbul ignore next */
-    function (error) {
-      callback(error)
-    }
-  )
+  .once('error', /* istanbul ignore next */ function (error) {
+    callback(error)
+  })
   .once('end', function () {
     callback(null, subscribers.sort())
   })

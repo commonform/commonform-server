@@ -1,6 +1,8 @@
 var http = require('http')
 
-module.exports = function (port, subscriber, password, test, publisher, project) {
+module.exports = function (
+  port, subscriber, password, test, publisher, project
+) {
   return function (callback) {
     var options = {
       method: 'POST',
@@ -15,6 +17,7 @@ module.exports = function (port, subscriber, password, test, publisher, project)
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, '204')
       if (callback) callback()
-    }).end()
+    })
+    .end()
   }
 }

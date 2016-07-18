@@ -28,7 +28,7 @@ function setupServers (callback) {
     // Start an HTTP server connected to the log server.
     setupHTTPServer(port, function (httpServer) {
       // Provide the server objects to the test.
-      callback(httpServer.address().port, function close () {
+      callback(httpServer.address().port, function () {
         httpServer.close()
         logServer.close()
       })

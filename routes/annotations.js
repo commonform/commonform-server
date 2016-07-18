@@ -46,21 +46,30 @@ function getAnnotations (request, response, parameters, log, level) {
           if (query.form in contexts) {
             send(
               multistream.obj(
-                Object.keys(contexts).filter(function (digest) {
+                Object.keys(contexts)
+                .filter(function (digest) {
                   return (
                     // The form is query.form itself.
                     digest === query.form ||
                     // The form is a child of query.form.
                     contexts[digest].indexOf(query.form) !== -1
                   )
-                }).map(annotationsStream)
+                })
+                .map(annotationsStream)
               )
             )
           } else {
-            badRequest(response, query.form + ' not in ' + query.context)
+            badRequest(
+              response, query.form + ' not in ' + query.context
+            )
           }
         } else {
-          send(multistream.obj(Object.keys(contexts).map(annotationsStream)))
+          send(
+            multistream.obj(
+              Object.keys(contexts)
+              .map(annotationsStream)
+            )
+          )
         }
       }
       function send (stream) {
@@ -70,18 +79,20 @@ function getAnnotations (request, response, parameters, log, level) {
         .on('data', function (item) {
           var annotation = item.value
           if (matchesContext(annotation, contexts)) {
-            response.write((first ? '' : ',') + JSON.stringify(item.value) + '\n')
+            response.write(
+              (first ? '' : ',') +
+              JSON.stringify(item.value) + '\n'
+            )
             first = false
           }
         })
-        .once('error',
-          /* istanbul ignore next */
-          function (error) {
-            log.error(error)
-            response.end('\n]')
-          }
-        )
-        .once('end', function () { response.end('\n]') })
+        .once('error', /* istanbul ignore next */ function (error) {
+          log.error(error)
+          response.end('\n]')
+        })
+        .once('end', function () {
+          response.end('\n]')
+        })
       }
     })
   }
@@ -114,13 +125,17 @@ function computeContexts (normalized) {
     // Iterate children.
     normalized[digest].content.forEach(function (element) {
       var isChild = typeof element === 'object' && 'digest' in element
-      if (isChild) recurse(element.digest, parents.concat(digest), result)
+      if (isChild) {
+        recurse(element.digest, parents.concat(digest), result)
+      }
     })
     return result
   }
 }
 
-function postAnnotation (request, response, parameters, log, level, write) {
+function postAnnotation (
+  request, response, parameters, log, level, write
+) {
   readJSONBody(request, response, function (annotation) {
     var put = function () {
       var entry = {type: 'annotation', data: annotation}
@@ -129,7 +144,9 @@ function postAnnotation (request, response, parameters, log, level, write) {
         if (error) internalError(response, 'internal error')
         else {
           response.statusCode = 204
-          response.setHeader('Location', annotationPath(annotation.uuid))
+          response.setHeader(
+            'Location', annotationPath(annotation.uuid)
+          )
           response.end()
           /* istanbul ignore else */
           if (mailgun) {
@@ -161,22 +178,26 @@ function postAnnotation (request, response, parameters, log, level, write) {
             badRequest(response, 'Form not in context')
           } else {
             if (annotation.replyTo.length !== 0) {
-              getAnnotation(level, annotation.replyTo[0], function (error, prior) {
-                if (error) {
-                  /* istanbul ignore else */
-                  if (error.notFound) badRequest(response, 'Invalid replyTo')
-                  else internalError(response, error)
-                } else {
-                  var sameTarget = (
-                    annotation.context === prior.context &&
-                    annotation.form === prior.form &&
-                    equals(annotation.replyTo.slice(1), prior.replyTo)
-                  )
-                  if (!sameTarget) {
-                    badRequest(response, 'Does not match parent')
-                  } else put()
+              getAnnotation(
+                level, annotation.replyTo[0],
+                function (error, prior) {
+                  if (error) {
+                    /* istanbul ignore else */
+                    if (error.notFound) {
+                      badRequest(response, 'Invalid replyTo')
+                    } else internalError(response, error)
+                  } else {
+                    var sameTarget = (
+                      annotation.context === prior.context &&
+                      annotation.form === prior.form &&
+                      equals(annotation.replyTo.slice(1), prior.replyTo)
+                    )
+                    if (!sameTarget) {
+                      badRequest(response, 'Does not match parent')
+                    } else put()
+                  }
                 }
-              })
+              )
             } else put()
           }
         }

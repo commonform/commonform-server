@@ -1,6 +1,8 @@
 var http = require('http')
 
-module.exports = function (port, publisher, password, test, uuidFunction) {
+module.exports = function (
+  port, publisher, password, test, uuidFunction
+) {
   return function (callback) {
     var options = {
       method: 'DELETE',
@@ -14,6 +16,7 @@ module.exports = function (port, publisher, password, test, uuidFunction) {
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, '204')
       if (callback) callback()
-    }).end()
+    })
+    .end()
   }
 }

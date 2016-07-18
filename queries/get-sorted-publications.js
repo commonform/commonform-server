@@ -11,12 +11,9 @@ module.exports = function (level, publisher, project, callback) {
   .on('data', function (value) {
     publications.push(value)
   })
-  .once('error',
-    /* istanbul ignore next */
-    function (error) {
-      callback(error)
-    }
-  )
+  .once('error', /* istanbul ignore next */ function (error) {
+    callback(error)
+  })
   .once('end', function () {
     publications.sort(function (a, b) {
       return compareEdition(a.edition, b.edition)

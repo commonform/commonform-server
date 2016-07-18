@@ -20,12 +20,9 @@ module.exports = function (level, digest, callback) {
       root: decodedKey[5] === 'true'
     })
   })
-  .once('error',
-    /* istanbul ignore next */
-    function yieldError (error) {
-      callback(error)
-    }
-  )
+  .once('error', /* istanbul ignore next */ function (error) {
+    callback(error)
+  })
   .once('end', function yieldProjects () {
     projects.sort(compareProjects)
     callback(null, projects)

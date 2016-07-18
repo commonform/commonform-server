@@ -31,43 +31,51 @@ var annotation = {
 var project = 'nda'
 var edition = '1e'
 
-tape('POST /forms/:digest/subscribers > annotation notification', function (test) {
-  server(function (port, done) {
-    mailgun.events.once('message', function (message) {
-      test.equal(message.to, email, 'to')
-      mailgun.events.removeAllListeners()
-      done()
-      test.end()
+tape(
+  'POST /forms/:digest/subscribers > annotation notification',
+  function (test) {
+    server(function (port, done) {
+      mailgun.events.once('message', function (message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        done()
+        test.end()
+      })
+      series(
+        [
+          postForm(port, form, test),
+          subscribeToForm(port, publisher, password, test, digest),
+          postAnnotation(publisher, password, port, annotation, test)
+        ],
+        function () { /* pass */ }
+      )
     })
-    series(
-      [
-        postForm(port, form, test),
-        subscribeToForm(port, publisher, password, test, digest),
-        postAnnotation(publisher, password, port, annotation, test)
-      ],
-      function () { /* pass */ }
-    )
-  })
-})
+  }
+)
 
-tape('POST /forms/:digest/subscribers > published notification', function (test) {
-  server(function (port, done) {
-    mailgun.events.once('message', function (message) {
-      test.equal(message.to, email, 'to')
-      mailgun.events.removeAllListeners()
-      done()
-      test.end()
+tape(
+  'POST /forms/:digest/subscribers > published notification',
+  function (test) {
+    server(function (port, done) {
+      mailgun.events.once('message', function (message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        done()
+        test.end()
+      })
+      series(
+        [
+          postForm(port, form, test),
+          subscribeToForm(port, publisher, password, test, digest),
+          postProject(
+            publisher, password, port, project, edition, digest, test
+          )
+        ],
+        function () { /* pass */ }
+      )
     })
-    series(
-      [
-        postForm(port, form, test),
-        subscribeToForm(port, publisher, password, test, digest),
-        postProject(publisher, password, port, project, edition, digest, test)
-      ],
-      function () { /* pass */ }
-    )
-  })
-})
+  }
+)
 
 tape('DELETE /forms/:digest/subscribers', function (test) {
   server(function (port, closeServer) {
@@ -92,46 +100,60 @@ tape('DELETE /forms/:digest/subscribers', function (test) {
   })
 })
 
-tape('GET /forms/:digest/subscribers/:', function (test) {
-  var subscriptionPath = '/forms/' + digest + '/subscribers/' + publisher
-  server(function (port, closeServer) {
-    series(
-      [
-        postForm(port, form, test),
-        subscribeToForm(port, publisher, password, test, digest),
-        function (done) {
-          var options = {
-            port: port,
-            path: subscriptionPath,
-            auth: publisher + ':' + password
-          }
-          http.request(options, function (response) {
-            test.equal(response.statusCode, 200, '200 as subscriber')
-            done()
-          }).end()
-        },
-        function (done) {
-          var options = {
-            port: port,
-            path: subscriptionPath,
-            auth: 'bob:bob\'s password'
-          }
-          http.request(options, function (response) {
-            test.equal(response.statusCode, 403, '403 as other publisher')
-            done()
-          }).end()
-        }
-      ],
-      function () {
-        closeServer()
-        test.end()
-      }
+tape(
+  'GET /forms/:digest/subscribers/:',
+  function (test) {
+    var subscriptionPath = (
+      '/forms/' + digest +
+      '/subscribers/' + publisher
     )
-  })
-})
+    server(function (port, closeServer) {
+      series(
+        [
+          postForm(port, form, test),
+          subscribeToForm(port, publisher, password, test, digest),
+          function (done) {
+            var options = {
+              port: port,
+              path: subscriptionPath,
+              auth: publisher + ':' + password
+            }
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 200, '200 as subscriber')
+              done()
+            })
+            .end()
+          },
+          function (done) {
+            var options = {
+              port: port,
+              path: subscriptionPath,
+              auth: 'bob:bob\'s password'
+            }
+            http.request(options, function (response) {
+              test.equal(
+                response.statusCode, 403,
+                '403 as other publisher'
+              )
+              done()
+            })
+            .end()
+          }
+        ],
+        function () {
+          closeServer()
+          test.end()
+        }
+      )
+    })
+  }
+)
 
 tape('GET /forms/:digest/subscribers/:not-subscribed', function (test) {
-  var subscriptionPath = '/forms/' + digest + '/subscribers/' + publisher
+  var subscriptionPath = (
+    '/forms/' + digest +
+    '/subscribers/' + publisher
+  )
   server(function (port, closeServer) {
     series(
       [
@@ -145,7 +167,8 @@ tape('GET /forms/:digest/subscribers/:not-subscribed', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 404, '404 as subscriber')
             done()
-          }).end()
+          })
+          .end()
         },
         function (done) {
           var options = {
@@ -154,9 +177,13 @@ tape('GET /forms/:digest/subscribers/:not-subscribed', function (test) {
             auth: 'bob:bob\'s password'
           }
           http.request(options, function (response) {
-            test.equal(response.statusCode, 403, '403 as other publisher')
+            test.equal(
+              response.statusCode, 403,
+              '403 as other publisher'
+            )
             done()
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -168,7 +195,10 @@ tape('GET /forms/:digest/subscribers/:not-subscribed', function (test) {
 })
 
 tape('PATCH /forms/:digest/subscribers/:', function (test) {
-  var subscriptionPath = '/forms/' + digest + '/subscribers/' + publisher
+  var subscriptionPath = (
+    '/forms/' + digest +
+    '/subscribers/' + publisher
+  )
   server(function (port, closeServer) {
     series(
       [
@@ -184,7 +214,8 @@ tape('PATCH /forms/:digest/subscribers/:', function (test) {
           http.request(options, function (response) {
             test.equal(response.statusCode, 405, '405')
             done()
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -195,49 +226,69 @@ tape('PATCH /forms/:digest/subscribers/:', function (test) {
   })
 })
 
-tape('POST /publishers/:/projects/:/publications/:/subscribers', function (test) {
-  server(function (port, closeServer) {
-    mailgun.events.once('message', function (message) {
-      test.equal(message.to, email, 'to')
-      mailgun.events.removeAllListeners()
-      closeServer()
-      test.end()
+tape(
+  'POST /publishers/:/projects/:/publications/:/subscribers',
+  function (test) {
+    server(function (port, closeServer) {
+      mailgun.events.once('message', function (message) {
+        test.equal(message.to, email, 'to')
+        mailgun.events.removeAllListeners()
+        closeServer()
+        test.end()
+      })
+      series(
+        [
+          postForm(port, form, test),
+          postProject(
+            publisher, password, port, project, edition, digest, test
+          ),
+          subscribeToEdition(
+            port, publisher, password, test, publisher, project, edition
+          ),
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )
+        ],
+        function () { /* pass */ }
+      )
     })
-    series(
-      [
-        postForm(port, form, test),
-        postProject(publisher, password, port, project, edition, digest, test),
-        subscribeToEdition(port, publisher, password, test, publisher, project, edition),
-        postAnnotation(publisher, password, port, annotation, test)
-      ],
-      function () { /* pass */ }
-    )
-  })
-})
+  }
+)
 
-tape('DELETE /publishers/:/projects/:/publications/:/subscribers', function (test) {
-  server(function (port, closeServer) {
-    mailgun.events.once('message', function () {
-      test.fail('sent notification')
+tape(
+  'DELETE /publishers/:/projects/:/publications/:/subscribers',
+  function (test) {
+    server(function (port, closeServer) {
+      mailgun.events.once('message', function () {
+        test.fail('sent notification')
+      })
+      series(
+        [
+          postForm(port, form, test),
+          postProject(
+            publisher, password, port, project, edition, digest, test
+          ),
+          subscribeToEdition(
+            port, publisher, password, test, publisher, project, edition
+          ),
+          unsubscribeFromEdition(
+            port, publisher, password, test, publisher, project, edition
+          ),
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )
+        ],
+        function () {
+          setTimeout(function () {
+            mailgun.events.removeAllListeners()
+            test.end()
+            closeServer()
+          }, 500)
+        }
+      )
     })
-    series(
-      [
-        postForm(port, form, test),
-        postProject(publisher, password, port, project, edition, digest, test),
-        subscribeToEdition(port, publisher, password, test, publisher, project, edition),
-        unsubscribeFromEdition(port, publisher, password, test, publisher, project, edition),
-        postAnnotation(publisher, password, port, annotation, test)
-      ],
-      function () {
-        setTimeout(function () {
-          mailgun.events.removeAllListeners()
-          test.end()
-          closeServer()
-        }, 500)
-      }
-    )
-  })
-})
+  }
+)
 
 tape('POST /publishers/:/projects/:/subscribers/:', function (test) {
   server(function (port, closeServer) {
@@ -250,9 +301,15 @@ tape('POST /publishers/:/projects/:/subscribers/:', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(publisher, password, port, project, edition, digest, test),
-        subscribeToProject(port, publisher, password, test, publisher, project),
-        postProject(publisher, password, port, project, '2e', digest, test)
+        postProject(
+          publisher, password, port, project, edition, digest, test
+        ),
+        subscribeToProject(
+          port, publisher, password, test, publisher, project
+        ),
+        postProject(
+          publisher, password, port, project, '2e', digest, test
+        )
       ],
       function () { /* pass */ }
     )
@@ -267,10 +324,18 @@ tape('DELETE /publishers/:/projects/:/subscribers/:', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(publisher, password, port, project, edition, digest, test),
-        subscribeToProject(port, publisher, password, test, publisher, project),
-        unsubscribeFromProject(port, publisher, password, test, publisher, project),
-        postProject(publisher, password, port, project, '2e', digest, test)
+        postProject(
+          publisher, password, port, project, edition, digest, test
+        ),
+        subscribeToProject(
+          port, publisher, password, test, publisher, project
+        ),
+        unsubscribeFromProject(
+          port, publisher, password, test, publisher, project
+        ),
+        postProject(
+          publisher, password, port, project, '2e', digest, test
+        )
       ],
       function () {
         setTimeout(function () {
@@ -294,8 +359,12 @@ tape('POST /publishers/:/subscribers/:', function (test) {
     series(
       [
         postForm(port, form, test),
-        subscribeToPublisher(port, publisher, password, test, publisher),
-        postProject(publisher, password, port, project, edition, digest, test)
+        subscribeToPublisher(
+          port, publisher, password, test, publisher
+        ),
+        postProject(
+          publisher, password, port, project, edition, digest, test
+        )
       ],
       function () { /* pass */ }
     )
@@ -310,9 +379,15 @@ tape('DELETE /publishers/:/subscribers/:', function (test) {
     series(
       [
         postForm(port, form, test),
-        subscribeToPublisher(port, publisher, password, test, publisher),
-        unsubscribeFromPublisher(port, publisher, password, test, publisher),
-        postProject(publisher, password, port, project, edition, digest, test)
+        subscribeToPublisher(
+          port, publisher, password, test, publisher
+        ),
+        unsubscribeFromPublisher(
+          port, publisher, password, test, publisher
+        ),
+        postProject(
+          publisher, password, port, project, edition, digest, test
+        )
       ],
       function () {
         setTimeout(function () {
@@ -339,7 +414,9 @@ tape('POST /annotations/:/subscribers/:', function (test) {
       [
         postForm(port, form, test),
         function annotate (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             uuid = location.replace('/annotations/', '')
@@ -347,9 +424,12 @@ tape('POST /annotations/:/subscribers/:', function (test) {
             done()
           }
         },
-        subscribeToAnnotation(port, publisher, password, test, function () {
-          return uuid
-        }),
+        subscribeToAnnotation(
+          port, publisher, password, test,
+          function () {
+            return uuid
+          }
+        ),
         function postReply (done) {
           var reply = JSON.parse(JSON.stringify(annotation))
           reply.replyTo = [uuid]
@@ -372,7 +452,9 @@ tape('DELETE /annotation/:/subscribers/:', function (test) {
       [
         postForm(port, form, test),
         function annotate (done) {
-          postAnnotation(publisher, password, port, annotation, test)(withLocation)
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
           function withLocation (error, location) {
             test.ifError(error)
             uuid = location.replace('/annotations/', '')
@@ -380,12 +462,18 @@ tape('DELETE /annotation/:/subscribers/:', function (test) {
             done()
           }
         },
-        subscribeToAnnotation(port, publisher, password, test, function () {
-          return uuid
-        }),
-        unsubscribeFromAnnotation(port, publisher, password, test, function () {
-          return uuid
-        }),
+        subscribeToAnnotation(
+          port, publisher, password, test,
+          function () {
+            return uuid
+          }
+        ),
+        unsubscribeFromAnnotation(
+          port, publisher, password, test,
+          function () {
+            return uuid
+          }
+        ),
         function postReply (done) {
           postAnnotation(publisher, password, port, reply, test)(done)
         }

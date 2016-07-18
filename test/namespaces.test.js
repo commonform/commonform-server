@@ -17,7 +17,9 @@ tape('GET /digests', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/digests'}
           http.request(options, function (response) {
@@ -26,7 +28,8 @@ tape('GET /digests', function (test) {
               test.assert(body.indexOf(digest) !== -1, 'serves digest')
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -44,7 +47,8 @@ tape('POST /digests', function (test) {
       test.equal(response.statusCode, 405, 'POST 405')
       closeServer()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -56,16 +60,22 @@ tape('GET /headings', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/headings'}
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
-              test.assert(body.indexOf(heading) !== -1, 'serves referenced heading')
+              test.assert(
+                body.indexOf(heading) !== -1,
+                'serves referenced heading'
+              )
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -85,7 +95,9 @@ tape('GET /headings', function (test) {
     series(
       [
         postForm(port, parent, test),
-        postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', parentDigest, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', parentDigest, test
+        ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/headings'}
           http.request(options, function (response) {
@@ -97,7 +109,8 @@ tape('GET /headings', function (test) {
               )
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -116,7 +129,9 @@ tape('GET /terms', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/terms'}
           http.request(options, function (response) {
@@ -125,7 +140,8 @@ tape('GET /terms', function (test) {
               test.assert(body.indexOf(term) !== -1, 'serves used term')
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {
@@ -144,16 +160,22 @@ tape('GET /terms', function (test) {
     series(
       [
         postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/terms'}
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
-              test.assert(body.indexOf(term) !== -1, 'serves defined term')
+              test.assert(
+                body.indexOf(term) !== -1,
+                'serves defined term'
+              )
               done()
             })
-          }).end()
+          })
+          .end()
         }
       ],
       function () {

@@ -2,7 +2,7 @@ var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
-var getCurrentPublication = require('../queries/get-current-publication')
+var getCurrent = require('../queries/get-current-publication')
 var getLatestPublication = require('../queries/get-latest-publication')
 var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
@@ -17,7 +17,7 @@ var readJSONBody = require('./read-json-body')
 var requireAuthorization = require('./require-authorization')
 var sendIncludedNotifications = require('../notifications/included')
 var sendJSON = require('./responses/send-json')
-var sendPublicationNotifications = require('../notifications/publication')
+var sendNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
 
 module.exports = function (request, response) {
@@ -28,13 +28,16 @@ module.exports = function (request, response) {
   } else methodNotAllowed(response)
 }
 
-function postPublication (request, response, parameters, log, level, write) {
+function postPublication (
+  request, response, parameters, log, level, write
+) {
   var publisher = parameters.publisher
   var project = parameters.project
   var edition = parameters.edition
   var parsedEdition = parseEdition(edition)
-  if (parsedEdition === false) badRequest(response, 'invalid edition')
-  else if (!validProject(project)) {
+  if (parsedEdition === false) {
+    badRequest(response, 'invalid edition')
+  } else if (!validProject(project)) {
     badRequest(response, 'invalid project name')
   } else {
     readJSONBody(request, response, function (json) {
@@ -43,7 +46,9 @@ function postPublication (request, response, parameters, log, level, write) {
         if (!isDigest(digest)) {
           badRequest(response, 'invalid digest')
         } else {
-          var publicationKey = keyForPublication(publisher, project, edition)
+          var publicationKey = keyForPublication(
+            publisher, project, edition
+          )
           var formKey = formKeyFor(digest)
           exists(level, formKey, function (error, formExists) {
             /* istanbul ignore if */
@@ -51,44 +56,51 @@ function postPublication (request, response, parameters, log, level, write) {
             else {
               if (!formExists) badRequest(response, 'unknown form')
               else {
-                exists(level, publicationKey, function (error, publicationExists) {
-                  /* istanbul ignore if */
-                  if (error) internalError(response, error)
-                  else {
-                    if (publicationExists) conflict(response)
+                exists(
+                  level, publicationKey,
+                  function (error, publicationExists) {
+                    /* istanbul ignore if */
+                    if (error) internalError(response, error)
                     else {
-                      var entry = {
-                        type: 'publication',
-                        data: {
-                          publisher: publisher,
-                          project: project,
-                          edition: edition,
-                          digest: digest
-                        }
-                      }
-                      write(entry, function (error) {
-                        /* istanbul ignore if */
-                        if (error) internalError(error, 'internal error')
-                        else {
-                          response.statusCode = 204
-                          response.setHeader('Location', publicationPath(publisher, project, edition))
-                          response.end()
-                          /* istanbul ignore else */
-                          if (mailgun) {
-                            sendIncludedNotifications(
-                              publisher, project, edition, digest,
-                              log, level
-                            )
-                            sendPublicationNotifications(
-                              publisher, project, edition,
-                              log, level
-                            )
+                      if (publicationExists) conflict(response)
+                      else {
+                        var entry = {
+                          type: 'publication',
+                          data: {
+                            publisher: publisher,
+                            project: project,
+                            edition: edition,
+                            digest: digest
                           }
                         }
-                      })
+                        write(entry, function (error) {
+                          /* istanbul ignore if */
+                          if (error) {
+                            internalError(error, 'internal error')
+                          } else {
+                            response.statusCode = 204
+                            var path = publicationPath(
+                              publisher, project, edition
+                            )
+                            response.setHeader('Location', path)
+                            response.end()
+                            /* istanbul ignore else */
+                            if (mailgun) {
+                              sendIncludedNotifications(
+                                publisher, project, edition, digest,
+                                log, level
+                              )
+                              sendNotifications(
+                                publisher, project, edition,
+                                log, level
+                              )
+                            }
+                          }
+                        })
+                      }
                     }
                   }
-                })
+                )
               }
             }
           })
@@ -104,11 +116,17 @@ function serveProject (request, response, parameters, log, level) {
   var edition = parameters.edition
   var fetch
   if (edition === 'current') {
-    fetch = getCurrentPublication.bind(this, level, publisher, project)
+    fetch = getCurrent.bind(
+      this, level, publisher, project
+    )
   } else if (edition === 'latest') {
-    fetch = getLatestPublication.bind(this, level, publisher, project)
+    fetch = getLatestPublication.bind(
+      this, level, publisher, project
+    )
   } else {
-    fetch = getPublication.bind(this, level, publisher, project, edition)
+    fetch = getPublication.bind(
+      this, level, publisher, project, edition
+    )
   }
   fetch(function (error, project) {
     /* istanbul ignore if */

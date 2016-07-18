@@ -1,3 +1,5 @@
 module.exports = function (key) {
-  return key.split('/').map(decodeURIComponent)
+  return key
+  .split('/')
+  .map(decodeURIComponent)
 }

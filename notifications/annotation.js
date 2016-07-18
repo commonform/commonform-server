@@ -10,30 +10,34 @@ module.exports = function (annotation, log, level) {
 }
 
 function notifyPublicationSubscribers (level, log, annotation) {
-  getPublications(level, annotation.context, function (error, projects) {
-    /* istanbul ignore if */
-    if (error) log.error(error)
-    else {
-      projects.forEach(function (project) {
-        var publicationString = publicationStringFor(project)
-        var keys = [
-          'publisher', project.publisher,
-          'project', project.project,
-          'edition', project.edition
-        ]
-        mailEachSubscriber(level, log, keys, function () {
-          return {
-            subject: 'Annotation to ' + publicationString,
-            text: [
-              annotation.publisher +
-              ' has made a new annotation to ' +
-              publicationString
-            ].join('\n')
-          }
+  getPublications(
+    level, annotation.context,
+    function (error, projects) {
+      /* istanbul ignore if */
+      if (error) log.error(error)
+      else {
+        projects.forEach(function (project) {
+          var publicationString = publicationStringFor(project)
+          var keys = [
+            'publisher', project.publisher,
+            'project', project.project,
+            'edition', project.edition
+          ]
+          mailEachSubscriber(level, log, keys, function () {
+            return {
+              subject: 'Annotation to ' + publicationString,
+              text: [
+                annotation.publisher +
+                ' has made a new annotation to ' +
+                publicationString
+              ]
+              .join('\n')
+            }
+          })
         })
-      })
+      }
     }
-  })
+  )
 }
 
 function notifyFormSubscribers (level, log, annotation) {
@@ -51,7 +55,8 @@ function notifyFormSubscribers (level, log, annotation) {
               annotation.publisher +
               ' has made a new annotation to ' +
               annotation.form
-            ].join('\n')
+            ]
+            .join('\n')
           }
         })
       })
@@ -68,7 +73,8 @@ function notifyAnnotationSubscribers (level, log, annotation) {
         subject: 'Reply to annotation to ' + annotation.digest,
         text: [
           annotation.publisher + ' has replied to annotation ' + parent
-        ].join('\n')
+        ]
+        .join('\n')
       }
     })
   })

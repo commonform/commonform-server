@@ -8,7 +8,9 @@ var unauthorized = require('./responses/unauthorized')
 module.exports = function (handler) {
   return function (request, response, parameters, log, level) {
     var handlerArguments = arguments
-    function allow () { handler.apply(this, handlerArguments) }
+    function allow () {
+      handler.apply(this, handlerArguments)
+    }
     var publisher = parameters.hasOwnProperty('subscriber')
       ? parameters.subscriber
       : parameters.publisher

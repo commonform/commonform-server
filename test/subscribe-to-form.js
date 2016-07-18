@@ -11,6 +11,7 @@ module.exports = function (port, subscriber, password, test, digest) {
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, '204')
       if (callback) callback()
-    }).end()
+    })
+    .end()
   }
 }

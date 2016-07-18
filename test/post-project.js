@@ -19,6 +19,7 @@ module.exports =
           'POST ' + publisher + ':' + project + '@' + edition
         )
         if (callback) callback()
-      }).end(JSON.stringify({digest: digest}))
+      })
+      .end(JSON.stringify({digest: digest}))
     }
   }

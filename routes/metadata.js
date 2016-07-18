@@ -4,7 +4,10 @@ var sendJSON = require('./responses/send-json')
 
 var METADATA = (function () {
   var meta = require('../package.json')
-  return JSON.stringify({service: meta.name, version: meta.version})
+  return JSON.stringify({
+    service: meta.name,
+    version: meta.version
+  })
 })()
 
 module.exports = function (request, response) {

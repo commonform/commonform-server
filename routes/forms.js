@@ -6,7 +6,9 @@ var normalize = require('commonform-normalize')
 var readJSONBody = require('./read-json-body')
 var validForm = require('commonform-validate').form
 
-module.exports = function (request, response, parameters, log, level, write) {
+module.exports = function (
+  request, response, parameters, log, level, write
+) {
   if (request.method === 'POST') {
     readJSONBody(request, response, function (form) {
       if (!validForm(form)) badRequest(response, 'invalid form')

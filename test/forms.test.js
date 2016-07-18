@@ -13,11 +13,13 @@ tape('POST /forms with invalid JSON', function (test) {
       response.pipe(concat(function (buffer) {
         test.equal(
           buffer.toString(), 'invalid JSON',
-          'responds "invalid JSON"')
+          'responds "invalid JSON"'
+        )
         done()
         test.end()
       }))
-    }).end('not valid json')
+    })
+    .end('not valid json')
   })
 })
 
@@ -34,7 +36,8 @@ tape('POST /forms with form', function (test) {
       )
       done()
       test.end()
-    }).end(JSON.stringify(form))
+    })
+    .end(JSON.stringify(form))
   })
 })
 
@@ -51,7 +54,8 @@ tape('POST /forms with oversized request body', function (test) {
       test.equal(response.statusCode, 413, 'responds 413')
       done()
       test.end()
-    }).end(body)
+    })
+    .end(body)
   })
 })
 
@@ -70,7 +74,8 @@ tape('POST /forms with infinite request body', function (test) {
       done()
       test.end()
     }
-    var infinite = makeInfiniteStream().once('error', function (error) {
+    var infinite = makeInfiniteStream()
+    .once('error', function (error) {
       test.assert(
         error.message === 'write EPIPE' ||
         error.message === 'write ECONNRESET'
@@ -101,7 +106,8 @@ tape('POST /forms without request body', function (test) {
       test.equal(response.statusCode, 400, 'responds 400')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -118,7 +124,9 @@ tape('POST /forms without request body', function (test) {
 //     var request =
 //       {method: 'POST',
 //         path: '/forms',
-//         headers: {'Content-Length': ( Buffer.byteLength(json) - 1 ) },
+//         headers: {
+//          'Content-Length': ( Buffer.byteLength(json) - 1 )
+//         },
 //         port: port }
 //     http
 //       .request(request, function (response) {
@@ -141,7 +149,8 @@ if (process.env.RUN_SLOW_TESTS) {
         test.equal(response.statusCode, 408, 'responds 408')
         done()
         test.end()
-      }).end(json)
+      })
+      .end(json)
     })
   })
 }
@@ -160,7 +169,8 @@ tape('POST /forms with invalid form', function (test) {
         done()
         test.end()
       }))
-    }).end(JSON.stringify(form))
+    })
+    .end(JSON.stringify(form))
   })
 })
 
@@ -172,7 +182,8 @@ tape('GET /forms/$not_a_digest', function (test) {
       test.equal(response.statusCode, 400, 'responds 404')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -184,7 +195,8 @@ tape('GET /forms/$nonexistent', function (test) {
       test.equal(response.statusCode, 404, 'responds 404')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -200,7 +212,8 @@ tape('POST /forms/$digest', function (test) {
       test.equal(response.statusCode, 405, 'responds 405')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })
 
@@ -232,8 +245,10 @@ tape('GET /forms/$posted', function (test) {
           done()
           test.end()
         }))
-      }).end()
-    }).end(JSON.stringify(form))
+      })
+      .end()
+    })
+    .end(JSON.stringify(form))
   })
 })
 
@@ -256,8 +271,10 @@ tape('GET /forms/$child_of_posted', function (test) {
           done()
           test.end()
         }))
-      }).end()
-    }).end(JSON.stringify(parent))
+      })
+      .end()
+    })
+    .end(JSON.stringify(parent))
   })
 })
 
@@ -286,9 +303,11 @@ tape('GET /forms/$great_grandchild_of_posted', function (test) {
             done()
             test.end()
           }))
-        }).end()
+        })
+        .end()
       }, 200)
-    }).end(JSON.stringify(parent))
+    })
+    .end(JSON.stringify(parent))
   })
 })
 
@@ -299,6 +318,7 @@ tape('PUT /forms', function (test) {
       test.equal(response.statusCode, 405, 'responds 405')
       done()
       test.end()
-    }).end()
+    })
+    .end()
   })
 })

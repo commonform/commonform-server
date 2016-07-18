@@ -1,7 +1,11 @@
 // Try an asynchronous operation, retrying up to three times.
-module.exports = function (asyncFunction, callback, /* optional */ isFinalError) {
+module.exports = function (
+  asyncFunction, callback, /* optional */ isFinalError
+) {
   if (isFinalError === undefined) {
-    isFinalError = /* istanbul ignore next */ function () { return false }
+    isFinalError = /* istanbul ignore next */ function () {
+      return false
+    }
   }
   attempt(asyncFunction, callback, isFinalError, 2, callback)
 }
@@ -14,7 +18,9 @@ function attempt (asyncFunction, callback, isFinalError, left) {
       else if (left === 0) callback(error)
       else {
         setTimeout(
-          attempt.bind(this, asyncFunction, callback, isFinalError, left - 1),
+          attempt.bind(
+            this, asyncFunction, callback, isFinalError, left - 1
+          ),
           100
         )
       }

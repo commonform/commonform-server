@@ -18,12 +18,9 @@ module.exports = function (level, digest, callback) {
       depth: parseInt(decoded[3])
     })
   })
-  .once('error',
-    /* istanbul ignore next */
-    function (error) {
-      callback(error)
-    }
-  )
+  .once('error', /* istanbul ignore next */ function (error) {
+    callback(error)
+  })
   .once('end', function () {
     callback(null, parents)
   })

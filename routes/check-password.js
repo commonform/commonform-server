@@ -3,7 +3,9 @@ var isNotFoundError = require('../is-not-found-error')
 var publisherKey = require('../keys/publisher')
 var thrice = require('../thrice')
 
-module.exports = function (level, publisher, password, response, callback) {
+module.exports = function (
+  level, publisher, password, response, callback
+) {
   var key = publisherKey(publisher)
   var get = level.get.bind(level, key)
   thrice(get, onResult, isNotFoundError)

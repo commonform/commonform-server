@@ -19,13 +19,13 @@ module.exports = function (namespace) {
         )
         first = false
       })
-      .once('error',
-        /* istanbul ignore next */
-        function (error) {
-          log.error(error)
-          response.end(']')
-        })
-      .once('end', function () { response.end(']') })
+      .once('error', /* istanbul ignore next */ function (error) {
+        log.error(error)
+        response.end(']')
+      })
+      .once('end', function () {
+        response.end(']')
+      })
     } else methodNotAllowed(response)
   }
 }

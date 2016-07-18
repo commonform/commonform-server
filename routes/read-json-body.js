@@ -1,7 +1,7 @@
 var badRequest = require('./responses/bad-request')
 var internalError = require('./responses/internal-error')
 var parseJSON = require('json-parse-errback')
-var requestEntityTooLarge = require('./responses/request-entity-too-large')
+var tooLarge = require('./responses/request-entity-too-large')
 
 var LIMIT = parseInt(process.env.MAX_BODY_SIZE) || 256000
 
@@ -10,8 +10,8 @@ module.exports = function (request, response, callback) {
   var finished = false
   var bytesReceived = 0
   var lengthHeader = request.headers['content-length']
-  var tooLarge = lengthHeader && parseInt(lengthHeader) > LIMIT
-  if (tooLarge) requestEntityTooLarge(response)
+  var isTooLarge = lengthHeader && parseInt(lengthHeader) > LIMIT
+  if (isTooLarge) tooLarge(response)
   else {
     buffer = []
     request.on('data', onData)
@@ -27,7 +27,7 @@ module.exports = function (request, response, callback) {
       bytesReceived += chunk.length
       if (bytesReceived > LIMIT) {
         finish()
-        requestEntityTooLarge(response)
+        tooLarge(response)
       }
     }
   }

@@ -26,7 +26,9 @@ module.exports = function (request, response) {
   } else methodNotAllowed(response)
 }
 
-function handleGetPublisher (request, response, parameters, log, level) {
+function handleGetPublisher (
+  request, response, parameters, log, level
+) {
   var publisher = parameters.publisher
   getPublisher(level, parameters.publisher, function (error, stored) {
     /* istanbul ignore if */
@@ -45,7 +47,9 @@ function handleGetPublisher (request, response, parameters, log, level) {
   })
 }
 
-function putPublisher (request, response, parameters, log, level, write) {
+function putPublisher (
+  request, response, parameters, log, level, write
+) {
   var publisher = parameters.publisher
   readJSONBody(request, response, function (json) {
     json.name = publisher
@@ -89,7 +93,8 @@ function putPublisher (request, response, parameters, log, level, write) {
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204
-                      response.setHeader('Location', '/publishers/' + name)
+                      var path = '/publishers/' + name
+                      response.setHeader('Location', path)
                       response.end()
                     }
                   })
@@ -103,7 +108,9 @@ function putPublisher (request, response, parameters, log, level, write) {
   })
 }
 
-function postPublisher (request, response, parameters, log, level, write) {
+function postPublisher (
+  request, response, parameters, log, level, write
+) {
   var publisher = parameters.publisher
   readJSONBody(request, response, function (json) {
     json.name = publisher
@@ -150,7 +157,8 @@ function postPublisher (request, response, parameters, log, level, write) {
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204
-                      response.setHeader('Location', '/publishers/' + name)
+                      var path = '/publishers/' + name
+                      response.setHeader('Location', path)
                       response.end()
                     }
                   })

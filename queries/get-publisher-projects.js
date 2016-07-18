@@ -10,18 +10,17 @@ module.exports = function (level, publisher, callback) {
   .on('data', function (key) {
     keys.push(decodeKey(key))
   })
-  .once('error', /* istanbul ignore next */
-    function (error) {
-      callback(error)
-    }
-  )
+  .once('error', /* istanbul ignore next */ function (error) {
+    callback(error)
+  })
   .once('end', function () {
     var projectNames = keys.reduce(function (projectNames, key) {
       var projectName = key[2]
       return projectNames.indexOf(projectName) < 0
         ? projectNames.concat(projectName)
         : projectNames
-    }, []).sort()
+    }, [])
+    .sort()
     callback(null, projectNames)
   })
 }

@@ -9,7 +9,8 @@ var tape = require('tape')
 var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
-var postProject = require('./post-project').bind(this, PUBLISHER, PASSWORD)
+var postProject = require('./post-project')
+.bind(this, PUBLISHER, PASSWORD)
 
 tape('GET /terms/$term/definitions', function (test) {
   var formA = {content: [{definition: 'Lots'}, ' means two.']}
@@ -23,25 +24,28 @@ tape('GET /terms/$term/definitions', function (test) {
         postForm(port, formB, test),
         postProject(port, 'defines', '1e', digestA, test),
         function getDefinitions (done) {
-          setTimeout(function () {
-            http.request(
-              {method: 'GET', port: port, path: '/terms/Lots/definitions'},
-              function (response) {
-                concat(test, response, function (body) {
-                  test.assert(Array.isArray(body), 'serves a JSON array')
-                  test.assert(
-                    body.indexOf(digestA) !== -1,
-                    'serves project form digest'
-                  )
-                  test.assert(
-                    body.indexOf(digestB) === -1,
-                    'does not serve non-project form digest'
-                  )
-                  done()
-                })
-              }
-            ).end()
-          }, 100)
+          http.request(
+            {
+              method: 'GET',
+              port: port,
+              path: '/terms/Lots/definitions'
+            },
+            function (response) {
+              concat(test, response, function (body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  body.indexOf(digestA) !== -1,
+                  'serves project form digest'
+                )
+                test.assert(
+                  body.indexOf(digestB) === -1,
+                  'does not serve non-project form digest'
+                )
+                done()
+              })
+            }
+          )
+          .end()
         }
       ],
       function () {
@@ -64,25 +68,24 @@ tape('GET /terms/$term/uses', function (test) {
         postForm(port, formB, test),
         postProject(port, 'useslots', '1e', digestA, test),
         function getDefinitions (done) {
-          setTimeout(function () {
-            http.request(
-              {method: 'GET', port: port, path: '/terms/Lots/uses'},
-              function (response) {
-                concat(test, response, function (body) {
-                  test.assert(Array.isArray(body), 'serves a JSON array')
-                  test.assert(
-                    body.indexOf(digestA) !== -1,
-                    'serves project form digest'
-                  )
-                  test.assert(
-                    body.indexOf(digestB) === -1,
-                    'does not serve non-project form digest'
-                  )
-                  done()
-                })
-              }
-            ).end()
-          }, 100)
+          http.request(
+            {method: 'GET', port: port, path: '/terms/Lots/uses'},
+            function (response) {
+              concat(test, response, function (body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  body.indexOf(digestA) !== -1,
+                  'serves project form digest'
+                )
+                test.assert(
+                  body.indexOf(digestB) === -1,
+                  'does not serve non-project form digest'
+                )
+                done()
+              })
+            }
+          )
+          .end()
         }
       ],
       function () {
@@ -105,25 +108,28 @@ tape('GET /terms/$term_with_space/uses', function (test) {
         postForm(port, formB, test),
         postProject(port, 'uses', '1e', digestA, test),
         function getDefinitions (done) {
-          setTimeout(function () {
-            http.request(
-              {method: 'GET', port: port, path: '/terms/More%20Money/uses'},
-              function (response) {
-                concat(test, response, function (body) {
-                  test.assert(Array.isArray(body), 'serves a JSON array')
-                  test.assert(
-                    body.indexOf(digestA) !== -1,
-                    'serves project form digest'
-                  )
-                  test.assert(
-                    body.indexOf(digestB) === -1,
-                    'does not serve non-project form digest'
-                  )
-                  done()
-                })
-              }
-            ).end()
-          }, 100)
+          http.request(
+            {
+              method: 'GET',
+              port: port,
+              path: '/terms/More%20Money/uses'
+            },
+            function (response) {
+              concat(test, response, function (body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  body.indexOf(digestA) !== -1,
+                  'serves project form digest'
+                )
+                test.assert(
+                  body.indexOf(digestB) === -1,
+                  'does not serve non-project form digest'
+                )
+                done()
+              })
+            }
+          )
+          .end()
         }
       ],
       function () {
@@ -177,7 +183,8 @@ tape('GET /forms/$digest/parents', function (test) {
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -210,7 +217,8 @@ tape('POST /forms/$digest/parents', function (test) {
               test.equal(response.statusCode, 405, 'responds 405')
               done()
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -254,7 +262,8 @@ tape('GET /headings/$heading/forms', function (test) {
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -281,7 +290,11 @@ tape('GET /headings/$heading_with_space/forms', function (test) {
             {
               method: 'GET',
               port: port,
-              path: '/headings/' + encodeURIComponent(heading) + '/forms'
+              path: (
+                '/headings/' +
+                encodeURIComponent(heading) +
+                '/forms'
+              )
             },
             function (response) {
               concat(test, response, function (body) {
@@ -298,7 +311,8 @@ tape('GET /headings/$heading_with_space/forms', function (test) {
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -330,7 +344,8 @@ tape('POST /headings/$heading/forms', function (test) {
               test.equal(response.statusCode, 405, 'responds 405')
               done()
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -349,7 +364,8 @@ tape('GET /forms/$form/headings', function (test) {
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
-      [ postForm(port, parent, test),
+      [
+        postForm(port, parent, test),
         postProject(port, 'parent', '1e', parentDigest, test),
         function getParents (done) {
           http.request(
@@ -373,7 +389,8 @@ tape('GET /forms/$form/headings', function (test) {
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -404,7 +421,8 @@ tape('POST /forms/$form/headings', function (test) {
               test.equal(response.statusCode, 405, 'responds 405')
               done()
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -438,7 +456,8 @@ tape('GET /headings/$heading/references', function (test) {
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {
@@ -464,11 +483,15 @@ tape('GET /headings', function (test) {
             function (response) {
               concat(test, response, function (body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(body.indexOf(heading) !== -1, 'serves heading')
+                test.assert(
+                  body.indexOf(heading) !== -1,
+                  'serves heading'
+                )
                 done()
               })
             }
-          ).end()
+          )
+          .end()
         }
       ],
       function () {

@@ -11,12 +11,9 @@ module.exports = function (prefix) {
     .on('data', function (item) {
       results.push(decode(item.key)[2])
     })
-    .once('error',
-      /* istanbul ignore next */
-      function (error) {
-        callback(error)
-      }
-    )
+    .once('error', /* istanbul ignore next */ function (error) {
+      callback(error)
+    })
     .once('end', function () {
       callback(null, results)
     })
