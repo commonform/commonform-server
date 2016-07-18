@@ -5,6 +5,7 @@ env: [ "CXX=g++-4.8 RUN_SLOW_TESTS=true" ]
 sudo: false
 script:
   - "npm run coverage"
+  - "npm run lint"
   - "npm run nsp"
   - "npm run licenses"
 addons:
