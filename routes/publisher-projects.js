@@ -1,5 +1,6 @@
 var getPublisherProjects = require('../queries/get-publisher-projects')
 var internalError = require('./responses/internal-error')
+var methodNotAllowed = require('./responses/method-not-allowed')
 
 module.exports = function (request, response, parameters, log, level) {
   if (request.method === 'GET') {
@@ -12,5 +13,5 @@ module.exports = function (request, response, parameters, log, level) {
         response.end(JSON.stringify(projects))
       }
     })
-  }
+  } else methodNotAllowed(response)
 }

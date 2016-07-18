@@ -465,6 +465,36 @@ tape('GET /publishers/$publisher/projects', function (test) {
   })
 })
 
+tape('PATCH /publishers/$publisher/projects', function (test) {
+  var project = 'nda'
+  var edition = '1e'
+  var form = {content: ['A test form']}
+  var digest = normalize(form).root
+  server(function (port, done) {
+    series(
+      [
+        postForm(port, form, test),
+        postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
+        function getProject (done) {
+          var options = {
+            port: port,
+            method: 'PATCH',
+            path: '/publishers/' + PUBLISHER + '/projects'
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 405, 'PATCH 405')
+            done()
+          }).end()
+        }
+      ],
+      function finish () {
+        done()
+        test.end()
+      }
+    )
+  })
+})
+
 tape('GET /publishers/$publisher/projects/$project/publications/current', function (test) {
   var project = 'nda'
   var edition = '2e'
@@ -653,6 +683,40 @@ tape('GET /publishers/$publisher/projects/$project/publications/latest/form', fu
   })
 })
 
+tape('PATCH /publishers/$publisher/projects/$project/publications', function (test) {
+  var project = 'nda'
+  var edition = '1e'
+  var form = {content: ['A test form']}
+  var digest = normalize(form).root
+  server(function (port, done) {
+    series(
+      [
+        postForm(port, form, test),
+        postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
+        function getProject (done) {
+          var options = {
+            method: 'PATCH',
+            port: port,
+            path: (
+              '/publishers/' + PUBLISHER +
+              '/projects/' + project +
+              '/publications'
+            )
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 405, 'PATCH 405')
+            done()
+          }).end()
+        }
+      ],
+      function finish () {
+        done()
+        test.end()
+      }
+    )
+  })
+})
+
 tape('PUT /publishers/$publisher/projects/$project/publications/$edition', function (test) {
   var edition = '1e'
   var project = 'nda'
@@ -754,6 +818,41 @@ tape('GET /forms/$form/publications', function (test) {
               )
               done()
             }))
+          }).end()
+        }
+      ],
+      function finish () {
+        done()
+        test.end()
+      }
+    )
+  })
+})
+
+tape('POST /forms/$form/publications', function (test) {
+  var form = {content: ['A test form']}
+  var digest = normalize(form).root
+  var otherForm = {content: ['Another test form']}
+  var otherDigest = normalize(otherForm).root
+  server(function (port, done) {
+    series(
+      [
+        postForm(port, form, test),
+        postForm(port, otherForm, test),
+        postProject('ana', 'ana\'s password', port, 'wrong', '1e', otherDigest, test),
+        postProject('ana', 'ana\'s password', port, 'nda', '1e1d', digest, test),
+        postProject('ana', 'ana\'s password', port, 'nda', '1e', digest, test),
+        postProject('ana', 'ana\'s password', port, 'nondisclosure', '1e', digest, test),
+        postProject('bob', 'bob\'s password', port, 'conf', '3e', digest, test),
+        function getPublications (done) {
+          var options = {
+            method: 'POST',
+            port: port,
+            path: '/forms/' + digest + '/publications'
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 405, 'POST 405')
+            done()
           }).end()
         }
       ],

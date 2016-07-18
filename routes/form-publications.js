@@ -1,5 +1,6 @@
 var getPublications = require('../queries/get-publications')
 var internalError = require('./responses/internal-error')
+var methodNotAllowed = require('./responses/method-not-allowed')
 
 module.exports = function (request, response, parameters, log, level) {
   if (request.method === 'GET') {
@@ -12,5 +13,5 @@ module.exports = function (request, response, parameters, log, level) {
         response.end(JSON.stringify(publications))
       }
     })
-  }
+  } else methodNotAllowed(response)
 }
