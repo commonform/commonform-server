@@ -28,12 +28,17 @@ module.exports = function (version, serverLog, level, dataLog) {
     transform,
     through2.obj(function (operations, _, done) {
       operations.forEach(function (operation) {
-        operation.type = 'put'
+        if (operation.type === undefined) {
+          operation.type = 'put'
+        }
         if (operation.value === undefined) {
           operation.value = ''
         }
       })
       done(null, operations)
+    }),
+    through2.obj(function (chunk, _, done) {
+      done(null, chunk)
     }),
     new LevelBatchStream(level)
   )

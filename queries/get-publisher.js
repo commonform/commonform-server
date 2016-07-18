@@ -8,6 +8,6 @@ module.exports = function (level, publisher, callback) {
       /* istanbul ignore else */
       if (error.notFound) callback(null, false)
       else callback(error)
-    } else callback(null, publisher.name)
+    } else callback(null, publisher)
   })
 }

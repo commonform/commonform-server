@@ -1,11 +1,8 @@
-var publicationStringFor = require('../../publication-string')
+var publicationStringFor = require('../publication-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 var spell = require('reviewers-edition-spell')
 
-/* istanbul ignore next */
-module.exports = function (publisher, project, edition) {
-  var log = this.log
-  var level = this.level
+module.exports = function (publisher, project, edition, log, level) {
   var publication = {
     publisher: publisher,
     project: project,
@@ -16,7 +13,10 @@ module.exports = function (publisher, project, edition) {
 }
 
 function notifyProjectSubscribers (level, log, publication) {
-  var keys = ['project', publication.publisher, publication.project]
+  var keys = [
+    'publisher', publication.publisher,
+    'project', publication.project
+  ]
   notifySubscribers(keys, level, log, publication)
 }
 

@@ -1,10 +1,8 @@
-var publicationStringFor = require('../../publication-string')
+var publicationStringFor = require('../publication-string')
 var mailEachSubscriber = require('./mail-each-subscriber')
 
-module.exports = function (publisher, project, edition, digest) {
-  var log = this.log
-  var level = this.level
-  var keys = ['form', digest]
+module.exports = function (publisher, project, edition, digest, log, level) {
+  var keys = ['digest', digest]
   var publication = {
     publisher: publisher,
     project: project,

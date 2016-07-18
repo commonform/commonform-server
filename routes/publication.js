@@ -1,20 +1,23 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
-var publicationPath = require('../paths/publication')
 var exists = require('../queries/exists')
 var formKeyFor = require('../keys/form')
 var getCurrentPublication = require('../queries/get-current-publication')
-var getPublication = require('../queries/get-publication')
 var getLatestPublication = require('../queries/get-latest-publication')
+var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var keyForPublication = require('../keys/publication')
+var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var notFound = require('./responses/not-found')
 var parseEdition = require('reviewers-edition-parse')
+var publicationPath = require('../paths/publication')
 var readJSONBody = require('./read-json-body')
 var requireAuthorization = require('./require-authorization')
+var sendIncludedNotifications = require('../notifications/included')
 var sendJSON = require('./responses/send-json')
+var sendPublicationNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
 
 module.exports = function (request, response) {
@@ -69,6 +72,16 @@ function postPublication (request, response, parameters, log, level, write) {
                           response.statusCode = 204
                           response.setHeader('Location', publicationPath(publisher, project, edition))
                           response.end()
+                          if (mailgun) {
+                            sendIncludedNotifications(
+                              publisher, project, edition, digest,
+                              log, level
+                            )
+                            sendPublicationNotifications(
+                              publisher, project, edition,
+                              log, level
+                            )
+                          }
                         }
                       })
                     }

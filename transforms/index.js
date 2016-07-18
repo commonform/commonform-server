@@ -3,7 +3,8 @@ var handlers = {
   form: require('./form'),
   publication: require('./publication'),
   publisher: require('./publisher'),
-  subscription: require('./subscription')
+  subscription: require('./subscription'),
+  unsubscription: require('./unsubscription')
 }
 
 module.exports = function (entry, _, done) {

@@ -106,7 +106,7 @@ tape('GET /forms/:digest/subscribers/:', function (test) {
             auth: publisher + ':' + password
           }
           http.request(options, function (response) {
-            test.equal(response.statusCode, 204, '204 as subscriber')
+            test.equal(response.statusCode, 200, '200 as subscriber')
             done()
           }).end()
         },

@@ -10,5 +10,5 @@ module.exports = function (entry, done) {
     keyParts.push(data[key])
   })
   var key = keyForSubscription(keyParts)
-  done(null, [{key: key}])
+  done(null, [{type: 'del', key: key}])
 }

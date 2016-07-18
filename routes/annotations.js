@@ -10,11 +10,13 @@ var getForm = require('./get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var keyForAnnotation = require('../keys/annotation')
+var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
 var normalize = require('commonform-normalize')
 var parallel = require('async.parallel')
 var readJSONBody = require('./read-json-body')
+var sendAnnotationNotifications = require('../notifications/annotation')
 var thrice = require('../thrice')
 var unauthorized = require('./responses/unauthorized')
 var url = require('url')
@@ -132,6 +134,9 @@ function postAnnotation (request, response, parameters, log, level, write) {
           response.statusCode = 204
           response.setHeader('Location', annotationPath(annotation.uuid))
           response.end()
+          if (mailgun) {
+            sendAnnotationNotifications(annotation, log, level)
+          }
         }
       })
     }

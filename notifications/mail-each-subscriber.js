@@ -1,6 +1,6 @@
-var getPublisher = require('../../queries/get-publisher')
-var getSubscribers = require('../../queries/get-subscribers')
-var mailgun = require('../../mailgun')
+var getPublisher = require('../queries/get-publisher')
+var getSubscribers = require('../queries/get-subscribers')
+var mailgun = require('../mailgun')
 
 module.exports = function (level, log, keys, messageFor) {
   getSubscribers(level, keys, function (error, subscribers) {

@@ -6,22 +6,16 @@ module.exports = function (level, keys, callback) {
   callback = once(callback)
   var subscribers = []
   level.createReadStream({
-    gt: keyFor(keys.concat('')),
-    lt: keyFor(keys.concat('~')),
+    gt: keyFor(keys.concat('subscriber', '')),
+    lt: keyFor(keys.concat('subscriber', '~')),
     keys: true,
     values: false
   })
   .on('data', function (key) {
     var decoded = decode(key)
-    var publisher = decoded[decoded.length - 3]
-    var action = decoded[decoded.length - 1]
-    if (action === 'subscribed') {
-      if (subscribers.indexOf(publisher) === -1) {
-        subscribers.push(publisher)
-      }
-    } else /* if (action === 'unsubscribed') */ {
-      var index = subscribers.indexOf(publisher)
-      if (index !== -1) subscribers.splice(index, 1)
+    var publisher = decoded[decoded.length - 1]
+    if (subscribers.indexOf(publisher) === -1) {
+      subscribers.push(publisher)
     }
   })
   .once('error',

@@ -1,12 +1,9 @@
-var publicationStringFor = require('../../publication-string')
-var getParents = require('../../queries/get-parents')
-var getPublications = require('../../queries/get-publications')
+var publicationStringFor = require('../publication-string')
+var getParents = require('../queries/get-parents')
+var getPublications = require('../queries/get-publications')
 var mailEachSubscriber = require('./mail-each-subscriber')
 
-/* istanbul ignore next */
-module.exports = function (annotation) {
-  var log = this.log
-  var level = this.level
+module.exports = function (annotation, log, level) {
   notifyFormSubscribers(level, log, annotation)
   notifyPublicationSubscribers(level, log, annotation)
   notifyAnnotationSubscribers(level, log, annotation)
@@ -19,8 +16,9 @@ function notifyPublicationSubscribers (level, log, annotation) {
       projects.forEach(function (project) {
         var publicationString = publicationStringFor(project)
         var keys = [
-          'publication',
-          project.publisher, project.project, project.edition
+          'publisher', project.publisher,
+          'project', project.project,
+          'edition', project.edition
         ]
         mailEachSubscriber(level, log, keys, function () {
           return {
@@ -44,7 +42,7 @@ function notifyFormSubscribers (level, log, annotation) {
     if (error) log.error(error)
     else {
       [digest].concat(parents).forEach(function (context) {
-        var keys = [ 'form', context ]
+        var keys = ['digest', context]
         mailEachSubscriber(level, log, keys, function () {
           return {
             subject: 'Annotation to ' + annotation.digest,
@@ -63,7 +61,7 @@ function notifyFormSubscribers (level, log, annotation) {
 function notifyAnnotationSubscribers (level, log, annotation) {
   var parents = annotation.replyTo
   parents.forEach(function (parent) {
-    var keys = ['annotation', parent]
+    var keys = ['uuid', parent]
     mailEachSubscriber(level, log, keys, function () {
       return {
         subject: 'Reply to annotation to ' + annotation.digest,
