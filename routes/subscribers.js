@@ -42,11 +42,11 @@ module.exports = function (to, keys) {
       keyComponents.push(key)
       keyComponents.push(parameters[key])
     })
-    level.get(keyFor(keyComponents), function (error) {
+    level.get(keyFor(keyComponents), function (error, publisher) {
       if (error) {
         /* istanbul ignore else */
         if (error.notFound) notFound(response)
-        else internalError(response, 'internal error')
+        else internalError(response, error)
       } else {
         response.statusCode = 200
         response.end()

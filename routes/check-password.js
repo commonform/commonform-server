@@ -1,21 +1,14 @@
 var bcrypt = require('bcrypt-password')
-var isNotFoundError = require('../is-not-found-error')
-var publisherKey = require('../keys/publisher')
-var thrice = require('../thrice')
+var getPublisher = require('../queries/get-publisher')
 
 module.exports = function (
   level, publisher, password, response, callback
 ) {
-  var key = publisherKey(publisher)
-  var get = level.get.bind(level, key)
-  thrice(get, onResult, isNotFoundError)
-  function onResult (error, publisher) {
-    if (error) {
-      /* istanbul ignore else */
-      if (error.notFound) callback(null, false)
-      else callback(error)
-    } else {
-      bcrypt.check(password, publisher.hash, callback)
+  getPublisher(level, publisher, function (error, publisher) {
+    if (error) callback(error)
+    else {
+      if (!publisher) callback(null, false)
+      else bcrypt.check(password, publisher.hash, callback)
     }
-  }
+  })
 }

@@ -5,7 +5,7 @@ var encode = require('../keys/encode')
 var equals = require('array-equal')
 var forbidden = require('./responses/forbidden')
 var getAnnotation = require('../queries/get-annotation')
-var getForm = require('./get-form')
+var getForm = require('../queries/get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var mailgun = require('../mailgun')
@@ -36,40 +36,41 @@ function getAnnotations (request, response, parameters, log, level) {
   if (!hasContext) badRequest(response, 'Must specify context')
   else {
     getForm(level, query.context, function (error, context) {
-      if (error) {
-        /* istanbul ignore else */
-        if (error.notFound) badRequest(response, 'Unknown form')
-        else internalError(response, error)
-      } else {
-        var contexts = computeContexts(normalize(context))
-        if (hasForm) {
-          if (query.form in contexts) {
+      /* istanbul ignore if */
+      if (error) internalError(response, error)
+      else {
+        if (!context) badRequest(response, 'Unknown form')
+        else {
+          var contexts = computeContexts(normalize(context))
+          if (hasForm) {
+            if (query.form in contexts) {
+              send(
+                multistream.obj(
+                  Object.keys(contexts)
+                  .filter(function (digest) {
+                    return (
+                      // The form is query.form itself.
+                      digest === query.form ||
+                      // The form is a child of query.form.
+                      contexts[digest].indexOf(query.form) !== -1
+                    )
+                  })
+                  .map(annotationsStream)
+                )
+              )
+            } else {
+              badRequest(
+                response, query.form + ' not in ' + query.context
+              )
+            }
+          } else {
             send(
               multistream.obj(
                 Object.keys(contexts)
-                .filter(function (digest) {
-                  return (
-                    // The form is query.form itself.
-                    digest === query.form ||
-                    // The form is a child of query.form.
-                    contexts[digest].indexOf(query.form) !== -1
-                  )
-                })
                 .map(annotationsStream)
               )
             )
-          } else {
-            badRequest(
-              response, query.form + ' not in ' + query.context
-            )
           }
-        } else {
-          send(
-            multistream.obj(
-              Object.keys(contexts)
-              .map(annotationsStream)
-            )
-          )
         }
       }
       function send (stream) {
@@ -167,38 +168,43 @@ function postAnnotation (
       annotation.timestamp = Date.now().toString()
       // Does the server have the context form?
       getForm(level, annotation.context, function (error, context) {
-        if (error) {
-          /* istanbul ignore else */
-          if (error.notFound) badRequest(response, 'Unknown context')
-          else internalError(response, error)
-        } else {
-          // Is the annotated form within the context?
-          var childrenDigests = Object.keys(normalize(context))
-          if (childrenDigests.indexOf(annotation.form) === -1) {
-            badRequest(response, 'Form not in context')
-          } else {
-            if (annotation.replyTo.length !== 0) {
-              getAnnotation(
-                level, annotation.replyTo[0],
-                function (error, prior) {
-                  if (error) {
-                    /* istanbul ignore else */
-                    if (error.notFound) {
-                      badRequest(response, 'Invalid replyTo')
-                    } else internalError(response, error)
-                  } else {
-                    var sameTarget = (
-                      annotation.context === prior.context &&
-                      annotation.form === prior.form &&
-                      equals(annotation.replyTo.slice(1), prior.replyTo)
-                    )
-                    if (!sameTarget) {
-                      badRequest(response, 'Does not match parent')
-                    } else put()
+        /* istanbul ignore if */
+        if (error) internalError(response, error)
+        else {
+          if (!context) badRequest(response, 'Unknown context')
+          else {
+            // Is the annotated form within the context?
+            var childrenDigests = Object.keys(normalize(context))
+            if (childrenDigests.indexOf(annotation.form) === -1) {
+              badRequest(response, 'Form not in context')
+            } else {
+              if (annotation.replyTo.length !== 0) {
+                getAnnotation(
+                  level, annotation.replyTo[0],
+                  function (error, prior) {
+                    /* istanbul ignore if */
+                    if (error) internalError(response, error)
+                    else {
+                      if (!prior) {
+                        badRequest(response, 'Invalid replyTo')
+                      } else {
+                        var sameTarget = (
+                          annotation.context === prior.context &&
+                          annotation.form === prior.form &&
+                          equals(
+                            annotation.replyTo.slice(1),
+                            prior.replyTo
+                          )
+                        )
+                        if (!sameTarget) {
+                          badRequest(response, 'Does not match parent')
+                        } else put()
+                      }
+                    }
                   }
-                }
-              )
-            } else put()
+                )
+              } else put()
+            }
           }
         }
       })

@@ -1,9 +1,10 @@
 var formPath = require('../paths/form')
 var getCurrent = require('../queries/get-current-publication')
-var getPublication = require('../queries/get-publication')
 var getLatestPublication = require('../queries/get-latest-publication')
+var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
+var notFound = require('./responses/not-found')
 
 module.exports = function (request, response, parameters, log, level) {
   if (request.method === 'GET') {
@@ -28,9 +29,12 @@ module.exports = function (request, response, parameters, log, level) {
       /* istanbul ignore if */
       if (error) internalError(response, error)
       else {
-        response.statusCode = 301
-        response.setHeader('Location', formPath(edition.digest))
-        response.end()
+        if (!edition) notFound(response)
+        else {
+          response.statusCode = 301
+          response.setHeader('Location', formPath(edition.digest))
+          response.end()
+        }
       }
     })
   } else methodNotAllowed(response)

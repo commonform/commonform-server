@@ -43,9 +43,8 @@ function postPublication (
     readJSONBody(request, response, function (json) {
       if (json.hasOwnProperty('digest')) {
         var digest = json.digest
-        if (!isDigest(digest)) {
-          badRequest(response, 'invalid digest')
-        } else {
+        if (!isDigest(digest)) badRequest(response, 'invalid digest')
+        else {
           var publicationKey = keyForPublication(
             publisher, project, edition
           )
@@ -75,9 +74,8 @@ function postPublication (
                         }
                         write(entry, function (error) {
                           /* istanbul ignore if */
-                          if (error) {
-                            internalError(error, 'internal error')
-                          } else {
+                          if (error) internalError(response, error)
+                          else {
                             response.statusCode = 204
                             var path = publicationPath(
                               publisher, project, edition
@@ -132,8 +130,8 @@ function serveProject (request, response, parameters, log, level) {
     /* istanbul ignore if */
     if (error) internalError(response, error)
     else {
-      if (project) sendJSON(response, project)
-      else notFound(response)
+      if (!project) notFound(response)
+      else sendJSON(response, project)
     }
   })
 }

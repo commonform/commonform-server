@@ -11,11 +11,12 @@ module.exports = function (request, response, params, log, level) {
     if (!isUUID(uuid)) notFound(response)
     else {
       getAnnotation(level, uuid, function (error, annotation) {
-        if (error) {
-          /* istanbul ignore else */
-          if (error.notFound) notFound(response)
-          else internalError(response, error)
-        } else sendJSON(response, annotation)
+        /* istanbul ignore if */
+        if (error) internalError(response, error)
+        else {
+          if (!annotation) notFound(response, error)
+          else sendJSON(response, annotation)
+        }
       })
     }
   } else methodNotAllowed(response)
