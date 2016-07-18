@@ -54,7 +54,7 @@
     "sha256": "^0.2.0",
     "standard": "^7.1.2",
     "tape": "^4.5.1",
-    "tcp-log-server": "^6.0.2",
+    "tcp-log-server": "^7.0.0",
     "temporary-directory": "^1.0.2"
   },
   "license": "Apache-2.0",

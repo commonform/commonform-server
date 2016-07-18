@@ -7,6 +7,11 @@
       "from": "abbrev@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.0.9.tgz"
     },
+    "abstract-blob-store": {
+      "version": "3.2.0",
+      "from": "abstract-blob-store@latest",
+      "resolved": "https://registry.npmjs.org/abstract-blob-store/-/abstract-blob-store-3.2.0.tgz"
+    },
     "abstract-leveldown": {
       "version": "2.4.1",
       "from": "abstract-leveldown@>=2.4.0 <2.5.0",
@@ -1502,6 +1507,11 @@
       "from": "ltgt@>=1.0.2 <1.1.0",
       "resolved": "https://registry.npmjs.org/ltgt/-/ltgt-1.0.2.tgz"
     },
+    "memdown": {
+      "version": "1.2.0",
+      "from": "memdown@>=1.1.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/memdown/-/memdown-1.2.0.tgz"
+    },
     "migrate-versioned-log": {
       "version": "1.0.1",
       "from": "migrate-versioned-log@latest",
@@ -1662,6 +1672,11 @@
       "version": "4.1.0",
       "from": "object-assign@>=4.0.1 <5.0.0",
       "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.0.tgz"
+    },
+    "object-inspect": {
+      "version": "1.2.1",
+      "from": "object-inspect@>=1.2.1 <1.3.0",
+      "resolved": "https://registry.npmjs.org/object-inspect/-/object-inspect-1.2.1.tgz"
     },
     "object-keys": {
       "version": "1.0.9",
