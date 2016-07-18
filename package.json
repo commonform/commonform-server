@@ -13,7 +13,6 @@
     "async.map": "^0.5.2",
     "async.parallel": "^0.5.2",
     "async.queue": "^0.5.2",
-    "aws-sdk": "^2.3.14",
     "basic-auth": "^1.0.4",
     "bcrypt-password": "^1.0.2",
     "cache-immutable": "^1.0.1",
