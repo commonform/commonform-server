@@ -125,11 +125,13 @@ function postAnnotation (request, response, parameters, log, level, write) {
     var put = function () {
       var entry = {type: 'annotation', data: annotation}
       write(entry, function (error) {
+        /* istanbul ignore if */
         if (error) internalError(response, 'internal error')
         else {
           response.statusCode = 204
           response.setHeader('Location', annotationPath(annotation.uuid))
           response.end()
+          /* istanbul ignore else */
           if (mailgun) {
             sendAnnotationNotifications(annotation, log, level)
           }

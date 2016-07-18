@@ -67,6 +67,7 @@ function postPublication (request, response, parameters, log, level, write) {
                         }
                       }
                       write(entry, function (error) {
+                        /* istanbul ignore if */
                         if (error) internalError(error, 'internal error')
                         else {
                           response.statusCode = 204

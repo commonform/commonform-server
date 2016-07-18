@@ -1,6 +1,5 @@
 var checkPassword = require('./check-password')
 var internalError = require('./responses/internal-error')
-var isAdministrator = require('./is-administrator')
 var parseAuthorization = require('basic-auth')
 var unauthorized = require('./responses/unauthorized')
 
@@ -12,24 +11,19 @@ module.exports = function (handler) {
     var parsed = parseAuthorization(request)
     if (parsed === undefined) done()
     else {
-      if (isAdministrator(log, parsed)) {
-        request.publisher = 'administrator'
-        done()
-      } else {
-        checkPassword(
-          level, parsed.name, parsed.pass, response,
-          function (error, valid) {
-            /* istanbul ignore if */
-            if (error) internalError(response, error)
-            else {
-              if (valid) {
-                request.publisher = parsed.name
-                done()
-              } else unauthorized(response)
-            }
+      checkPassword(
+        level, parsed.name, parsed.pass, response,
+        function (error, valid) {
+          /* istanbul ignore if */
+          if (error) internalError(response, error)
+          else {
+            if (valid) {
+              request.publisher = parsed.name
+              done()
+            } else unauthorized(response)
           }
-        )
-      }
+        }
+      )
     }
   }
 }

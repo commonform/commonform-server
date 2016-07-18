@@ -46,6 +46,7 @@ module.exports = function (version, serverLog, level, dataLog) {
   var write = function (entry, callback) {
     entry.version = version
     dataLog.write(entry, function (error, index) {
+      /* istanbul ignore if */
       if (error) callback(error)
       else {
         serverLog.info({event: 'logged', index: index, entry: entry})
@@ -64,12 +65,16 @@ module.exports = function (version, serverLog, level, dataLog) {
       response.log.info(response)
     })
 
-    response.setTimeout(TIMEOUT, function () {
-      response.log.error({event: 'timeout'})
-      response.statusCode = 408
-      response.removeAllListeners()
-      response.end()
-    })
+    response.setTimeout(
+      TIMEOUT,
+      /* istanbul ignore next */
+      function () {
+        response.log.error({event: 'timeout'})
+        response.statusCode = 408
+        response.removeAllListeners()
+        response.end()
+      }
+    )
 
     // Route the request.
     var parsed = url.parse(request.url)

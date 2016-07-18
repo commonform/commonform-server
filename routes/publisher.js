@@ -85,6 +85,7 @@ function putPublisher (request, response, parameters, log, level, write) {
                     }
                   }
                   write(entry, function (error) {
+                    /* istanbul ignore if */
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204
@@ -145,6 +146,7 @@ function postPublisher (request, response, parameters, log, level, write) {
                   }
                   write(entry, function (error) {
                     unlock()
+                    /* istanbul ignore if */
                     if (error) internalError(error, 'internal error')
                     else {
                       response.statusCode = 204

@@ -26,6 +26,7 @@ module.exports = function (to, keys) {
         data[key] = parameters[key]
       })
       write(entry, function (error) {
+        /* istanbul ignore if */
         if (error) internalError(response, error)
         else {
           response.statusCode = 204
@@ -43,6 +44,7 @@ module.exports = function (to, keys) {
     })
     level.get(keyFor(keyComponents), function (error) {
       if (error) {
+        /* istanbul ignore else */
         if (error.notFound) notFound(response)
         else internalError(response, 'internal error')
       } else {

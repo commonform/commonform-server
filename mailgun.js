@@ -14,6 +14,7 @@ var haveCredentials = (
 //
 // 2. Shim the Mailgun send function and export an EventEmitter tests can use
 //    to check invocations.
+/* istanbul ignore else */
 if (process.env.NODE_ENV === 'test') {
   var EventEmitter = require('events').EventEmitter
   var events = new EventEmitter()
@@ -26,7 +27,6 @@ if (process.env.NODE_ENV === 'test') {
 } else if (!haveCredentials) module.exports = false
 // In "production", if there are Mailgun credentials in the environment, export
 // a function that uses them to send simple plain-text e-mails.
-/* istanbul ignore next */
 else {
   var from = 'notifications@' + env.DOMAIN
   module.exports = function (message, log) {

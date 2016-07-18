@@ -15,6 +15,7 @@ module.exports = function (request, response, parameters, log, level, write) {
         response.log.info({digest: digest})
         var entry = {type: 'form', data: form}
         write(entry, function (error) {
+          /* istanbul ignore if */
           if (error) internalError(response, 'internal error')
           else {
             response.statusCode = 204

@@ -11,6 +11,7 @@ module.exports = function (annotation, log, level) {
 
 function notifyPublicationSubscribers (level, log, annotation) {
   getPublications(level, annotation.context, function (error, projects) {
+    /* istanbul ignore if */
     if (error) log.error(error)
     else {
       projects.forEach(function (project) {
