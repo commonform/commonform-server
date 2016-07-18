@@ -14,9 +14,7 @@ module.exports = function (level, keys, callback) {
   .on('data', function (key) {
     var decoded = decode(key)
     var publisher = decoded[decoded.length - 1]
-    if (subscribers.indexOf(publisher) === -1) {
-      subscribers.push(publisher)
-    }
+    subscribers.push(publisher)
   })
   .once('error',
     /* istanbul ignore next */
