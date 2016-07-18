@@ -3,7 +3,7 @@ var http = require('http')
 var normalize = require('commonform-normalize')
 var postForm = require('./post-form')
 var postProject = require('./post-project')
-var series = require('async-series')
+var series = require('./series')
 var server = require('./server')
 var tape = require('tape')
 

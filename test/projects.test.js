@@ -3,7 +3,7 @@ var http = require('http')
 var normalize = require('commonform-normalize')
 var postForm = require('./post-form')
 var postProject = require('./post-project')
-var series = require('async-series')
+var series = require('./series')
 var server = require('./server')
 var tape = require('tape')
 
@@ -359,12 +359,10 @@ tape('POST /publishers/$publisher/projects/$project/publications/$existing', fun
         postForm(port, form, test),
         postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
         function putProjectAgain (done) {
-          setTimeout(function () {
-            http.request(request, function (response) {
-              test.equal(response.statusCode, 409, 'Second POST 409')
-              done()
-            }).end(JSON.stringify({digest: digest}))
-          }, 1000)
+          http.request(request, function (response) {
+            test.equal(response.statusCode, 409, 'Second POST 409')
+            done()
+          }).end(JSON.stringify({digest: digest}))
         }
       ],
       function finish () {

@@ -2,7 +2,7 @@ var concat = require('./concat')
 var http = require('http')
 var normalize = require('commonform-normalize')
 var postForm = require('./post-form')
-var series = require('async-series')
+var series = require('./series')
 var server = require('./server')
 var tape = require('tape')
 
@@ -23,23 +23,25 @@ tape('GET /terms/$term/definitions', function (test) {
         postForm(port, formB, test),
         postProject(port, 'defines', '1e', digestA, test),
         function getDefinitions (done) {
-          http.request(
-            {method: 'GET', port: port, path: '/terms/Lots/definitions'},
-            function (response) {
-              concat(test, response, function (body) {
-                test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(
-                  body.indexOf(digestA) !== -1,
-                  'serves project form digest'
-                )
-                test.assert(
-                  body.indexOf(digestB) === -1,
-                  'does not serve non-project form digest'
-                )
-                done()
-              })
-            }
-          ).end()
+          setTimeout(function () {
+            http.request(
+              {method: 'GET', port: port, path: '/terms/Lots/definitions'},
+              function (response) {
+                concat(test, response, function (body) {
+                  test.assert(Array.isArray(body), 'serves a JSON array')
+                  test.assert(
+                    body.indexOf(digestA) !== -1,
+                    'serves project form digest'
+                  )
+                  test.assert(
+                    body.indexOf(digestB) === -1,
+                    'does not serve non-project form digest'
+                  )
+                  done()
+                })
+              }
+            ).end()
+          }, 100)
         }
       ],
       function () {
@@ -62,23 +64,25 @@ tape('GET /terms/$term/uses', function (test) {
         postForm(port, formB, test),
         postProject(port, 'useslots', '1e', digestA, test),
         function getDefinitions (done) {
-          http.request(
-            {method: 'GET', port: port, path: '/terms/Lots/uses'},
-            function (response) {
-              concat(test, response, function (body) {
-                test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(
-                  body.indexOf(digestA) !== -1,
-                  'serves project form digest'
-                )
-                test.assert(
-                  body.indexOf(digestB) === -1,
-                  'does not serve non-project form digest'
-                )
-                done()
-              })
-            }
-          ).end()
+          setTimeout(function () {
+            http.request(
+              {method: 'GET', port: port, path: '/terms/Lots/uses'},
+              function (response) {
+                concat(test, response, function (body) {
+                  test.assert(Array.isArray(body), 'serves a JSON array')
+                  test.assert(
+                    body.indexOf(digestA) !== -1,
+                    'serves project form digest'
+                  )
+                  test.assert(
+                    body.indexOf(digestB) === -1,
+                    'does not serve non-project form digest'
+                  )
+                  done()
+                })
+              }
+            ).end()
+          }, 100)
         }
       ],
       function () {
@@ -101,23 +105,25 @@ tape('GET /terms/$term_with_space/uses', function (test) {
         postForm(port, formB, test),
         postProject(port, 'uses', '1e', digestA, test),
         function getDefinitions (done) {
-          http.request(
-            {method: 'GET', port: port, path: '/terms/More%20Money/uses'},
-            function (response) {
-              concat(test, response, function (body) {
-                test.assert(Array.isArray(body), 'serves a JSON array')
-                test.assert(
-                  body.indexOf(digestA) !== -1,
-                  'serves project form digest'
-                )
-                test.assert(
-                  body.indexOf(digestB) === -1,
-                  'does not serve non-project form digest'
-                )
-                done()
-              })
-            }
-          ).end()
+          setTimeout(function () {
+            http.request(
+              {method: 'GET', port: port, path: '/terms/More%20Money/uses'},
+              function (response) {
+                concat(test, response, function (body) {
+                  test.assert(Array.isArray(body), 'serves a JSON array')
+                  test.assert(
+                    body.indexOf(digestA) !== -1,
+                    'serves project form digest'
+                  )
+                  test.assert(
+                    body.indexOf(digestB) === -1,
+                    'does not serve non-project form digest'
+                  )
+                  done()
+                })
+              }
+            ).end()
+          }, 100)
         }
       ],
       function () {

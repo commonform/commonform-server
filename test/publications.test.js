@@ -1,11 +1,11 @@
 var concat = require('./concat')
 var http = require('http')
 var normalize = require('commonform-normalize')
-var series = require('async-series')
-var server = require('./server')
-var tape = require('tape')
 var postForm = require('./post-form')
 var postProject = require('./post-project')
+var series = require('./series')
+var server = require('./server')
+var tape = require('tape')
 
 tape('GET /publishers/$publisher/projects/$project/publications', function (test) {
   var publisher = 'ana'
