@@ -778,6 +778,35 @@ tape(
   'GET ' +
   '/publishers/$publisher' +
   '/projects/$project' +
+  '/publications/$nonexistent/form',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    server(function (port, done) {
+      var options = {
+        method: 'GET',
+        port: port,
+        path: (
+          '/publishers/' + PUBLISHER +
+          '/projects/' + project +
+          '/publications/' + edition +
+          '/form'
+        )
+      }
+      http.request(options, function (response) {
+        test.equal(response.statusCode, 404, 'GET 404')
+        done()
+        test.end()
+      })
+      .end()
+    })
+  }
+)
+
+tape(
+  'GET ' +
+  '/publishers/$publisher' +
+  '/projects/$project' +
   '/publications/current/form',
   function (test) {
     var project = 'nda'
