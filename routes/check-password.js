@@ -5,6 +5,7 @@ module.exports = function (
   level, publisher, password, response, callback
 ) {
   getPublisher(level, publisher, function (error, publisher) {
+    /* istanbul ignore if */
     if (error) callback(error)
     else {
       if (!publisher) callback(null, false)
