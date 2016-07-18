@@ -435,14 +435,14 @@ tape('GET /publishers/$publisher/projects/$project/publications/$existing', func
 
 tape('GET /publishers/$publisher/projects', function (test) {
   var project = 'nda'
-  var edition = '1e'
   var form = {content: ['A test form']}
   var digest = normalize(form).root
   server(function (port, done) {
     series(
       [
         postForm(port, form, test),
-        postProject(PUBLISHER, PASSWORD, port, project, edition, digest, test),
+        postProject(PUBLISHER, PASSWORD, port, project, '1e', digest, test),
+        postProject(PUBLISHER, PASSWORD, port, project, '2e', digest, test),
         function getProject (done) {
           var options = {port: port, path: '/publishers/' + PUBLISHER + '/projects'}
           http.request(options, function (response) {
