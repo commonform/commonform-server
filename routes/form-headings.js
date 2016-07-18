@@ -22,7 +22,7 @@ module.exports = function (request, response, parameters, log, level) {
       })
     })
     .once('error', /* istanbul ignore next */ function (error) {
-      internalError(error)
+      internalError(response, error)
     })
     .once('end', function () {
       sendJSON(response, parents)
