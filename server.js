@@ -1,67 +1,87 @@
 #!/usr/bin/env node
-var handler = require('./')
+var TCPLogClient = require('tcp-log-client')
 var http = require('http')
 var leveldown = require('leveldown')
 var levelup = require('levelup')
+var makeHandler = require('./')
 var meta = require('./package.json')
-var path = require('path')
 var pino = require('pino')
 var uuid = require('uuid')
 
-var version = meta.version
-var description = meta.name + '@' + version + '#' + uuid.v4()
-var log = pino({name: description})
+var VERSION = meta.version
+var NAME = meta.name
 
-var argv = require('yargs')
-.usage('Usage: commonform-server [options]')
-.describe('log-host', 'tcp-log-server host')
-.default('log-host', 'localhost')
-.alias('log-host', 's')
-.describe('log-port', 'tcp-log-server port')
-.alias('log-port', 'p')
-.default('level', meta.name + '.leveldb')
-.alias('level', 'l')
-.describe('level', 'LevelDB directory')
-.demand(['log-port'])
-.help()
-.version(version)
-.argv
+var DESCRIPTION = NAME + '@' + VERSION + '#' + uuid.v4()
+var serverLog = pino({name: DESCRIPTION})
 
-var directory = path.resolve(process.cwd(), argv.level)
-levelup(directory, {db: leveldown}, function (error, level) {
+var env = process.env
+var LEVELDB = env.LEVELDB || NAME + '.leveldb'
+var LEVEL_OPTIONS = {
+  db: leveldown,
+  valueEncoding: 'json'
+}
+levelup(LEVELDB, LEVEL_OPTIONS, function (error, level) {
   if (error) {
-    log.fatal({event: 'level'}, error)
+    serverLog.fatal({event: 'level'}, error)
     process.exit(1)
   } else {
-    log.info({event: 'level', directory: directory})
-    var server = http.createServer(handler(log, level))
+    serverLog.info({event: 'level', directory: LEVELDB})
+    var LOG_HOST = env.LOG_HOST || 'localhost'
+    var LOG_PORT = env.LOG_PORT ? parseInt(env.LOG_PORT) : 4444
+    var tcpLogLog = serverLog.child({log: 'tcp-log'})
+    var logClient = new TCPLogClient({
+      server: {
+        host: LOG_HOST,
+        port: LOG_PORT
+      }
+    })
+    var handler = makeHandler(VERSION, serverLog, level, logClient)
+    var server = http.createServer(handler)
     if (module.parent) module.exports = server
     else {
       var cleanup = function () {
         level.close(function () {
-          log.info({event: 'closed level'})
+          serverLog.info({event: 'closed level'})
           server.close(function () {
-            log.info({event: 'closed server'})
+            serverLog.info({event: 'closed server'})
             process.exit(0)
           })
         })
       }
       var trap = function () {
-        log.info({event: 'signal'})
+        serverLog.info({event: 'signal'})
         cleanup()
       }
       process.on('SIGTERM', trap)
       process.on('SIGQUIT', trap)
       process.on('SIGINT', trap)
       process.on('uncaughtException', function (exception) {
-        log.error({exception: exception})
+        serverLog.error({exception: exception})
         cleanup()
       })
       var port = process.env.PORT || 0
       server.listen(port, function () {
         var boundPort = this.address().port
-        log.info({event: 'listening', port: boundPort})
+        serverLog.info({event: 'listening', port: boundPort})
       })
     }
+    logClient
+    .on('error', function (error) {
+      tcpLogLog.error(error)
+    })
+    .on('fail', function () {
+      tcpLogLog.error({event: 'fail'})
+      server.close()
+    })
+    logLogEvent('connect')
+    logLogEvent('disconnect')
+    logLogEvent('reconnect')
+    logLogEvent('backoff')
+    logClient.connect()
+  }
+  function logLogEvent (event) {
+    logClient.on(event, function () {
+      tcpLogLog.info({event: event})
+    })
   }
 })

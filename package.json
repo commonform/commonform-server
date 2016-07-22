@@ -38,8 +38,7 @@
     "reviewers-edition-spell": "^1.0.2",
     "tcp-log-client": "^4.0.0",
     "through2": "^2.0.1",
-    "uuid": "^2.0.2",
-    "yargs": "^4.7.1"
+    "uuid": "^2.0.2"
   },
   "devDependencies": {
     "abstract-blob-store": "^3.2.0",
