@@ -4,7 +4,6 @@
   "version": "2.1.3",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "bin": {
-    "bootstrap-commonform-server": "./bootstrap.js",
     "commonform-server": "./server.js"
   },
   "dependencies": {
