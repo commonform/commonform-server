@@ -17,7 +17,7 @@ tape(
     server(function (port, closeServer) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           postProject(
             publisher, password, port, 'nda', '1e', digest, test
           ),

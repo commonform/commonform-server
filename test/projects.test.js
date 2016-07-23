@@ -31,7 +31,7 @@ tape(
       }
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           function putProject (done) {
             http.request(request, function (response) {
               test.equal(response.statusCode, 204, '204')
@@ -461,7 +461,7 @@ tape(
       }
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
             project, edition, digest, test
@@ -527,7 +527,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port, project, edition, digest, test
           ),
@@ -563,7 +563,7 @@ tape('GET /publishers/$publisher/projects', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port,
           project, '1e', digest, test
@@ -606,7 +606,7 @@ tape('PATCH /publishers/$publisher/projects', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port,
           project, edition, digest, test
@@ -642,7 +642,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
             project, edition, digest, test
@@ -688,7 +688,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
             project, edition, digest, test
@@ -738,7 +738,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
             project, edition, digest, test
@@ -816,7 +816,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port, project, edition, digest, test
           ),
@@ -863,7 +863,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port, project, edition, digest, test
           ),
@@ -907,7 +907,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port, project, edition, digest, test
           ),
@@ -1003,8 +1003,8 @@ tape('GET /forms/$form/publications', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
-        postForm(port, otherForm, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postForm(port, PUBLISHER, PASSWORD, otherForm, test),
         postProject(
           'ana', 'ana\'s password', port,
           'wrong', '1e', otherDigest, test
@@ -1087,8 +1087,8 @@ tape('POST /forms/$form/publications', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
-        postForm(port, otherForm, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postForm(port, PUBLISHER, PASSWORD, otherForm, test),
         postProject(
           'ana', 'ana\'s password', port,
           'wrong', '1e', otherDigest, test
@@ -1140,7 +1140,7 @@ tape('GET /forms/$form/publications for a child form', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, PUBLISHER, PASSWORD, parent, test),
         postProject(
           PUBLISHER, PASSWORD, port,
           project, edition, parentDigest, test

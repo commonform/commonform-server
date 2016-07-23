@@ -43,7 +43,7 @@ tape(
       })
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           subscribeToForm(port, publisher, password, test, digest),
           postAnnotation(publisher, password, port, annotation, test)
         ],
@@ -65,7 +65,7 @@ tape(
       })
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           subscribeToForm(port, publisher, password, test, digest),
           postProject(
             publisher, password, port, project, edition, digest, test
@@ -84,7 +84,7 @@ tape('DELETE /forms/:digest/subscribers', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         unsubscribeFromForm(port, publisher, password, test, digest),
         postAnnotation(publisher, password, port, annotation, test)
@@ -110,7 +110,7 @@ tape(
     server(function (port, closeServer) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           subscribeToForm(port, publisher, password, test, digest),
           function (done) {
             var options = {
@@ -157,7 +157,7 @@ tape('GET /forms/:digest/subscribers/:not-subscribed', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function (done) {
           var options = {
             port: port,
@@ -202,7 +202,7 @@ tape('PATCH /forms/:digest/subscribers/:', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         subscribeToForm(port, publisher, password, test, digest),
         function (done) {
           var options = {
@@ -238,7 +238,7 @@ tape(
       })
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           postProject(
             publisher, password, port, project, edition, digest, test
           ),
@@ -264,7 +264,7 @@ tape(
       })
       series(
         [
-          postForm(port, form, test),
+          postForm(port, publisher, password, form, test),
           postProject(
             publisher, password, port, project, edition, digest, test
           ),
@@ -300,7 +300,7 @@ tape('POST /publishers/:/projects/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         postProject(
           publisher, password, port, project, edition, digest, test
         ),
@@ -323,7 +323,7 @@ tape('DELETE /publishers/:/projects/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         postProject(
           publisher, password, port, project, edition, digest, test
         ),
@@ -358,7 +358,7 @@ tape('POST /publishers/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         subscribeToPublisher(
           port, publisher, password, test, publisher
         ),
@@ -378,7 +378,7 @@ tape('DELETE /publishers/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         subscribeToPublisher(
           port, publisher, password, test, publisher
         ),
@@ -412,7 +412,7 @@ tape('POST /annotations/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function annotate (done) {
           postAnnotation(
             publisher, password, port, annotation, test
@@ -450,7 +450,7 @@ tape('DELETE /annotation/:/subscribers/:', function (test) {
     })
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function annotate (done) {
           postAnnotation(
             publisher, password, port, annotation, test

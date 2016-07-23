@@ -16,7 +16,7 @@ tape('GET /digests', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
         ),
@@ -59,7 +59,7 @@ tape('GET /headings', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
         ),
@@ -94,7 +94,7 @@ tape('GET /headings', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, PUBLISHER, PASSWORD, parent, test),
         postProject(
           PUBLISHER, PASSWORD, port, 'parent', '1e', parentDigest, test
         ),
@@ -128,7 +128,7 @@ tape('GET /terms', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
         ),
@@ -159,7 +159,7 @@ tape('GET /terms', function (test) {
   server(function (port, closeServer) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
         ),

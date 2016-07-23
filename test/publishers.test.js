@@ -7,6 +7,9 @@ var series = require('./series')
 var server = require('./server')
 var tape = require('tape')
 
+var PUBLISHER = 'ana'
+var PASSWORD = 'ana\'s password'
+
 tape(
   'POST /publishers/:name without credentials',
   function (test) {
@@ -258,7 +261,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           // Change password.
           function (done) {
             var options = {
@@ -592,7 +595,7 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, form, test),
+          postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             'ana', 'ana\'s password', port,
             'x', '1e', digest, test

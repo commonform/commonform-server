@@ -8,6 +8,9 @@ var server = require('./server')
 var tape = require('tape')
 var uuid = require('uuid')
 
+var PUBLISHER = 'ana'
+var PASSWORD = 'ana\'s password'
+
 tape('POST /annotations', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
@@ -25,7 +28,7 @@ tape('POST /annotations', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, publisher, password, parent, test),
         postAnnotation(publisher, password, port, annotation, test)
       ],
       function () {
@@ -49,7 +52,7 @@ tape('POST /annotations with invalid annotation', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -94,7 +97,7 @@ tape('POST /annotations without authorization', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -133,7 +136,7 @@ tape('POST /annotations for another publisher', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, publisher, password, parent, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -171,7 +174,7 @@ tape('POST /annotations with bad password', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, PUBLISHER, PASSWORD, form, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -211,8 +214,8 @@ tape('POST /annotations with form not in context', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, a, test),
-        postForm(port, b, test),
+        postForm(port, publisher, password, a, test),
+        postForm(port, publisher, password, b, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -265,7 +268,7 @@ tape('POST /annotations with reply', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, publisher, password, parent, test),
         function (done) {
           postAnnotation(
             publisher, password, port, annotation, test
@@ -309,7 +312,7 @@ tape('POST /annotations with reply to nonexistent', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function (done) {
           var options = {
             method: 'POST',
@@ -351,7 +354,7 @@ tape('POST /annotations with mismatched context', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, publisher, password, parent, test),
         function (done) {
           postAnnotation(
             publisher, password, port, annotation, test
@@ -451,7 +454,7 @@ tape('GET /annotation/:uuid', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, parent, test),
+        postForm(port, publisher, password, parent, test),
         function (done) {
           postAnnotation(
             publisher, password, port, annotation, test
@@ -498,7 +501,7 @@ tape('DELETE /annotation/:uuid', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, form, test),
+        postForm(port, publisher, password, form, test),
         function (done) {
           postAnnotation(
             publisher, password, port, annotation, test
@@ -634,8 +637,8 @@ tape('GET /annotations?context=digest', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, forms.a, test),
-        postForm(port, forms.x, test),
+        postForm(port, publisher, password, forms.a, test),
+        postForm(port, publisher, password, forms.x, test),
         postAnnotation(
           publisher, password, port, annotations.DinB, test
         ),
@@ -760,8 +763,8 @@ tape('GET /annotations?context=digest&form=digest', function (test) {
   server(function (port, done) {
     series(
       [
-        postForm(port, forms.a, test),
-        postForm(port, forms.x, test),
+        postForm(port, publisher, password, forms.a, test),
+        postForm(port, publisher, password, forms.x, test),
         postAnnotation(
           publisher, password, port, annotations.DinB, test
         ),
@@ -850,8 +853,8 @@ tape(
     server(function (port, done) {
       series(
         [
-          postForm(port, forms.a, test),
-          postForm(port, forms.b, test),
+          postForm(port, PUBLISHER, PASSWORD, forms.a, test),
+          postForm(port, PUBLISHER, PASSWORD, forms.b, test),
           function (done) {
             var options = {
               port: port,
