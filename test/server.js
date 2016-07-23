@@ -2,12 +2,12 @@ process.env.ADMINISTRATOR_PASSWORD = 'test'
 
 var AbstractBlobStore = require('abstract-blob-store')
 var EventEmitter = require('events').EventEmitter
+var SimpleLog = require('level-simple-log')
 var TCPLogClient = require('tcp-log-client')
 var devNull = require('dev-null')
-var makeRequestHandler = require('../')
 var http = require('http')
-var levelLogs = require('level-logs')
 var levelup = require('levelup')
+var makeRequestHandler = require('../')
 var memdown = require('memdown')
 var net = require('net')
 var pino = require('pino')
@@ -76,7 +76,7 @@ function noop () { }
 function setupLogServer (callback) {
   // Use an in-memory LevelUP storage back-end.
   var level = levelup('log', {db: memdown})
-  var logs = levelLogs(level, {valueEncoding: 'json'})
+  var logs = new SimpleLog(level)
   // Use an in-memory blob store.
   var blobs = new AbstractBlobStore()
   // Pipe log messages to nowhere.
