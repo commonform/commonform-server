@@ -9,9 +9,6 @@
   "dependencies": {
     "array-equal": "^1.0.0",
     "async-series": "0.0.1",
-    "async.map": "^0.5.2",
-    "async.parallel": "^0.5.2",
-    "async.queue": "^0.5.2",
     "basic-auth": "^1.0.4",
     "bcrypt-password": "^1.0.2",
     "cache-immutable": "^1.0.1",
@@ -53,8 +50,7 @@
     "sha256": "^0.2.0",
     "standard": "^7.1.2",
     "tape": "^4.5.1",
-    "tcp-log-server": "^9.0.3",
-    "temporary-directory": "^1.0.2"
+    "tcp-log-server": "^9.0.3"
   },
   "license": "Apache-2.0",
   "preferGlobal": true,
