@@ -36,7 +36,7 @@
     "reviewers-edition-compare": "^1.0.4",
     "reviewers-edition-parse": "^2.0.5",
     "reviewers-edition-spell": "^1.0.2",
-    "tcp-log-client": "^4.0.0",
+    "tcp-log-client": "^5.0.0",
     "through2": "^2.0.1",
     "uuid": "^2.0.2"
   },
@@ -45,7 +45,7 @@
     "concat-stream": "^1.5.1",
     "dev-null": "^0.1.1",
     "istanbul": "^0.4.3",
-    "level-simple-log": "^1.0.0",
+    "level-simple-log": "^2.0.0",
     "licensee": "^2.0.0",
     "memdown": "^1.2.0",
     "nsp": "^2.4.0",
@@ -53,7 +53,7 @@
     "sha256": "^0.2.0",
     "standard": "^7.1.2",
     "tape": "^4.5.1",
-    "tcp-log-server": "^8.0.2",
+    "tcp-log-server": "^9.0.3",
     "temporary-directory": "^1.0.2"
   },
   "license": "Apache-2.0",
