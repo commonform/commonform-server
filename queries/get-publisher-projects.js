@@ -4,8 +4,8 @@ var encode = require('../keys/encode')
 module.exports = function (level, publisher, callback) {
   var keys = []
   level.createKeyStream({
-    gt: encode(['projects', publisher]),
-    lt: encode(['projects', '~'])
+    gt: encode(['projects', publisher, '']),
+    lt: encode(['projects', publisher, '~'])
   })
   .on('data', function (key) {
     keys.push(decodeKey(key))

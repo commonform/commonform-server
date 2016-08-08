@@ -572,6 +572,10 @@ tape('GET /publishers/$publisher/projects', function (test) {
           PUBLISHER, PASSWORD, port,
           project, '2e', digest, test
         ),
+        postProject(
+          'bob', "bob's password", port,
+          'test', '1e', digest, test
+        ),
         function getProject (done) {
           var options = {
             port: port,
