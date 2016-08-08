@@ -12,25 +12,31 @@ module.exports = function (handler, anyUser) {
       handler.apply(this, handlerArguments)
     }
     var publisher = parameters.hasOwnProperty('subscriber')
-      ? parameters.subscriber
-      : parameters.publisher
+    ? parameters.subscriber
+    : parameters.publisher
     var parsed = parseAuthorization(request)
-    if (parsed === undefined) unauthorized(response)
-    else {
+    if (parsed === undefined) {
+      unauthorized(response)
+    } else {
       if (isAdministrator(log, parsed)) {
         request.publisher = 'administrator'
         allow()
       } else {
-        if (!anyUser && parsed.name !== publisher) forbidden(response)
-        else {
+        if (!anyUser && parsed.name !== publisher) {
+          forbidden(response)
+        } else {
           checkPassword(
             level, parsed.name, parsed.pass, response,
             function (error, valid) {
               /* istanbul ignore if */
-              if (error) internalError(response, error)
-              else {
-                if (valid) allow()
-                else unauthorized(response)
+              if (error) {
+                internalError(response, error)
+              } else {
+                if (valid) {
+                  allow()
+                } else {
+                  unauthorized(response)
+                }
               }
             }
           )

@@ -9,20 +9,25 @@ var sendJSON = require('./responses/send-json')
 
 module.exports = function (request, response, params, log, level) {
   var digest = params.digest
-  if (!isDigest(digest)) badRequest(response, 'invalid digest')
-  else {
+  if (!isDigest(digest)) {
+    badRequest(response, 'invalid digest')
+  } else {
     if (request.method === 'GET') {
       getForm(level, digest, function (error, value) {
         /* istanbul ignore if */
-        if (error) internalError(response, error)
-        else {
-          if (!value) notFound(response)
-          else {
+        if (error) {
+          internalError(response, error)
+        } else {
+          if (!value) {
+            notFound(response)
+          } else {
             cache(response)
             sendJSON(response, value)
           }
         }
       })
-    } else methodNotAllowed(response)
+    } else {
+      methodNotAllowed(response)
+    }
   }
 }

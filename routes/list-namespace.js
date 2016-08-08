@@ -26,6 +26,8 @@ module.exports = function (namespace) {
       .once('end', function () {
         response.end(']')
       })
-    } else methodNotAllowed(response)
+    } else {
+      methodNotAllowed(response)
+    }
   }
 }

@@ -11,8 +11,9 @@ module.exports = function (request, response, callback) {
   var bytesReceived = 0
   var lengthHeader = request.headers['content-length']
   var isTooLarge = lengthHeader && parseInt(lengthHeader) > LIMIT
-  if (isTooLarge) tooLarge(response)
-  else {
+  if (isTooLarge) {
+    tooLarge(response)
+  } else {
     buffer = []
     request.on('data', onData)
     request.once('aborted', onAborted)
@@ -58,9 +59,13 @@ module.exports = function (request, response, callback) {
         } else {
           parseJSON(Buffer.concat(buffer), function (error, object) {
             finish()
-            if (error) badRequest(response, 'invalid JSON')
-            else if (object === null) badRequest(response, 'null body')
-            else callback(object)
+            if (error) {
+              badRequest(response, 'invalid JSON')
+            } else if (object === null) {
+              badRequest(response, 'null body')
+            } else {
+              callback(object)
+            }
           })
         }
       }

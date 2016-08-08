@@ -22,10 +22,13 @@ var validProject = require('../validation/project')
 
 module.exports = function (request, response) {
   var method = request.method
-  if (method === 'GET') serveProject.apply(this, arguments)
-  else if (method === 'POST') {
+  if (method === 'GET') {
+    serveProject.apply(this, arguments)
+  } else if (method === 'POST') {
     requireAuthorization(postPublication).apply(this, arguments)
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }
 
 function postPublication (
@@ -51,18 +54,22 @@ function postPublication (
           var formKey = formKeyFor(digest)
           exists(level, formKey, function (error, formExists) {
             /* istanbul ignore if */
-            if (error) internalError(response, error)
-            else {
-              if (!formExists) badRequest(response, 'unknown form')
-              else {
+            if (error) {
+              internalError(response, error)
+            } else {
+              if (!formExists) {
+                badRequest(response, 'unknown form')
+              } else {
                 exists(
                   level, publicationKey,
                   function (error, publicationExists) {
                     /* istanbul ignore if */
-                    if (error) internalError(response, error)
-                    else {
-                      if (publicationExists) conflict(response)
-                      else {
+                    if (error) {
+                      internalError(response, error)
+                    } else {
+                      if (publicationExists) {
+                        conflict(response)
+                      } else {
                         var entry = {
                           type: 'publication',
                           data: {
@@ -74,8 +81,9 @@ function postPublication (
                         }
                         write(entry, function (error) {
                           /* istanbul ignore if */
-                          if (error) internalError(response, error)
-                          else {
+                          if (error) {
+                            internalError(response, error)
+                          } else {
                             response.statusCode = 204
                             var path = publicationPath(
                               publisher, project, edition
@@ -103,7 +111,9 @@ function postPublication (
             }
           })
         }
-      } else badRequest(response, 'invalid project')
+      } else {
+        badRequest(response, 'invalid project')
+      }
     })
   }
 }
@@ -128,10 +138,14 @@ function serveProject (request, response, parameters, log, level) {
   }
   fetch(function (error, project) {
     /* istanbul ignore if */
-    if (error) internalError(response, error)
-    else {
-      if (!project) notFound(response)
-      else sendJSON(response, project)
+    if (error) {
+      internalError(response, error)
+    } else {
+      if (!project) {
+        notFound(response)
+      } else {
+        sendJSON(response, project)
+      }
     }
   })
 }

@@ -14,8 +14,9 @@ function notifyPublicationSubscribers (level, log, annotation) {
     level, annotation.context,
     function (error, projects) {
       /* istanbul ignore if */
-      if (error) log.error(error)
-      else {
+      if (error) {
+        log.error(error)
+      } else {
         projects.forEach(function (project) {
           var publicationString = publicationStringFor(project)
           var keys = [
@@ -44,8 +45,9 @@ function notifyFormSubscribers (level, log, annotation) {
   var digest = annotation.context
   getParents(level, digest, function (error, parents) {
     /* istanbul ignore if */
-    if (error) log.error(error)
-    else {
+    if (error) {
+      log.error(error)
+    } else {
       [digest].concat(parents).forEach(function (context) {
         var keys = ['digest', context]
         mailEachSubscriber(level, log, keys, function () {

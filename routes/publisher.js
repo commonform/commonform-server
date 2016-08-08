@@ -23,7 +23,9 @@ module.exports = function (request, response) {
     requireAdministrator(postPublisher).apply(this, arguments)
   } else if (request.method === 'PUT') {
     requireAuthorization(putPublisher).apply(this, arguments)
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }
 
 function handleGetPublisher (
@@ -32,10 +34,12 @@ function handleGetPublisher (
   var publisher = parameters.publisher
   getPublisher(level, parameters.publisher, function (error, stored) {
     /* istanbul ignore if */
-    if (error) internalError(response, error)
-    else {
-      if (!stored) notFound(response)
-      else {
+    if (error) {
+      internalError(response, error)
+    } else {
+      if (!stored) {
+        notFound(response)
+      } else {
         var json = {publisher: publisher}
         /* istanbul ignore else */
         if (stored.hasOwnProperty('about')) {
@@ -53,16 +57,18 @@ function putPublisher (
   var publisher = parameters.publisher
   readJSONBody(request, response, function (json) {
     json.name = publisher
-    if (!validPublisher(json)) badRequest(response, 'invalid publisher')
-    else if (!validPassword(json.password)) {
+    if (!validPublisher(json)) {
+      badRequest(response, 'invalid publisher')
+    } else if (!validPassword(json.password)) {
       badRequest(response, 'invalid password')
     } else {
       var name = json.name
       var key = publisherKeyFor(name)
       var unlock = lock(level, key, 'w')
       /* istanbul ignore if */
-      if (!unlock) conflict(response)
-      else {
+      if (!unlock) {
+        conflict(response)
+      } else {
         exists(level, key, function (error, exists) {
           /* istanbul ignore if */
           if (error) {
@@ -90,8 +96,9 @@ function putPublisher (
                   }
                   write(entry, function (error) {
                     /* istanbul ignore if */
-                    if (error) internalError(error, 'internal error')
-                    else {
+                    if (error) {
+                      internalError(error, 'internal error')
+                    } else {
                       response.statusCode = 204
                       var path = '/publishers/' + name
                       response.setHeader('Location', path)
@@ -114,8 +121,9 @@ function postPublisher (
   var publisher = parameters.publisher
   readJSONBody(request, response, function (json) {
     json.name = publisher
-    if (!validPublisher(json)) badRequest(response, 'invalid publisher')
-    else if (!validPassword(json.password)) {
+    if (!validPublisher(json)) {
+      badRequest(response, 'invalid publisher')
+    } else if (!validPassword(json.password)) {
       badRequest(response, 'invalid password')
     } else {
       var name = json.name
@@ -154,8 +162,9 @@ function postPublisher (
                   write(entry, function (error) {
                     unlock()
                     /* istanbul ignore if */
-                    if (error) internalError(error, 'internal error')
-                    else {
+                    if (error) {
+                      internalError(error, 'internal error')
+                    } else {
                       response.statusCode = 204
                       var path = '/publishers/' + name
                       response.setHeader('Location', path)

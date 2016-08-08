@@ -12,20 +12,24 @@ module.exports = function (
 ) {
   if (request.method === 'POST') {
     requireAuthorization(postForm, true).apply(this, arguments)
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }
 
 function postForm (request, response, parameters, log, level, write) {
   readJSONBody(request, response, function (form) {
-    if (!validForm(form)) badRequest(response, 'invalid form')
-    else {
+    if (!validForm(form)) {
+      badRequest(response, 'invalid form')
+    } else {
       var digest = normalize(form).root
       response.log.info({digest: digest})
       var entry = {type: 'form', data: form}
       write(entry, function (error) {
         /* istanbul ignore if */
-        if (error) internalError(response, 'internal error')
-        else {
+        if (error) {
+          internalError(response, 'internal error')
+        } else {
           response.statusCode = 204
           response.setHeader('Location', formPath(digest))
           response.end()

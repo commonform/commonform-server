@@ -7,7 +7,13 @@ module.exports = function (request, response, parameters, log, level) {
   if (request.method === 'GET') {
     getParents(level, parameters.digest, function (error, parents) {
       /* istanbul ignore if */
-      if (error) internalError(response, error)
-      else sendJSON(response, parents)
+      if (error) {
+        internalError(response, error)
+      } else {
+        sendJSON(response, parents)
+      }
     })
-  } else methodNotAllowed(response) }
+  } else {
+    methodNotAllowed(response)
+  }
+}

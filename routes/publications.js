@@ -11,8 +11,9 @@ module.exports = function (request, response, parameters, log, level) {
       level, publisher, project,
       function (error, publications) {
         /* istanbul ignore if */
-        if (error) internalError(response, error)
-        else {
+        if (error) {
+          internalError(response, error)
+        } else {
           var editionNumbers = publications.map(function (object) {
             return object.edition
           })
@@ -20,5 +21,7 @@ module.exports = function (request, response, parameters, log, level) {
         }
       }
     )
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }

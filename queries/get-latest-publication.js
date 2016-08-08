@@ -5,8 +5,11 @@ module.exports = function (level, publisher, project, callback) {
     level, publisher, project,
     function (error, publications) {
       /* istanbul ignore if */
-      if (error) callback(error)
-      else callback(null, publications[publications.length - 1])
+      if (error) {
+        callback(error)
+      } else {
+        callback(null, publications[publications.length - 1])
+      }
     }
   )
 }

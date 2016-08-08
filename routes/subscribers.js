@@ -27,8 +27,9 @@ module.exports = function (to, keys) {
       })
       write(entry, function (error) {
         /* istanbul ignore if */
-        if (error) internalError(response, error)
-        else {
+        if (error) {
+          internalError(response, error)
+        } else {
           response.statusCode = 204
           response.end()
         }
@@ -45,8 +46,11 @@ module.exports = function (to, keys) {
     level.get(keyFor(keyComponents), function (error, publisher) {
       if (error) {
         /* istanbul ignore else */
-        if (error.notFound) notFound(response)
-        else internalError(response, error)
+        if (error.notFound) {
+          notFound(response)
+        } else {
+          internalError(response, error)
+        }
       } else {
         response.statusCode = 200
         response.end()

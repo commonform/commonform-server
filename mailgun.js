@@ -24,10 +24,11 @@ if (process.env.NODE_ENV === 'test') {
   module.exports.events = events
 // In "production", if there aren't an Mailgun credentials in the
 // environment, export false, thereby disabling Mailgun.
-} else if (!haveCredentials) module.exports = false
+} else if (!haveCredentials) {
+  module.exports = false
 // In "production", if there are Mailgun credentials in the environment,
 // export a function that uses them to send simple plain-text e-mails.
-else {
+} else {
   var from = 'notifications@' + env.DOMAIN
   module.exports = function (message, log) {
     log = log.child({log: 'mail'})
@@ -46,8 +47,9 @@ else {
     var request = https.request(options)
     request.once('response', function (response) {
       var status = response.statusCode
-      if (status === 200) log.info({event: 'sent'})
-      else {
+      if (status === 200) {
+        log.info({event: 'sent'})
+      } else {
         var buffers = []
         response
         .on('data', function (buffer) { buffers.push(buffer) })

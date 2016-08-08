@@ -10,7 +10,9 @@ module.exports = function (port, publisher, password, test, digest) {
     }
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, '204')
-      if (callback) callback()
+      if (callback) {
+        callback()
+      }
     })
     .end()
   }

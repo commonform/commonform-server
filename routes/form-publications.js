@@ -7,11 +7,14 @@ module.exports = function (request, response, parameters, log, level) {
     var digest = parameters.digest
     getPublications(level, digest, function (error, publications) {
       /* istanbul ignore if */
-      if (error) internalError(response, error)
-      else {
+      if (error) {
+        internalError(response, error)
+      } else {
         response.setHeader('Content-Type', 'application/json')
         response.end(JSON.stringify(publications))
       }
     })
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }

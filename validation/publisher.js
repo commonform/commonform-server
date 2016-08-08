@@ -4,7 +4,9 @@ var requiredKeys = ['name', 'about', 'email', 'password']
 
 module.exports = function (argument) {
   /* istanbul ignore if */
-  if (typeof argument !== 'object') return false
+  if (typeof argument !== 'object') {
+    return false
+  }
   var keys = Object.keys(argument)
   return (
     // Name

@@ -10,7 +10,9 @@ module.exports = function (port, publisher, password, form, test) {
     }
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, 'responds 204')
-      if (callback) callback()
+      if (callback) {
+        callback()
+      }
     })
     .end(JSON.stringify(form))
   }

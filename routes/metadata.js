@@ -14,5 +14,7 @@ module.exports = function (request, response) {
   if (request.method === 'GET') {
     doNotCache(response)
     sendJSON(response, METADATA)
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }

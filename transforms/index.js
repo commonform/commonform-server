@@ -11,6 +11,9 @@ module.exports = function (entry, _, done) {
   var type = entry.type
   var handler = handlers[type]
   /* istanbul ignore else */
-  if (handler) handler.call(this, entry, done)
-  else done('unknown type ' + type)
+  if (handler) {
+    handler.call(this, entry, done)
+  } else {
+    done('unknown type ' + type)
+  }
 }

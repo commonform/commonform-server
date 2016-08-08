@@ -37,8 +37,9 @@ levelup(LEVELDB, LEVEL_OPTIONS, function (error, level) {
     })
     var handler = makeHandler(VERSION, serverLog, level, logClient)
     var server = http.createServer(handler)
-    if (module.parent) module.exports = server
-    else {
+    if (module.parent) {
+      module.exports = server
+    } else {
       var cleanup = function () {
         level.close(function () {
           serverLog.info({event: 'closed level'})

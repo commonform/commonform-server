@@ -18,7 +18,9 @@ module.exports =
           response.statusCode, 204,
           'POST ' + publisher + ':' + project + '@' + edition
         )
-        if (callback) callback()
+        if (callback) {
+          callback()
+        }
       })
       .end(JSON.stringify({digest: digest}))
     }

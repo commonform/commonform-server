@@ -30,16 +30,22 @@ module.exports = function (level, digest, callback) {
 }
 
 function compareProjects (a, b) {
-  if (a.publisher < b.publisher) return -1
-  else {
+  if (a.publisher < b.publisher) {
+    return -1
+  } else {
     /* istanbul ignore if */
-    if (a.publisher > b.publisher) return 1
-    else {
-      if (a.project < b.project) return -1
-      else {
+    if (a.publisher > b.publisher) {
+      return 1
+    } else {
+      if (a.project < b.project) {
+        return -1
+      } else {
         /* istanbul ignore if */
-        if (a.project > b.project) return 1
-        else return compareEdition(a.edition, b.edition)
+        if (a.project > b.project) {
+          return 1
+        } else {
+          return compareEdition(a.edition, b.edition)
+        }
       }
     }
   }

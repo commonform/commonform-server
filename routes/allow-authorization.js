@@ -11,18 +11,22 @@ module.exports = function (handler) {
       handler.apply(this, handlerArguments)
     }
     var parsed = parseAuthorization(request)
-    if (parsed === undefined) done()
-    else {
+    if (parsed === undefined) {
+      done()
+    } else {
       checkPassword(
         level, parsed.name, parsed.pass, response,
         function (error, valid) {
           /* istanbul ignore if */
-          if (error) internalError(response, error)
-          else {
+          if (error) {
+            internalError(response, error)
+          } else {
             if (valid) {
               request.publisher = parsed.name
               done()
-            } else unauthorized(response)
+            } else {
+              unauthorized(response)
+            }
           }
         }
       )

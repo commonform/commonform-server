@@ -27,15 +27,19 @@ module.exports = function (request, response, parameters, log, level) {
     }
     fetch(function (error, edition) {
       /* istanbul ignore if */
-      if (error) internalError(response, error)
-      else {
-        if (!edition) notFound(response)
-        else {
+      if (error) {
+        internalError(response, error)
+      } else {
+        if (!edition) {
+          notFound(response)
+        } else {
           response.statusCode = 301
           response.setHeader('Location', formPath(edition.digest))
           response.end()
         }
       }
     })
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }

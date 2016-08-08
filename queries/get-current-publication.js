@@ -8,8 +8,9 @@ module.exports = function (
     level, publisher, project,
     function (error, publications) {
       /* istanbul ignore if */
-      if (error) callback(error)
-      else {
+      if (error) {
+        callback(error)
+      } else {
         publications = publications
         .filter(function isNotADraft (element) {
           return !parseEdition(element.edition).hasOwnProperty('draft')

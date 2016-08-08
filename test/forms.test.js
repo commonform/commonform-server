@@ -76,8 +76,9 @@ tape('POST /forms with oversized request body', function (test) {
 })
 
 function sizedBuffer (size, fill, encoding) {
-  if ('alloc' in Buffer) return Buffer.alloc(size, fill, encoding)
-  else {
+  if ('alloc' in Buffer) {
+    return Buffer.alloc(size, fill, encoding)
+  } else {
     var buffer = Buffer(size)
     buffer.fill(fill, encoding)
     return buffer

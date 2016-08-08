@@ -8,8 +8,11 @@ module.exports = function (prefix, parameter) {
     var name = decodeURIComponent(parameters[parameter])
     getMatches(level, name, function (error, results) {
       /* istanbul ignore if */
-      if (error) internalError(response, error)
-      else sendJSON(response, results)
+      if (error) {
+        internalError(response, error)
+      } else {
+        sendJSON(response, results)
+      }
     })
   }
 }

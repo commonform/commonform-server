@@ -27,5 +27,7 @@ module.exports = function (request, response, parameters, log, level) {
     .once('end', function () {
       sendJSON(response, parents)
     })
-  } else methodNotAllowed(response)
+  } else {
+    methodNotAllowed(response)
+  }
 }

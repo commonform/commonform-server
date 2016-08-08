@@ -47,8 +47,9 @@ module.exports = function (version, serverLog, level, dataLog) {
     entry.version = version
     dataLog.write(entry, function (error, index) {
       /* istanbul ignore if */
-      if (error) callback(error)
-      else {
+      if (error) {
+        callback(error)
+      } else {
         serverLog.info({event: 'logged', index: index, entry: entry})
         callback()
       }
@@ -88,6 +89,8 @@ module.exports = function (version, serverLog, level, dataLog) {
         level,
         write
       )
-    } else notFound(response)
+    } else {
+      notFound(response)
+    }
   }
 }

@@ -12,7 +12,9 @@ module.exports = function (
     }
     http.request(options, function (response) {
       test.equal(response.statusCode, 204, 'POST annotation')
-      if (callback) callback(null, response.headers.location)
+      if (callback) {
+        callback(null, response.headers.location)
+      }
     })
     .end(JSON.stringify(annotation))
   }

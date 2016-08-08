@@ -20,8 +20,9 @@ module.exports = function (entry, done) {
   var formKey = formKeyFor(digest)
   this.level.get(formKey, function (error, form) {
     /* istanbul ignore if */
-    if (error) done(error)
-    else {
+    if (error) {
+      done(error)
+    } else {
       var normalized = normalize(form)
       indexRelations(digest, normalized, batch)
       recurse(digest, normalized, batch, [
