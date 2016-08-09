@@ -11,7 +11,7 @@ var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
 tape(
-  'POST /publishers/:name without credentials',
+  'POST /publishers/{publisher} without credentials',
   function (test) {
     var body = {
       email: 'charlie@example.com',
@@ -35,7 +35,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with bad credentials',
+  'POST /publishers/{publisher} with bad credentials',
   function (test) {
     var body = {
       email: 'charlie@example.com',
@@ -62,7 +62,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with password',
+  'POST /publishers/{publisher} with password',
   function (test) {
     var body = {
       email: 'charlie@example.com',
@@ -93,7 +93,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with null',
+  'POST /publishers/{publisher} with null',
   function (test) {
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
@@ -115,7 +115,7 @@ tape(
 )
 
 tape(
-  'GET /publishers/:name for existing',
+  'GET /publishers/{publisher} for existing',
   function (test) {
     var body = {
       email: 'charlie@example.com',
@@ -170,7 +170,7 @@ tape(
 )
 
 tape(
-  'GET /publishers/:name for nonexistent',
+  'GET /publishers/{publisher} for nonexistent',
   function (test) {
     server(function (port, done) {
       var options = {port: port, path: '/publishers/david'}
@@ -185,7 +185,7 @@ tape(
 )
 
 tape(
-  'DELETE /publishers/:name',
+  'DELETE /publishers/{publisher}',
   function (test) {
     server(function (port, done) {
       var options = {
@@ -204,7 +204,7 @@ tape(
 )
 
 tape(
-  'GET /publishers/:name nonexistent',
+  'GET /publishers/{publisher} nonexistent',
   function (test) {
     server(function (port, done) {
       var options = {port: port, path: '/publishers/charlie'}
@@ -219,7 +219,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name for existing',
+  'POST /publishers/{publisher} for existing',
   function (test) {
     var body = {
       email: 'ana@example.com',
@@ -246,7 +246,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:name to update',
+  'PUT /publishers/{publisher} to update',
   function (test) {
     var user = 'ana'
     var password = 'ana\'s password'
@@ -289,7 +289,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:name by another publisher',
+  'PUT /publishers/{publisher} by another publisher',
   function (test) {
     var user = 'bob'
     var password = 'bob\'s password'
@@ -316,7 +316,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:nonexistent',
+  'PUT /publishers/{nonexistent}',
   function (test) {
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
@@ -343,7 +343,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:name with bad body',
+  'PUT /publishers/{publisher} with bad body',
   function (test) {
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
@@ -366,7 +366,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:name with weak password',
+  'PUT /publishers/{publisher} with weak password',
   function (test) {
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
@@ -402,7 +402,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with bad Authorization',
+  'POST /publishers/{publisher} with bad Authorization',
   function (test) {
     var body = {
       email: 'charlie@example.com',
@@ -427,7 +427,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/:name with bad Authorization',
+  'PUT /publishers/{publisher} with bad Authorization',
   function (test) {
     var body = {
       email: 'ana@example.com',
@@ -452,7 +452,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name without password',
+  'POST /publishers/{publisher} without password',
   function (test) {
     var body = {email: 'charlie@example.com', about: ''}
     var user = 'administrator'
@@ -484,7 +484,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name without e-mail',
+  'POST /publishers/{publisher} without e-mail',
   function (test) {
     var body = {password: 'evil mastdon hoary cup', about: ''}
     var user = 'administrator'
@@ -516,7 +516,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with bad e-mail',
+  'POST /publishers/{publisher} with bad e-mail',
   function (test) {
     var body = {
       email: 'charlie',
@@ -552,7 +552,7 @@ tape(
 )
 
 tape(
-  'POST /publishers/:name with insecure password',
+  'POST /publishers/{publisher} with insecure password',
   function (test) {
     var body = {
       email: 'charlie@example.com',

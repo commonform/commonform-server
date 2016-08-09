@@ -11,7 +11,9 @@ var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
 tape(
-  'POST /publishers/$publisher/projects/$project/publications/$edition',
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition}',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -52,9 +54,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$other-publisher' +
-  '/projects/$project' +
-  '/publications/$edition',
+  '/publishers/{other-publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition}',
   function (test) {
     var otherPublisher = 'bob'
     var project = 'nda'
@@ -84,9 +86,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$other-publisher' +
-  '/projects/$project' +
-  '/publications/$edition',
+  '/publishers/{other-publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition}',
   function (test) {
     var otherPublisher = 'bob'
     var project = 'nda'
@@ -117,8 +119,8 @@ tape(
 tape(
   'POST ' +
   '/publishers/publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'for unknown publisher',
   function (test) {
     var publisher = 'charlie'
@@ -150,9 +152,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with bad body',
   function (test) {
     var project = 'nda'
@@ -187,9 +189,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$invalid-project' +
-  '/publications/$edition',
+  '/publishers/{publisher}' +
+  '/projects/{invalid-project}' +
+  '/publications/{edition}',
   function (test) {
     test.plan(2)
     var publisher = 'ana'
@@ -227,9 +229,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with missing form',
   function (test) {
     var publisher = 'ana'
@@ -264,9 +266,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$invalid-edition',
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{invalid-edition}',
   function (test) {
     var project = 'da'
     var edition = '1.0.0'
@@ -301,9 +303,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with invalid digest',
   function (test) {
     var project = 'da'
@@ -339,9 +341,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with invalid JSON',
   function (test) {
     var project = 'nda'
@@ -374,9 +376,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'as other publisher',
   function (test) {
     var project = 'nda'
@@ -406,9 +408,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$edition ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with bad password',
   function (test) {
     var badPassword = 'not ana\'s password'
@@ -439,9 +441,9 @@ tape(
 
 tape(
   'POST ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$existing',
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{existing}',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -485,9 +487,9 @@ tape(
 
 tape(
   'GET ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$nonexistent',
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{nonexistent}',
   function (test) {
     var PUBLISHER = 'ana'
     var project = 'nda'
@@ -513,7 +515,9 @@ tape(
 )
 
 tape(
-  'GET /publishers/$publisher/projects/$project/publications/$existing',
+  'GET /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{existing}',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -556,7 +560,7 @@ tape(
   }
 )
 
-tape('GET /publishers/$publisher/projects', function (test) {
+tape('GET /publishers/{publisher}/projects', function (test) {
   var project = 'nda'
   var form = {content: ['A test form']}
   var digest = normalize(form).root
@@ -602,7 +606,7 @@ tape('GET /publishers/$publisher/projects', function (test) {
   })
 })
 
-tape('PATCH /publishers/$publisher/projects', function (test) {
+tape('PATCH /publishers/{publisher}/projects', function (test) {
   var project = 'nda'
   var edition = '1e'
   var form = {content: ['A test form']}
@@ -637,7 +641,7 @@ tape('PATCH /publishers/$publisher/projects', function (test) {
 })
 
 tape(
-  'GET /publishers/$publisher/projects/$project/publications/current',
+  'GET /publishers/{publisher}/projects/{project}/publications/current',
   function (test) {
     var project = 'nda'
     var edition = '2e'
@@ -683,7 +687,7 @@ tape(
 )
 
 tape(
-  'GET /publishers/$publisher/projects/$project/publications/latest',
+  'GET /publishers/{publisher}/projects/{project}/publications/latest',
   function (test) {
     var project = 'nda'
     var edition = '2e'
@@ -731,9 +735,9 @@ tape(
 
 tape(
   'GET ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$existing/form',
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{existing}/form',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -780,9 +784,9 @@ tape(
 
 tape(
   'GET ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
-  '/publications/$nonexistent/form',
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{nonexistent}/form',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -809,8 +813,8 @@ tape(
 
 tape(
   'GET ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
   '/publications/current/form',
   function (test) {
     var project = 'nda'
@@ -856,8 +860,8 @@ tape(
 
 tape(
   'GET ' +
-  '/publishers/$publisher' +
-  '/projects/$project' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
   '/publications/latest/form',
   function (test) {
     var project = 'nda'
@@ -902,7 +906,7 @@ tape(
 )
 
 tape(
-  'PATCH /publishers/$publisher/projects/$project/publications',
+  'PATCH /publishers/{publisher}/projects/{project}/publications',
   function (test) {
     var project = 'nda'
     var edition = '1e'
@@ -942,7 +946,9 @@ tape(
 )
 
 tape(
-  'PUT /publishers/$publisher/projects/$project/publications/$edition',
+  'PUT /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition}',
   function (test) {
     var edition = '1e'
     var project = 'nda'
@@ -967,13 +973,11 @@ tape(
 )
 
 tape(
-  (
-    'PUT ' +
-    '/publishers/$publisher' +
-    '/projects/$project' +
-    '/publications/$edition' +
-    '/form'
-  ),
+  'PUT ' +
+  '/publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition}' +
+  '/form',
   function (test) {
     var PUBLISHER = 'ana'
     var project = 'nda'
@@ -999,7 +1003,7 @@ tape(
   }
 )
 
-tape('GET /forms/$form/publications', function (test) {
+tape('GET /forms/{form}/publications', function (test) {
   var form = {content: ['A test form']}
   var digest = normalize(form).root
   var otherForm = {content: ['Another test form']}
@@ -1083,7 +1087,7 @@ tape('GET /forms/$form/publications', function (test) {
   })
 })
 
-tape('POST /forms/$form/publications', function (test) {
+tape('POST /forms/{form}/publications', function (test) {
   var form = {content: ['A test form']}
   var digest = normalize(form).root
   var otherForm = {content: ['Another test form']}
@@ -1134,52 +1138,55 @@ tape('POST /forms/$form/publications', function (test) {
   })
 })
 
-tape('GET /forms/$form/publications for a child form', function (test) {
-  var project = 'nda'
-  var edition = '1e'
-  var child = {content: ['A test form']}
-  var parent = {content: [{form: child}]}
-  var parentDigest = normalize(parent).root
-  var childDigest = normalize(child).root
-  server(function (port, done) {
-    series(
-      [
-        postForm(port, PUBLISHER, PASSWORD, parent, test),
-        postProject(
-          PUBLISHER, PASSWORD, port,
-          project, edition, parentDigest, test
-        ),
-        function getPublications (done) {
-          var options = {
-            port: port,
-            path: '/forms/' + childDigest + '/publications'
+tape(
+  'GET /forms/{form}/publications for a child form',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var child = {content: ['A test form']}
+    var parent = {content: [{form: child}]}
+    var parentDigest = normalize(parent).root
+    var childDigest = normalize(child).root
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, parent, test),
+          postProject(
+            PUBLISHER, PASSWORD, port,
+            project, edition, parentDigest, test
+          ),
+          function getPublications (done) {
+            var options = {
+              port: port,
+              path: '/forms/' + childDigest + '/publications'
+            }
+            http.request(options, function (response) {
+              response.pipe(concat(function (buffer) {
+                var responseBody = JSON.parse(buffer)
+                test.same(
+                  responseBody,
+                  [
+                    {
+                      publisher: PUBLISHER,
+                      project: project,
+                      edition: edition,
+                      root: false,
+                      digest: childDigest
+                    }
+                  ],
+                  'GET publications JSON'
+                )
+                done()
+              }))
+            })
+            .end()
           }
-          http.request(options, function (response) {
-            response.pipe(concat(function (buffer) {
-              var responseBody = JSON.parse(buffer)
-              test.same(
-                responseBody,
-                [
-                  {
-                    publisher: PUBLISHER,
-                    project: project,
-                    edition: edition,
-                    root: false,
-                    digest: childDigest
-                  }
-                ],
-                'GET publications JSON'
-              )
-              done()
-            }))
-          })
-          .end()
+        ],
+        function finish () {
+          done()
+          test.end()
         }
-      ],
-      function finish () {
-        done()
-        test.end()
-      }
-    )
-  })
-})
+      )
+    })
+  }
+)

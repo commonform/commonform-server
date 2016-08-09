@@ -8,7 +8,7 @@ var server = require('./server')
 var tape = require('tape')
 
 tape(
-  'GET /publishers/$publisher/projects/$project/publications',
+  'GET /publishers/{publisher}/projects/{project}/publications',
   function (test) {
     var publisher = 'ana'
     var password = 'ana\'s password'
@@ -52,7 +52,7 @@ tape(
 )
 
 tape(
-  'PUT /publishers/$publisher/projects/$project/publications',
+  'PUT /publishers/{publisher}/projects/{project}/publications',
   function (test) {
     server(function (port, done) {
       var options = {

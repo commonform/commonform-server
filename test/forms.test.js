@@ -207,7 +207,7 @@ tape('POST /forms with invalid form', function (test) {
   })
 })
 
-tape('GET /forms/$not_a_digest', function (test) {
+tape('GET /forms/{not_a_digest}', function (test) {
   server(function (port, done) {
     var digest = 'blah'
     var request = {path: '/forms/' + digest, port: port}
@@ -220,7 +220,7 @@ tape('GET /forms/$not_a_digest', function (test) {
   })
 })
 
-tape('GET /forms/$nonexistent', function (test) {
+tape('GET /forms/{nonexistent}', function (test) {
   server(function (port, done) {
     var digest = 'a'.repeat(64)
     var request = {path: '/forms/' + digest, port: port}
@@ -233,7 +233,7 @@ tape('GET /forms/$nonexistent', function (test) {
   })
 })
 
-tape('POST /forms/$digest', function (test) {
+tape('POST /forms/{digest}', function (test) {
   server(function (port, done) {
     var digest = 'a'.repeat(64)
     var request = {
@@ -251,7 +251,7 @@ tape('POST /forms/$digest', function (test) {
   })
 })
 
-tape('GET /forms/$posted', function (test) {
+tape('GET /forms/{posted}', function (test) {
   server(function (port, done) {
     var form = {content: ['Test form']}
     var root = normalize(form).root
@@ -291,7 +291,7 @@ tape('GET /forms/$posted', function (test) {
   })
 })
 
-tape('GET /forms/$child_of_posted', function (test) {
+tape('GET /forms/{child_of_posted}', function (test) {
   server(function (port, done) {
     var child = {content: ['Child Form']}
     var parent = {content: [{form: child}]}
@@ -322,7 +322,7 @@ tape('GET /forms/$child_of_posted', function (test) {
   })
 })
 
-tape('GET /forms/$great_grandchild_of_posted', function (test) {
+tape('GET /forms/{great_grandchild_of_posted}', function (test) {
   server(function (port, done) {
     var greatgrandchild = {content: ['Great Grandchild']}
     var grandchild = {content: [{form: greatgrandchild}]}

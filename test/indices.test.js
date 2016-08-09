@@ -12,7 +12,7 @@ var PASSWORD = 'ana\'s password'
 var postProject = require('./post-project')
 .bind(this, PUBLISHER, PASSWORD)
 
-tape('GET /terms/$term/definitions', function (test) {
+tape('GET /terms/{term}/definitions', function (test) {
   var formA = {content: [{definition: 'Lots'}, ' means two.']}
   var digestA = normalize(formA).root
   var formB = {content: [{definition: 'Lots'}, ' means three.']}
@@ -56,7 +56,7 @@ tape('GET /terms/$term/definitions', function (test) {
   })
 })
 
-tape('GET /terms/$term/uses', function (test) {
+tape('GET /terms/{term}/uses', function (test) {
   var formA = {content: ['Give us ', {use: 'Lots'}]}
   var digestA = normalize(formA).root
   var formB = {content: ['Give me ', {use: 'Lots'}]}
@@ -96,7 +96,7 @@ tape('GET /terms/$term/uses', function (test) {
   })
 })
 
-tape('GET /terms/$term_with_space/uses', function (test) {
+tape('GET /terms/{term_with_space}/uses', function (test) {
   var formA = {content: ['Give us ', {use: 'More Money'}]}
   var digestA = normalize(formA).root
   var formB = {content: ['Give me ', {use: 'More Money'}]}
@@ -140,7 +140,7 @@ tape('GET /terms/$term_with_space/uses', function (test) {
   })
 })
 
-tape('GET /forms/$digest/parents', function (test) {
+tape('GET /forms/{digest}/parents', function (test) {
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
   var parent = {content: ['Hooray!', {form: child}]}
@@ -195,7 +195,7 @@ tape('GET /forms/$digest/parents', function (test) {
   })
 })
 
-tape('POST /forms/$digest/parents', function (test) {
+tape('POST /forms/{digest}/parents', function (test) {
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
   var parent = {content: ['Hooray!', {form: child}]}
@@ -229,7 +229,7 @@ tape('POST /forms/$digest/parents', function (test) {
   })
 })
 
-tape('GET /headings/$heading/forms', function (test) {
+tape('GET /headings/{heading}/forms', function (test) {
   var heading = 'X'
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
@@ -274,7 +274,7 @@ tape('GET /headings/$heading/forms', function (test) {
   })
 })
 
-tape('GET /headings/$heading_with_space/forms', function (test) {
+tape('GET /headings/{heading_with_space}/forms', function (test) {
   var heading = 'X Heading'
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
@@ -323,7 +323,7 @@ tape('GET /headings/$heading_with_space/forms', function (test) {
   })
 })
 
-tape('POST /headings/$heading/forms', function (test) {
+tape('POST /headings/{heading}/forms', function (test) {
   var heading = 'X'
   var child = {content: ['Some content']}
   var parent = {content: [{heading: heading, form: child}]}
@@ -356,7 +356,7 @@ tape('POST /headings/$heading/forms', function (test) {
   })
 })
 
-tape('GET /forms/$form/headings', function (test) {
+tape('GET /forms/{form}/headings', function (test) {
   var heading = 'X'
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
@@ -401,7 +401,7 @@ tape('GET /forms/$form/headings', function (test) {
   })
 })
 
-tape('POST /forms/$form/headings', function (test) {
+tape('POST /forms/{form}/headings', function (test) {
   var heading = 'X'
   var child = {content: ['Some content']}
   var childDigest = normalize(child).root
@@ -433,7 +433,7 @@ tape('POST /forms/$form/headings', function (test) {
   })
 })
 
-tape('GET /headings/$heading/references', function (test) {
+tape('GET /headings/{heading}/references', function (test) {
   var heading = 'X'
   var form = {content: [{reference: heading}]}
   var digest = normalize(form).root
@@ -502,7 +502,7 @@ tape('GET /headings', function (test) {
   })
 })
 
-tape('GET /projects/$project/publishers', function (test) {
+tape('GET /projects/{project}/publishers', function (test) {
   var project = 'superduper'
   var form = {content: ['super duper content']}
   var digest = normalize(form).root
