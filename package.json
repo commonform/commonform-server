@@ -55,7 +55,7 @@
   },
   "license": "Apache-2.0",
   "preferGlobal": true,
-  "repository": "kemitchell/commonform-server",
+  "repository": "commonform/commonform-server",
   "scripts": {
     "check": "depcheck",
     "coverage": "istanbul check-coverage coverage/coverage.json",
