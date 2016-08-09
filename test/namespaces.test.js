@@ -268,3 +268,48 @@ tape('GET /terms?prefix', function (test) {
   })
 })
 
+tape('GET /headings?skip={index}&limit={count}', function (test) {
+  var form = {
+    content: [
+      {reference: 'a'},
+      {reference: 'b'},
+      {reference: 'c'},
+      {reference: 'd'},
+      {reference: 'e'}
+    ]
+  }
+  var digest = normalize(form).root
+  server(function (port, closeServer) {
+    series(
+      [
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
+        function (done) {
+          var options = {
+            method: 'GET',
+            port: port,
+            path: '/headings?skip=2&limit=2'
+          }
+          http.request(options, function (response) {
+            concat(test, response, function (body) {
+              test.assert(Array.isArray(body), 'serves a JSON array')
+              test.deepEqual(
+                body, ['c', 'd'],
+                'serves referenced heading'
+              )
+              done()
+            })
+          })
+          .end()
+        }
+      ],
+      function () {
+        closeServer()
+        test.end()
+      }
+    )
+  })
+})
+
