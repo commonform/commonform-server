@@ -185,3 +185,37 @@ tape('GET /terms', function (test) {
     )
   })
 })
+
+tape('GET /projects', function (test) {
+  var project = 'superform'
+  var form = {content: ['Super content']}
+  var digest = normalize(form).root
+  server(function (port, closeServer) {
+    series(
+      [
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, project, '1e', digest, test
+        ),
+        function (done) {
+          var options = {method: 'GET', port: port, path: '/projects'}
+          http.request(options, function (response) {
+            concat(test, response, function (body) {
+              test.assert(Array.isArray(body), 'serves a JSON array')
+              test.assert(
+                body.indexOf(project) !== -1,
+                'serves project name term'
+              )
+              done()
+            })
+          })
+          .end()
+        }
+      ],
+      function () {
+        closeServer()
+        test.end()
+      }
+    )
+  })
+})

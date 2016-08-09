@@ -72,7 +72,7 @@ routes.set(
 
 // Terms, Headings, and other Namespaces
 var listNamespace = require('./list-namespace')
-var namespaces = ['heading', 'term', 'digest', 'publisher']
+var namespaces = ['heading', 'term', 'digest', 'publisher', 'project']
 namespaces.forEach(function (namespace) {
   var pattern = '/' + namespace + 's'
   routes.set(pattern, listNamespace(namespace))

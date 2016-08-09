@@ -15,7 +15,8 @@ module.exports = function (entry, done) {
       key: keyForPublication(publisher, project, edition),
       value: entry.data
     },
-    {key: encode(['publisher', publisher])}
+    {key: encode(['publisher', publisher])},
+    {key: encode(['project', project, publisher])}
   ]
   var formKey = formKeyFor(digest)
   this.level.get(formKey, function (error, form) {
