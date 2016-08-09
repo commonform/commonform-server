@@ -6,11 +6,14 @@ module.exports = function (namespace) {
   return function (request, response, parameters, log, level) {
     if (request.method === 'GET') {
       var first = true
+      var prefix = request.query.prefix
+      ? request.query.prefix.toLowerCase()
+      : ''
       response.setHeader('Content-Type', 'application/json')
       response.write('[\n')
       level.createReadStream({
-        gt: encode([namespace, '']),
-        lt: encode([namespace, '~'])
+        gt: encode([namespace, prefix + '']),
+        lt: encode([namespace, prefix + '~'])
       })
       .on('data', function (item) {
         response.write(

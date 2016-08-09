@@ -78,7 +78,8 @@ module.exports = function (version, serverLog, level, dataLog) {
     )
 
     // Route the request.
-    var parsed = url.parse(request.url)
+    var parsed = url.parse(request.url, true)
+    request.query = parsed.query
     var route = routes.get(parsed.pathname)
     if (route.handler) {
       route.handler(

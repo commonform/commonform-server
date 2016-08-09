@@ -222,3 +222,49 @@ tape('GET /projects', function (test) {
     )
   })
 })
+
+tape('GET /terms?prefix', function (test) {
+  var form = {
+    content: [
+      {use: 'Seller Name'},
+      {use: 'Seller Jurisdiction'},
+      {use: 'Buyer Name'},
+      {use: 'Buyer Jurisdiction'}
+    ]
+  }
+  var digest = normalize(form).root
+  server(function (port, closeServer) {
+    series(
+      [
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postProject(
+          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+        ),
+        function (done) {
+          var options = {
+            method: 'GET',
+            port: port,
+            path: '/terms?prefix=Buyer'
+          }
+          http.request(options, function (response) {
+            concat(test, response, function (body) {
+              test.assert(Array.isArray(body), 'serves a JSON array')
+              test.deepEqual(
+                body.sort(),
+                ['buyer jurisdiction', 'buyer name'],
+                'serves prefixed terms'
+              )
+              done()
+            })
+          })
+          .end()
+        }
+      ],
+      function () {
+        closeServer()
+        test.end()
+      }
+    )
+  })
+})
+
