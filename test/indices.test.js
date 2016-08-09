@@ -501,3 +501,42 @@ tape('GET /headings', function (test) {
     )
   })
 })
+
+tape('GET /projects/$project/publishers', function (test) {
+  var project = 'superduper'
+  var form = {content: ['super duper content']}
+  var digest = normalize(form).root
+  server(function (port, closeServer) {
+    series(
+      [
+        postForm(port, PUBLISHER, PASSWORD, form, test),
+        postProject(port, project, '1e', digest, test),
+        function getReferences (done) {
+          http.request(
+            {
+              method: 'GET',
+              port: port,
+              path: '/projects/' + project + '/publishers'
+            },
+            function (response) {
+              concat(test, response, function (body) {
+                test.assert(Array.isArray(body), 'serves a JSON array')
+                test.assert(
+                  body.indexOf(PUBLISHER) !== -1,
+                  'serves form'
+                )
+                done()
+              })
+            }
+          )
+          .end()
+        }
+      ],
+      function () {
+        closeServer()
+        test.end()
+      }
+    )
+  })
+})
+

@@ -98,6 +98,12 @@ var relationships = [
     namespace: 'headings',
     parameter: 'heading',
     relations: 'references'
+  },
+  {
+    prefix: 'publisher-published-project',
+    namespace: 'projects',
+    parameter: 'project',
+    relations: 'publishers'
   }
 ]
 relationships.forEach(function (relationship) {
