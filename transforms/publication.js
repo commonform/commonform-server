@@ -6,8 +6,8 @@ var normalize = require('commonform-normalize')
 
 module.exports = function (entry, done) {
   var publication = entry.data
-  var publisher = publication.publisher
-  var project = publication.project
+  var publisher = publication.publisher.toLowerCase()
+  var project = publication.project.toLowerCase()
   var edition = publication.edition
   var digest = publication.digest
   var batch = [
@@ -65,25 +65,27 @@ function indexDigest (digest, normalized, batch) {
 
 function indexContentElements (digest, normalized, batch) {
   normalized[digest].content.forEach(function (element) {
+    var name
     if (element.hasOwnProperty('definition')) {
-      push(['term', element.definition])
-      push(['term-defined-in-form', element.definition, digest])
+      name = element.definition.toLowerCase()
+      push(['term', name])
+      push(['term-defined-in-form', name, digest])
     } else if (element.hasOwnProperty('use')) {
-      push(['term', element.use])
-      push(['term-used-in-form', element.use, digest])
+      name = element.use.toLowerCase()
+      push(['term', name])
+      push(['term-used-in-form', name, digest])
     } else if (element.hasOwnProperty('reference')) {
-      push(['heading', element.reference])
-      push(['heading-referenced-in-form', element.reference, digest])
+      name = element.reference.toLowerCase()
+      push(['heading', name])
+      push(['heading-referenced-in-form', name, digest])
     } else if (element.hasOwnProperty('digest')) {
       var childDigest = element.digest
       if (element.hasOwnProperty('heading')) {
-        var heading = element.heading
-        push(['heading', heading])
-        push(['heading-in-form', heading, digest])
-        push(['heading-for-form-in-form', heading, childDigest, digest])
-        push(
-          ['form-under-heading-in-form', childDigest, heading, digest]
-        )
+        name = element.heading.toLowerCase()
+        push(['heading', name])
+        push(['heading-in-form', name, digest])
+        push(['heading-for-form-in-form', name, childDigest, digest])
+        push(['form-under-heading-in-form', childDigest, name, digest])
       }
     }
   })

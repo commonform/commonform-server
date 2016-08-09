@@ -380,7 +380,7 @@ tape('GET /forms/$form/headings', function (test) {
                 test.assert(
                   body.some(function (element) {
                     return (
-                      element.heading === heading &&
+                      element.heading === heading.toLowerCase() &&
                       element.parent === parentDigest
                     )
                   }),
@@ -484,7 +484,7 @@ tape('GET /headings', function (test) {
               concat(test, response, function (body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
                 test.assert(
-                  body.indexOf(heading) !== -1,
+                  body.indexOf(heading.toLowerCase()) !== -1,
                   'serves heading'
                 )
                 done()
@@ -522,7 +522,7 @@ tape('GET /projects/$project/publishers', function (test) {
               concat(test, response, function (body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
                 test.assert(
-                  body.indexOf(PUBLISHER) !== -1,
+                  body.indexOf(PUBLISHER.toLowerCase()) !== -1,
                   'serves form'
                 )
                 done()

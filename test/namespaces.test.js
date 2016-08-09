@@ -69,7 +69,7 @@ tape('GET /headings', function (test) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
               test.assert(
-                body.indexOf(heading) !== -1,
+                body.indexOf(heading.toLowerCase()) !== -1,
                 'serves referenced heading'
               )
               done()
@@ -104,7 +104,7 @@ tape('GET /headings', function (test) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
               test.assert(
-                body.indexOf(heading) !== -1,
+                body.indexOf(heading.toLowerCase()) !== -1,
                 'serves heading'
               )
               done()
@@ -137,7 +137,10 @@ tape('GET /terms', function (test) {
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
-              test.assert(body.indexOf(term) !== -1, 'serves used term')
+              test.assert(
+                body.indexOf(term.toLowerCase()) !== -1,
+                'serves used term'
+              )
               done()
             })
           })
@@ -169,7 +172,7 @@ tape('GET /terms', function (test) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
               test.assert(
-                body.indexOf(term) !== -1,
+                body.indexOf(term.toLowerCase()) !== -1,
                 'serves defined term'
               )
               done()
@@ -203,7 +206,7 @@ tape('GET /projects', function (test) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
               test.assert(
-                body.indexOf(project) !== -1,
+                body.indexOf(project.toLowerCase()) !== -1,
                 'serves project name term'
               )
               done()
