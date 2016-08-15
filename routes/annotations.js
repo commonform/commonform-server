@@ -12,6 +12,7 @@ var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
 var normalize = require('commonform-normalize')
+var notFound = require('./responses/not-found')
 var readJSONBody = require('./read-json-body')
 var sendAnnotationNotifications = require('../notifications/annotation')
 var unauthorized = require('./responses/unauthorized')
@@ -44,7 +45,7 @@ function getAnnotations (request, response, parameters, log, level) {
         internalError(response, error)
       } else {
         if (!context) {
-          badRequest(response, 'Unknown form')
+          notFound(response)
         } else {
           var contexts = computeContexts(normalize(context))
           if (hasForm) {

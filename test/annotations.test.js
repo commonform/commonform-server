@@ -707,6 +707,25 @@ tape('GET /annotations?context={digest}', function (test) {
   })
 })
 
+tape.only('GET /annotations?context={nonexistent}', function (test) {
+  var nonexistent = (
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
+    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+  )
+  server(function (port, done) {
+    var options = {
+      port: port,
+      path: '/annotations' + '?' + 'context=' + nonexistent
+    }
+    http.request(options, function (response) {
+      test.equal(response.statusCode, 404, 'GET 404')
+      done()
+      test.end()
+    })
+    .end()
+  })
+})
+
 tape(
   'GET /annotations?context={digest}&form={digest}',
   function (test) {
