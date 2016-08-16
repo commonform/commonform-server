@@ -707,7 +707,7 @@ tape('GET /annotations?context={digest}', function (test) {
   })
 })
 
-tape.only('GET /annotations?context={nonexistent}', function (test) {
+tape('GET /annotations?context={nonexistent}', function (test) {
   var nonexistent = (
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
     'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
