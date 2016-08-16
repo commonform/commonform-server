@@ -1,7 +1,7 @@
 var subscriptionKeys = require('../subscription-keys')
 var keyForSubscription = require('../keys/subscription')
 
-module.exports = function (entry, done) {
+module.exports = function (entry, level, done) {
   var data = entry.data
   var to = data.to
   var keyParts = []

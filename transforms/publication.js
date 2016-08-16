@@ -4,7 +4,7 @@ var formToProjectKey = require('../keys/form-to-project')
 var keyForPublication = require('../keys/publication')
 var normalize = require('commonform-normalize')
 
-module.exports = function (entry, done) {
+module.exports = function (entry, level, done) {
   var publication = entry.data
   var publisher = publication.publisher.toLowerCase()
   var project = publication.project.toLowerCase()
@@ -20,7 +20,7 @@ module.exports = function (entry, done) {
     {key: encode(['publisher-published-project', project, publisher])}
   ]
   var formKey = formKeyFor(digest)
-  this.level.get(formKey, function (error, form) {
+  level.get(formKey, function (error, form) {
     /* istanbul ignore if */
     if (error) {
       done(error)

@@ -7,12 +7,12 @@ var handlers = {
   unsubscription: require('./unsubscription')
 }
 
-module.exports = function (entry, _, done) {
+module.exports = function (entry, level, done) {
   var type = entry.type
   var handler = handlers[type]
   /* istanbul ignore else */
   if (handler) {
-    handler.call(this, entry, done)
+    handler(entry, level, done)
   } else {
     done('unknown type ' + type)
   }

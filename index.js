@@ -1,4 +1,3 @@
-var LevelBatchStream = require('level-batch-stream')
 var entryToLevelUPBatch = require('./transforms')
 var migrateVersionedLog = require('migrate-versioned-log')
 var notFound = require('./routes/responses/not-found')
@@ -11,36 +10,47 @@ var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 var migrations = require('./migrations')
 
 module.exports = function (version, serverLog, level, dataLog) {
-  var transform = through2.obj(entryToLevelUPBatch)
-  transform.level = level
+  var pipelineLog = serverLog.child({log: 'pipeline'})
   pump(
     dataLog.readStream,
     through2.obj(function pullOutVersion (chunk, _, done) {
       var entry = chunk.entry
       var version = entry.version
       delete entry.version
-      done(null, {index: chunk.index, version: version, entry: entry})
+      pipelineLog.info({
+        index: chunk.index,
+        version: version,
+        type: entry.type
+      }, 'read')
+      done(null, {
+        index: chunk.index,
+        version: version,
+        entry: entry
+      })
     }),
     migrateVersionedLog(migrations),
     through2.obj(function (chunk, _, done) {
-      done(null, chunk.entry)
-    }),
-    transform,
-    through2.obj(function (operations, _, done) {
-      operations.forEach(function (operation) {
-        if (operation.type === undefined) {
-          operation.type = 'put'
+      entryToLevelUPBatch(
+        chunk.entry, level,
+        function (error, operations) {
+          /* istanbul ignore if */
+          if (error) {
+            pipelineLog.fatal(error)
+            done(error)
+          } else {
+            operations.forEach(function (operation) {
+              if (operation.type === undefined) {
+                operation.type = 'put'
+              }
+              if (operation.value === undefined) {
+                operation.value = ''
+              }
+            })
+            level.batch(operations, done)
+          }
         }
-        if (operation.value === undefined) {
-          operation.value = ''
-        }
-      })
-      done(null, operations)
-    }),
-    through2.obj(function (chunk, _, done) {
-      done(null, chunk)
-    }),
-    new LevelBatchStream(level)
+      )
+    })
   )
 
   var write = function (entry, callback) {

@@ -2,7 +2,7 @@ var encode = require('../keys/encode')
 var formKeyFor = require('../keys/form')
 var normalize = require('commonform-normalize')
 
-module.exports = function (entry, done) {
+module.exports = function (entry, level, done) {
   var form = entry.data
   var normalized = normalize(form)
   var batch = recurse(form, normalized.root, normalized, [])

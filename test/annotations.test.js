@@ -913,28 +913,3 @@ tape(
     })
   }
 )
-
-tape('GET /annotations?context=nonexistent', function (test) {
-  server(function (port, done) {
-    var digest = 'a'.repeat(64)
-    var options = {
-      port: port,
-      path: '/annotations?context=' + digest
-    }
-    http.request(options, function (response) {
-      test.equal(response.statusCode, 400, 'GET 400')
-      var buffer = []
-      response
-      .on('data', function (chunk) {
-        buffer.push(chunk)
-      })
-      .once('end', function () {
-        var body = Buffer.concat(buffer).toString()
-        test.equal(body, 'Unknown form', 'unknown form')
-        done()
-        test.end()
-      })
-    })
-    .end()
-  })
-})
