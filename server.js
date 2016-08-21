@@ -60,7 +60,7 @@ levelup(LEVELDB, LEVEL_OPTIONS, function (error, level) {
         serverLog.error({exception: exception})
         cleanup()
       })
-      var port = process.env.PORT || 0
+      var port = process.env.PORT || 8080
       server.listen(port, function () {
         var boundPort = this.address().port
         serverLog.info({event: 'listening', port: boundPort})
