@@ -4,6 +4,7 @@ var http = require('http')
 var leveldown = require('leveldown')
 var levelup = require('levelup')
 var makeHandler = require('./')
+var memdown = require('memdown')
 var meta = require('./package.json')
 var pino = require('pino')
 var uuid = require('uuid')
@@ -15,17 +16,26 @@ var DESCRIPTION = NAME + '@' + VERSION + '#' + uuid.v4()
 var serverLog = pino({name: DESCRIPTION})
 
 var env = process.env
-var LEVELDB = env.LEVELDB || NAME + '.leveldb'
+
+var LEVEL_PATH
 var LEVEL_OPTIONS = {
-  db: leveldown,
   valueEncoding: 'json'
 }
-levelup(LEVELDB, LEVEL_OPTIONS, function (error, level) {
+
+if (env.LEVELDB && env.LEVELDB.toLowerCase() === 'memory') {
+  LEVEL_OPTIONS.db = memdown
+  LEVEL_PATH = 'memdown'
+} else {
+  LEVEL_OPTIONS.db = leveldown
+  LEVEL_PATH = env.LEVELDB || NAME + '.leveldb'
+}
+
+levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
   if (error) {
     serverLog.fatal({event: 'level'}, error)
     process.exit(1)
   } else {
-    serverLog.info({event: 'level', directory: LEVELDB})
+    serverLog.info({event: 'level', directory: LEVEL_PATH})
     var LOG_HOST = env.LOG_HOST || 'localhost'
     var LOG_PORT = env.LOG_PORT ? parseInt(env.LOG_PORT) : 4444
     var tcpLogLog = serverLog.child({log: 'tcp-log'})
