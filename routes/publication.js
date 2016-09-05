@@ -6,7 +6,6 @@ var getCurrent = require('../queries/get-current-publication')
 var getLatestPublication = require('../queries/get-latest-publication')
 var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
-var isDigest = require('is-sha-256-hex-digest')
 var keyForPublication = require('../keys/publication')
 var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
@@ -19,6 +18,7 @@ var sendIncludedNotifications = require('../notifications/included')
 var sendJSON = require('./responses/send-json')
 var sendNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
+var validPublication = require('../validation/publication')
 
 module.exports = function (request, response) {
   var method = request.method
@@ -46,8 +46,9 @@ function postPublication (
     readJSONBody(request, response, function (json) {
       if (json.hasOwnProperty('digest')) {
         var digest = json.digest
-        if (!isDigest(digest)) badRequest(response, 'invalid digest')
-        else {
+        if (!validPublication(json)) {
+          badRequest(response, 'invalid publication')
+        } else {
           var publicationKey = keyForPublication(
             publisher, project, edition
           )
@@ -76,7 +77,8 @@ function postPublication (
                             publisher: publisher,
                             project: project,
                             edition: edition,
-                            digest: digest
+                            digest: digest,
+                            signaturePages: json.signaturePages
                           }
                         }
                         write(entry, function (error) {

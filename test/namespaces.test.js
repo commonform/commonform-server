@@ -18,7 +18,10 @@ tape('GET /digests', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/digests'}
@@ -61,7 +64,10 @@ tape('GET /headings', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/headings'}
@@ -96,7 +102,10 @@ tape('GET /headings', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, parent, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', parentDigest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          parentDigest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/headings'}
@@ -130,7 +139,10 @@ tape('GET /terms', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/terms'}
@@ -164,7 +176,10 @@ tape('GET /terms', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/terms'}
@@ -198,7 +213,10 @@ tape('GET /projects', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, project, '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          project, '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {method: 'GET', port: port, path: '/projects'}
@@ -238,7 +256,10 @@ tape('GET /terms?prefix', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {
@@ -284,7 +305,10 @@ tape('GET /headings?skip={index}&limit={count}', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
-          PUBLISHER, PASSWORD, port, 'parent', '1e', digest, test
+          PUBLISHER, PASSWORD, port,
+          'parent', '1e',
+          digest, false, false,
+          test
         ),
         function (done) {
           var options = {

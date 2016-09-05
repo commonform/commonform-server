@@ -277,7 +277,12 @@ tape(
             .end(JSON.stringify(body))
           },
           // Use updated password to post a project.
-          postProject('ana', newPassword, port, 'y', '1e', digest, test)
+          postProject(
+            'ana', newPassword, port,
+            'y', '1e',
+            digest, false, false,
+            test
+          )
         ],
         function () {
           done()
@@ -598,11 +603,15 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             'ana', 'ana\'s password', port,
-            'x', '1e', digest, test
+            'x', '1e',
+            digest, false, false,
+            test
           ),
           postProject(
             'bob', 'bob\'s password', port,
-            'y', '1e', digest, test
+            'y', '1e',
+            digest, false, false,
+            test
           ),
           function (done) {
             var options = {port: port, path: '/publishers'}

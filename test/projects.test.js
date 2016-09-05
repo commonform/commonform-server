@@ -327,8 +327,8 @@ tape(
         test.equal(response.statusCode, 400, '400')
         response.pipe(concat(function (buffer) {
           test.equal(
-            buffer.toString(), 'invalid digest',
-            'invalid digest'
+            buffer.toString(), 'invalid publication',
+            'invalid publication'
           )
           done()
           test.end()
@@ -466,7 +466,9 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
-            project, edition, digest, test
+            project, edition,
+            digest, false, false,
+            test
           ),
           function putProjectAgain (done) {
             http.request(request, function (response) {
@@ -533,7 +535,10 @@ tape(
         [
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
-            PUBLISHER, PASSWORD, port, project, edition, digest, test
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {method: 'GET', port: port, path: path}
@@ -570,15 +575,21 @@ tape('GET /publishers/{publisher}/projects', function (test) {
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port,
-          project, '1e', digest, test
+          project, '1e',
+          digest, false, false,
+          test
         ),
         postProject(
           PUBLISHER, PASSWORD, port,
-          project, '2e', digest, test
+          project, '2e',
+          digest, false, false,
+          test
         ),
         postProject(
           'bob', "bob's password", port,
-          'test', '1e', digest, test
+          'test', '1e',
+          digest, false, false,
+          test
         ),
         function getProject (done) {
           var options = {
@@ -617,7 +628,9 @@ tape('PATCH /publishers/{publisher}/projects', function (test) {
         postForm(port, PUBLISHER, PASSWORD, form, test),
         postProject(
           PUBLISHER, PASSWORD, port,
-          project, edition, digest, test
+          project, edition,
+          digest, false, false,
+          test
         ),
         function getProject (done) {
           var options = {
@@ -653,7 +666,9 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
-            project, edition, digest, test
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -699,7 +714,9 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
-            project, edition, digest, test
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -749,7 +766,9 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
             PUBLISHER, PASSWORD, port,
-            project, edition, digest, test
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -826,7 +845,10 @@ tape(
         [
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
-            PUBLISHER, PASSWORD, port, project, edition, digest, test
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -873,7 +895,10 @@ tape(
         [
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
-            PUBLISHER, PASSWORD, port, project, edition, digest, test
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -917,7 +942,10 @@ tape(
         [
           postForm(port, PUBLISHER, PASSWORD, form, test),
           postProject(
-            PUBLISHER, PASSWORD, port, project, edition, digest, test
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           function getProject (done) {
             var options = {
@@ -1015,23 +1043,33 @@ tape('GET /forms/{form}/publications', function (test) {
         postForm(port, PUBLISHER, PASSWORD, otherForm, test),
         postProject(
           'ana', 'ana\'s password', port,
-          'wrong', '1e', otherDigest, test
+          'wrong', '1e',
+          otherDigest, false, false,
+          test
         ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nda', '1e1d', digest, test
+          'nda', '1e1d',
+          digest, false, false,
+          test
           ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nda', '1e', digest, test
+          'nda', '1e',
+          digest, false, false,
+          test
           ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nondisclosure', '1e', digest, test
+          'nondisclosure', '1e',
+          digest, false, false,
+          test
           ),
         postProject(
           'bob', 'bob\'s password', port,
-          'conf', '3e', digest, test
+          'conf', '3e',
+          digest, false, false,
+          test
           ),
         function getPublications (done) {
           var options = {
@@ -1099,23 +1137,33 @@ tape('POST /forms/{form}/publications', function (test) {
         postForm(port, PUBLISHER, PASSWORD, otherForm, test),
         postProject(
           'ana', 'ana\'s password', port,
-          'wrong', '1e', otherDigest, test
+          'wrong', '1e',
+          otherDigest, false, false,
+          test
         ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nda', '1e1d', digest, test
+          'nda', '1e1d',
+          digest, false, false,
+          test
         ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nda', '1e', digest, test
+          'nda', '1e',
+          digest, false, false,
+          test
         ),
         postProject(
           'ana', 'ana\'s password', port,
-          'nondisclosure', '1e', digest, test
+          'nondisclosure', '1e',
+          digest, false, false,
+          test
         ),
         postProject(
           'bob', 'bob\'s password', port,
-          'conf', '3e', digest, test
+          'conf', '3e',
+          digest, false, false,
+          test
         ),
         function getPublications (done) {
           var options = {
@@ -1153,7 +1201,9 @@ tape(
           postForm(port, PUBLISHER, PASSWORD, parent, test),
           postProject(
             PUBLISHER, PASSWORD, port,
-            project, edition, parentDigest, test
+            project, edition,
+            parentDigest, false, false,
+            test
           ),
           function getPublications (done) {
             var options = {
@@ -1175,6 +1225,173 @@ tape(
                     }
                   ],
                   'GET publications JSON'
+                )
+                done()
+              }))
+            })
+            .end()
+          }
+        ],
+        function finish () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
+  'with signature pages',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {content: ['A test form']}
+    var signaturePages = [
+      {
+        header: 'This is a page header.',
+        term: 'Purchaser',
+        information: ['date']
+      },
+      {
+        samePage: true,
+        term: 'Purchaser',
+        information: ['date']
+      }
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      var request = {
+        auth: PUBLISHER + ':' + PASSWORD,
+        method: 'POST',
+        port: port,
+        path: path
+      }
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function putProject (done) {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 204, '204')
+              test.equal(response.headers.location, path, 'Location')
+              done()
+            })
+            .end(JSON.stringify({
+              digest: digest,
+              signaturePages: signaturePages
+            }))
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
+  'with invalid signature pages',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {content: ['A test form']}
+    var signaturePages = [
+      {
+        invalid: 'page'
+      }
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      var request = {
+        auth: PUBLISHER + ':' + PASSWORD,
+        method: 'POST',
+        port: port,
+        path: path
+      }
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function putProject (done) {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 400, '400')
+              done()
+            })
+            .end(JSON.stringify({
+              digest: digest,
+              signaturePages: signaturePages
+            }))
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'GET /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{existing} ' +
+  'with signature pages',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {content: ['A test form']}
+    var signaturePages = [
+      {
+        header: 'Signature page header.'
+      }
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          postProject(
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, false, signaturePages,
+            test
+          ),
+          function getProject (done) {
+            var options = {method: 'GET', port: port, path: path}
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 200, 'GET 200')
+              response.pipe(concat(function (buffer) {
+                var responseBody = JSON.parse(buffer)
+                test.equal(
+                  responseBody.digest, digest,
+                  'GET project digest'
+                )
+                test.deepEqual(
+                  responseBody.signaturePages, signaturePages,
+                  'GET project signature pages'
                 )
                 done()
               }))

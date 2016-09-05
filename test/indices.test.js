@@ -22,7 +22,7 @@ tape('GET /terms/{term}/definitions', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, formA, test),
         postForm(port, PUBLISHER, PASSWORD, formB, test),
-        postProject(port, 'defines', '1e', digestA, test),
+        postProject(port, 'defines', '1e', digestA, false, false, test),
         function getDefinitions (done) {
           http.request(
             {
@@ -72,11 +72,13 @@ tape(
       series(
         [
           postForm(port, PUBLISHER, PASSWORD, formA, test),
-          postProject(port, 'first', '1e', digestA, test),
+          postProject(port, 'first', '1e', digestA, false, false, test),
           postForm(port, PUBLISHER, PASSWORD, formB, test),
-          postProject(port, 'second', '1e', digestB, test),
+          postProject(
+            port, 'second', '1e', digestB, false, false, test
+          ),
           postForm(port, PUBLISHER, PASSWORD, formC, test),
-          postProject(port, 'third', '1e', digestC, test),
+          postProject(port, 'third', '1e', digestC, false, false, test),
           function getDefinitions (done) {
             http.request(
               {
@@ -120,7 +122,9 @@ tape('GET /terms/{term}/uses', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, formA, test),
         postForm(port, PUBLISHER, PASSWORD, formB, test),
-        postProject(port, 'useslots', '1e', digestA, test),
+        postProject(
+          port, 'useslots', '1e', digestA, false, false, test
+        ),
         function getDefinitions (done) {
           http.request(
             {method: 'GET', port: port, path: '/terms/Lots/uses'},
@@ -160,7 +164,7 @@ tape('GET /terms/{term_with_space}/uses', function (test) {
       [
         postForm(port, PUBLISHER, PASSWORD, formA, test),
         postForm(port, PUBLISHER, PASSWORD, formB, test),
-        postProject(port, 'uses', '1e', digestA, test),
+        postProject(port, 'uses', '1e', digestA, false, false, test),
         function getDefinitions (done) {
           http.request(
             {
@@ -205,7 +209,9 @@ tape('GET /forms/{digest}/parents', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, grandparent, test),
-        postProject(port, 'gpa', '1e', grandparentDigest, test),
+        postProject(
+          port, 'gpa', '1e', grandparentDigest, false, false, test
+        ),
         function getParents (done) {
           http.request(
             {
@@ -259,7 +265,9 @@ tape('POST /forms/{digest}/parents', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, grandparent, test),
-        postProject(port, 'gpa', '1e', grandparentDigest, test),
+        postProject(
+          port, 'gpa', '1e', grandparentDigest, false, false, test
+        ),
         function postParents (done) {
           http.request(
             {
@@ -293,7 +301,9 @@ tape('GET /headings/{heading}/forms', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, parent, test),
-        postProject(port, 'parent', '1e', parentDigest, test),
+        postProject(
+          port, 'parent', '1e', parentDigest, false, false, test
+        ),
         function getParents (done) {
           http.request(
             {
@@ -352,11 +362,17 @@ tape(
       series(
         [
           postForm(port, PUBLISHER, PASSWORD, firstParent, test),
-          postProject(port, 'first', '1e', firstParentDigest, test),
+          postProject(
+            port, 'first', '1e', firstParentDigest, false, false, test
+          ),
           postForm(port, PUBLISHER, PASSWORD, secondParent, test),
-          postProject(port, 'second', '1e', secondParentDigest, test),
+          postProject(
+            port, 'second', '1e', secondParentDigest, false, false, test
+          ),
           postForm(port, PUBLISHER, PASSWORD, thirdParent, test),
-          postProject(port, 'third', '1e', thirdParentDigest, test),
+          postProject(
+            port, 'third', '1e', thirdParentDigest, false, false, test
+          ),
           function getParents (done) {
             http.request(
               {
@@ -410,7 +426,9 @@ tape('GET /headings/{heading_with_space}/forms', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, parent, test),
-        postProject(port, 'parent', '1e', parentDigest, test),
+        postProject(
+          port, 'parent', '1e', parentDigest, false, false, test
+        ),
         function getParents (done) {
           http.request(
             {
@@ -458,7 +476,9 @@ tape('POST /headings/{heading}/forms', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, parent, test),
-        postProject(port, 'parent', '1e', parentDigest, test),
+        postProject(
+          port, 'parent', '1e', parentDigest, false, false, test
+        ),
         function (done) {
           http.request(
             {
@@ -492,7 +512,9 @@ tape('GET /forms/{form}/headings', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, parent, test),
-        postProject(port, 'parent', '1e', parentDigest, test),
+        postProject(
+          port, 'parent', '1e', parentDigest, false, false, test
+        ),
         function getParents (done) {
           http.request(
             {
@@ -542,11 +564,17 @@ tape(
       series(
         [
           postForm(port, PUBLISHER, PASSWORD, firstParent, test),
-          postProject(port, 'first', '1e', firstParentDigest, test),
+          postProject(
+            port, 'first', '1e', firstParentDigest, false, false, test
+          ),
           postForm(port, PUBLISHER, PASSWORD, secondParent, test),
-          postProject(port, 'second', '1e', secondParentDigest, test),
+          postProject(
+            port, 'second', '1e', secondParentDigest, false, false, test
+          ),
           postForm(port, PUBLISHER, PASSWORD, thirdParent, test),
-          postProject(port, 'third', '1e', thirdParentDigest, test),
+          postProject(
+            port, 'third', '1e', thirdParentDigest, false, false, test
+          ),
           function getParents (done) {
             http.request(
               {
@@ -626,7 +654,7 @@ tape('GET /headings/{heading}/references', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
-        postProject(port, 'parent', '1e', digest, test),
+        postProject(port, 'parent', '1e', digest, false, false, test),
         function getReferences (done) {
           http.request(
             {
@@ -661,7 +689,7 @@ tape('GET /headings', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
-        postProject(port, 'parent', '1e', digest, test),
+        postProject(port, 'parent', '1e', digest, false, false, test),
         function getHeadings (done) {
           http.request(
             {method: 'GET', port: port, path: '/headings'},
@@ -695,7 +723,7 @@ tape('GET /projects/{project}/publishers', function (test) {
     series(
       [
         postForm(port, PUBLISHER, PASSWORD, form, test),
-        postProject(port, project, '1e', digest, test),
+        postProject(port, project, '1e', digest, false, false, test),
         function getReferences (done) {
           http.request(
             {

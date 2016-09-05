@@ -19,10 +19,16 @@ tape(
         [
           postForm(port, publisher, password, form, test),
           postProject(
-            publisher, password, port, 'nda', '1e', digest, test
+            publisher, password, port,
+            'nda', '1e',
+            digest, false, false,
+            test
           ),
           postProject(
-            publisher, password, port, 'nda', '1e1u', digest, test
+            publisher, password, port,
+            'nda', '1e1u',
+            digest, false, false,
+            test
           ),
           function (done) {
             var options = {

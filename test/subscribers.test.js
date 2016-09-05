@@ -68,7 +68,10 @@ tape(
           postForm(port, publisher, password, form, test),
           subscribeToForm(port, publisher, password, test, digest),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           )
         ],
         function () { /* pass */ }
@@ -249,7 +252,10 @@ tape(
         [
           postForm(port, publisher, password, form, test),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           subscribeToEdition(
             port, publisher, password, test, publisher, project, edition
@@ -278,7 +284,10 @@ tape(
         [
           postForm(port, publisher, password, form, test),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           subscribeToEdition(
             port, publisher, password, test, publisher, project, edition
@@ -318,13 +327,19 @@ tape(
         [
           postForm(port, publisher, password, form, test),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           subscribeToProject(
             port, publisher, password, test, publisher, project
           ),
           postProject(
-            publisher, password, port, project, '2e', digest, test
+            publisher, password, port,
+            project, '2e',
+            digest, false, false,
+            test
           )
         ],
         function () { /* pass */ }
@@ -346,7 +361,10 @@ tape(
         [
           postForm(port, publisher, password, form, test),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           ),
           subscribeToProject(
             port, publisher, password, test, publisher, project
@@ -355,7 +373,10 @@ tape(
             port, publisher, password, test, publisher, project
           ),
           postProject(
-            publisher, password, port, project, '2e', digest, test
+            publisher, password, port,
+            project, '2e',
+            digest, false, false,
+            test
           )
         ],
         function () {
@@ -387,7 +408,10 @@ tape(
             port, publisher, password, test, publisher
           ),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           )
         ],
         function () { /* pass */ }
@@ -413,7 +437,10 @@ tape(
             port, publisher, password, test, publisher
           ),
           postProject(
-            publisher, password, port, project, edition, digest, test
+            publisher, password, port,
+            project, edition,
+            digest, false, false,
+            test
           )
         ],
         function () {
