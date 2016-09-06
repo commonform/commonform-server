@@ -214,8 +214,41 @@ Authentication: Publisher
 
 Body:
 ```json
-{"digest": "$digest"}
+{
+  "digest": "$digest",
+  "directions": [],
+  "signaturePages": []
+}
 ```
+
+where `directions` and `signaturePages` are optional.  When present:
+
+`signaturePages` is an array of objects described by
+[signature-page-schema][sps], like:
+
+[sps]: https://www.npmjs.com/package/signature-page-schema
+
+```json
+{
+  "name": "John Smith",
+  "information": ["date"]
+}
+```
+
+`directions` is an array of objects satisfying by
+[commonform-validate-direction][cve], like:
+
+[cve]: https://www.npmjs.com/package/commonform-validate-direction
+
+```json
+{
+  "blank": ["content", 0, "form", "content", 7],
+  "value": "$10"
+}
+```
+
+where `blank` is a list of keys in the published form that identify
+a specific blank object.
 
 #### PUT /publishers/{publisher} to update
 
