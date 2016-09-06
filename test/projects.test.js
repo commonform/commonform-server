@@ -1407,3 +1407,124 @@ tape(
     })
   }
 )
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
+  'with invalid directions',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {
+      content: [
+        {
+          form: {
+            content: ['The price is ', {blank: ''}, '.']
+          }
+        }
+      ]
+    }
+    var directions = [
+      {
+        blank: ['content', 0, 'form', 'content', 2],
+        value: '$10'
+      }
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      var request = {
+        auth: PUBLISHER + ':' + PASSWORD,
+        method: 'POST',
+        port: port,
+        path: path
+      }
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function putProject (done) {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 400, '400')
+              done()
+            })
+            .end(JSON.stringify({
+              digest: digest,
+              directions: directions
+            }))
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'GET /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{existing} ' +
+  'with directions',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {
+      content: ['The price is ', {blank: ''}, '.']
+    }
+    var directions = [
+      {
+        blank: ['content', 1],
+        value: '$10'
+      }
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          postProject(
+            PUBLISHER, PASSWORD, port,
+            project, edition,
+            digest, directions, false,
+            test
+          ),
+          function getProject (done) {
+            var options = {method: 'GET', port: port, path: path}
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 200, 'GET 200')
+              response.pipe(concat(function (buffer) {
+                var responseBody = JSON.parse(buffer)
+                test.equal(
+                  responseBody.digest, digest,
+                  'GET project digest'
+                )
+                test.deepEqual(
+                  responseBody.directions, directions,
+                  'GET project directions'
+                )
+                done()
+              }))
+            })
+            .end()
+          }
+        ],
+        function finish () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)

@@ -1,8 +1,9 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
-var formKeyFor = require('../keys/form')
+var get = require('keyarray-get')
 var getCurrent = require('../queries/get-current-publication')
+var getForm = require('../queries/get-form')
 var getLatestPublication = require('../queries/get-latest-publication')
 var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
@@ -52,13 +53,12 @@ function postPublication (
           var publicationKey = keyForPublication(
             publisher, project, edition
           )
-          var formKey = formKeyFor(digest)
-          exists(level, formKey, function (error, formExists) {
+          getForm(level, digest, function (error, form) {
             /* istanbul ignore if */
             if (error) {
               internalError(response, error)
             } else {
-              if (!formExists) {
+              if (form === false) {
                 badRequest(response, 'unknown form')
               } else {
                 exists(
@@ -68,8 +68,21 @@ function postPublication (
                     if (error) {
                       internalError(response, error)
                     } else {
+                      var directionsMatch = (
+                        !json.hasOwnProperty('directions') ||
+                        json.directions.every(function (direction) {
+                          var target = get(form, direction.blank)
+                          return (
+                            target &&
+                            typeof target === 'object' &&
+                            target.hasOwnProperty('blank')
+                          )
+                        })
+                      )
                       if (publicationExists) {
                         conflict(response)
+                      } else if (!directionsMatch) {
+                        badRequest(response, 'mismatched directions')
                       } else {
                         var entry = {
                           type: 'publication',
@@ -77,9 +90,15 @@ function postPublication (
                             publisher: publisher,
                             project: project,
                             edition: edition,
-                            digest: digest,
-                            signaturePages: json.signaturePages
+                            digest: digest
                           }
+                        }
+                        var data = entry.data
+                        if (json.signaturePages) {
+                          data.signaturePages = json.signaturePages
+                        }
+                        if (json.directions) {
+                          data.directions = json.directions
                         }
                         write(entry, function (error) {
                           /* istanbul ignore if */
