@@ -1,4 +1,5 @@
 var allowAuthorization = require('./allow-authorization')
+var annotationKey = require('../keys/annotation')
 var annotationPath = require('../paths/annotation')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
@@ -8,6 +9,7 @@ var getForm = require('../queries/get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
 var isReplyTo = require('../queries/is-reply-to')
+var levelLock = require('level-lock')
 var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
@@ -146,9 +148,12 @@ function postAnnotation (
   request, response, parameters, log, level, write
 ) {
   readJSONBody(request, response, function (annotation) {
-    var put = function () {
+    var put = function (unlock) {
       var entry = {type: 'annotation', data: annotation}
       write(entry, function (error) {
+        if (unlock) {
+          unlock()
+        }
         /* istanbul ignore if */
         if (error) {
           internalError(response, 'internal error')
@@ -193,8 +198,9 @@ function postAnnotation (
               badRequest(response, 'Form not in context')
             } else {
               if (annotation.replyTo.length !== 0) {
+                var parentUUID = annotation.replyTo[0]
                 getAnnotation(
-                  level, annotation.replyTo[0],
+                  level, parentUUID,
                   function (error, prior) {
                     /* istanbul ignore if */
                     if (error) {
@@ -206,7 +212,14 @@ function postAnnotation (
                         if (!isReplyTo(annotation, prior)) {
                           badRequest(response, 'Does not match parent')
                         } else {
-                          put()
+                          var parentKey = annotationKey(parentUUID)
+                          var unlock = levelLock(level, parentKey, 'w')
+                          /* istanbul ignore if */
+                          if (!unlock) {
+                            badRequest('Invalid replyTo')
+                          } else {
+                            put(unlock)
+                          }
                         }
                       }
                     }
