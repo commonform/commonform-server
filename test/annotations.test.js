@@ -488,6 +488,157 @@ tape('GET /annotation/{uuid}', function (test) {
 tape('DELETE /annotation/{uuid}', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
+  var child = {content: ['The child']}
+  var childDigest = normalize(child).root
+  var parent = {content: [{form: child}]}
+  var parentDigest = normalize(parent).root
+  var annotation = {
+    publisher: publisher,
+    form: childDigest,
+    context: parentDigest,
+    replyTo: [],
+    text: 'Not good'
+  }
+  var annotationLocation
+  server(function (port, done) {
+    series(
+      [
+        postForm(port, publisher, password, parent, test),
+        function (done) {
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
+          function withLocation (error, location) {
+            test.ifError(error, 'no error')
+            annotationLocation = location
+            setTimeout(done, 200)
+          }
+        },
+        function (done) {
+          var options = {
+            method: 'DELETE',
+            port: port,
+            path: annotationLocation,
+            auth: publisher + ':' + password
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 202, 'DELETE 202')
+            // Wait a bit for the sever to write the delete entry to the
+            // log, receive it back, and process it.
+            setTimeout(done, 200)
+          })
+          .end()
+        },
+        function (done) {
+          var options = {
+            method: 'GET',
+            port: port,
+            path: annotationLocation
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 404, 'GET 404')
+            done()
+          })
+          .end()
+        }
+      ],
+      function () {
+        done()
+        test.end()
+      }
+    )
+  })
+})
+
+tape('DELETE /annotation/{has reply}', function (test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var child = {content: ['The child']}
+  var childDigest = normalize(child).root
+  var parent = {content: [{form: child}]}
+  var parentDigest = normalize(parent).root
+  var annotation = {
+    publisher: publisher,
+    form: childDigest,
+    context: parentDigest,
+    replyTo: [],
+    text: 'Not good'
+  }
+  var reply
+  var annotationLocation
+  server(function (port, done) {
+    series(
+      [
+        postForm(port, publisher, password, parent, test),
+        function (done) {
+          postAnnotation(
+            publisher, password, port, annotation, test
+          )(withLocation)
+          function withLocation (error, location) {
+            test.ifError(error, 'no error')
+            annotationLocation = location
+            reply = {
+              publisher: publisher,
+              form: childDigest,
+              context: parentDigest,
+              replyTo: [location.replace('/annotations/', '')],
+              text: 'On second thought...'
+            }
+            setTimeout(done, 200)
+          }
+        },
+        function (done) {
+          postAnnotation(publisher, password, port, reply, test)(
+            function (error) {
+              if (error) {
+                done(error)
+              } else {
+                setTimeout(done, 200)
+              }
+            }
+          )
+        },
+        function (done) {
+          var options = {
+            method: 'DELETE',
+            port: port,
+            path: annotationLocation,
+            auth: publisher + ':' + password
+          }
+          http.request(options, function (response) {
+            test.equal(response.statusCode, 400, 'DELETE 400')
+            var buffer = []
+            response
+            .on('data', function (chunk) {
+              buffer.push(chunk)
+            })
+            .once('error', function (error) {
+              test.ifError(error, 'no error')
+            })
+            .once('end', function () {
+              var body = Buffer.concat(buffer).toString()
+              test.equal(
+                body,
+                'cannot delete annotation with reply',
+                'has replies'
+              )
+              done()
+            })
+          })
+          .end()
+        }
+      ],
+      function () {
+        done()
+        test.end()
+      }
+    )
+  })
+})
+
+tape('PATCH /annotation/{uuid}', function (test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
   var form = {content: ['The form']}
   var digest = normalize(form).root
   var annotation = {
@@ -514,7 +665,7 @@ tape('DELETE /annotation/{uuid}', function (test) {
         },
         function (done) {
           var options = {
-            method: 'DELETE',
+            method: 'PATCH',
             port: port,
             path: '/annotations/' + uuid
           }

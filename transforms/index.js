@@ -1,5 +1,6 @@
 var handlers = {
   annotation: require('./annotation'),
+  deleteAnnotation: require('./delete-annotation'),
   form: require('./form'),
   publication: require('./publication'),
   publisher: require('./publisher'),

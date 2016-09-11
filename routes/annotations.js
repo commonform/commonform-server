@@ -2,12 +2,12 @@ var allowAuthorization = require('./allow-authorization')
 var annotationPath = require('../paths/annotation')
 var badRequest = require('./responses/bad-request')
 var encode = require('../keys/encode')
-var equals = require('array-equal')
 var forbidden = require('./responses/forbidden')
 var getAnnotation = require('../queries/get-annotation')
 var getForm = require('../queries/get-form')
 var internalError = require('./responses/internal-error')
 var isDigest = require('is-sha-256-hex-digest')
+var isReplyTo = require('../queries/is-reply-to')
 var mailgun = require('../mailgun')
 var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
@@ -203,15 +203,7 @@ function postAnnotation (
                       if (!prior) {
                         badRequest(response, 'Invalid replyTo')
                       } else {
-                        var sameTarget = (
-                          annotation.context === prior.context &&
-                          annotation.form === prior.form &&
-                          equals(
-                            annotation.replyTo.slice(1),
-                            prior.replyTo
-                          )
-                        )
-                        if (!sameTarget) {
+                        if (!isReplyTo(annotation, prior)) {
                           badRequest(response, 'Does not match parent')
                         } else {
                           put()
