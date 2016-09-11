@@ -255,6 +255,11 @@ where:
 -  `"replyTo"` is an array of annotation UUIDs to which this annotation
    responds, latest first.
 
+#### DELETE /annotation/{uuid}
+
+Delete an annotation.
+
+Publishers may only delete comments without any replies.
 
 #### GET /annotations?context={context}
 
