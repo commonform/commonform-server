@@ -1,4 +1,5 @@
 var badRequest = require('./responses/bad-request')
+var contentType = require('content-type')
 var internalError = require('./responses/internal-error')
 var parseJSON = require('json-parse-errback')
 var tooLarge = require('./responses/request-entity-too-large')
@@ -14,12 +15,25 @@ module.exports = function (request, response, callback) {
   if (isTooLarge) {
     tooLarge(response)
   } else {
-    buffer = []
-    request.on('data', onData)
-    request.once('aborted', onAborted)
-    request.once('close', finish)
-    request.once('end', onEnd)
-    request.once('error', onEnd)
+    var type = contentType.parse(request)
+    var validType = (
+      type.type === 'application/json' &&
+      (
+        type.parameters.charset === undefined ||
+        type.parameters.charset === 'utf-8'
+      )
+    )
+    if (!validType) {
+      response.statusCode = 415
+      response.end()
+    } else {
+      buffer = []
+      request.on('data', onData)
+      request.once('aborted', onAborted)
+      request.once('close', finish)
+      request.once('end', onEnd)
+      request.once('error', onEnd)
+    }
   }
   function onData (chunk) {
     /* istanbul ignore else */

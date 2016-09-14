@@ -48,6 +48,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -75,6 +78,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -101,6 +107,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -128,6 +137,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -232,6 +244,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/ana'
       }
@@ -267,6 +282,9 @@ tape(
             var options = {
               auth: user + ':' + password,
               method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
               port: port,
               path: '/publishers/ana'
             }
@@ -307,6 +325,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/ana'
       }
@@ -334,6 +355,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -357,6 +381,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/ana'
       }
@@ -384,6 +411,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/ana'
       }
@@ -419,7 +449,10 @@ tape(
         method: 'POST',
         port: port,
         path: '/publishers/charlie',
-        headers: {Authorization: 'blah'}
+        headers: {
+          Authorization: 'blah',
+          'Content-Type': 'application/json'
+        }
       }
       http.request(options, function (response) {
         test.equal(response.statusCode, 401, 'POST 401')
@@ -444,7 +477,10 @@ tape(
         method: 'PUT',
         port: port,
         path: '/publishers/ana',
-        headers: {Authorization: 'blah'}
+        headers: {
+          Authorization: 'blah',
+          'Content-Type': 'application/json'
+        }
       }
       http.request(options, function (response) {
         test.equal(response.statusCode, 401, 'POST 401')
@@ -466,6 +502,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -498,6 +537,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -534,6 +576,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }
@@ -570,6 +615,9 @@ tape(
       var options = {
         auth: user + ':' + password,
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         port: port,
         path: '/publishers/charlie'
       }

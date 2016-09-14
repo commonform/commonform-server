@@ -27,6 +27,9 @@ tape(
     server(function (port, done) {
       var request = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -70,6 +73,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -102,6 +108,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -136,6 +145,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: publisher + ':' + password,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -167,6 +179,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -207,6 +222,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: publisher + ':' + password,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -247,6 +265,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: publisher + ':' + password,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -281,6 +302,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -319,6 +343,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -357,6 +384,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -392,6 +422,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -425,6 +458,9 @@ tape(
     server(function (port, done) {
       var options = {
         auth: PUBLISHER + ':' + badPassword,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -457,6 +493,9 @@ tape(
     server(function (port, done) {
       var request = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -1086,13 +1125,15 @@ tape('GET /forms/{form}/publications', function (test) {
                     publisher: 'ana',
                     project: 'nda',
                     edition: '1e1d',
-                    root: true, digest: digest
+                    root: true,
+                    digest: digest
                   },
                   {
                     publisher: 'ana',
                     project: 'nda',
                     edition: '1e',
-                    root: true, digest: digest
+                    root: true,
+                    digest: digest
                   },
                   {
                     publisher: 'ana',
@@ -1271,6 +1312,9 @@ tape(
     server(function (port, done) {
       var request = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path
@@ -1322,6 +1366,9 @@ tape(
     server(function (port, done) {
       var request = {
         auth: PUBLISHER + ':' + PASSWORD,
+        headers: {
+          'Content-Type': 'application/json'
+        },
         method: 'POST',
         port: port,
         path: path

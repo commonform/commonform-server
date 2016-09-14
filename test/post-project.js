@@ -11,6 +11,9 @@ module.exports = function (
       auth: publisher + ':' + password,
       method: 'POST',
       port: port,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       path: (
         '/publishers/' + publisher +
         '/projects/' + project +

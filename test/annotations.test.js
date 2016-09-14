@@ -58,6 +58,9 @@ tape('POST /annotations with invalid annotation', function (test) {
             method: 'POST',
             port: port,
             path: '/annotations',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             auth: publisher + ':' + password
           }
           http.request(options, function (response) {
@@ -102,6 +105,9 @@ tape('POST /annotations without authorization', function (test) {
           var options = {
             method: 'POST',
             port: port,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             path: '/annotations'
           }
           http.request(options, function (response) {
@@ -142,6 +148,9 @@ tape('POST /annotations for another publisher', function (test) {
             method: 'POST',
             port: port,
             auth: publisher + ':' + password,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             path: '/annotations'
           }
           http.request(options, function (response) {
@@ -180,6 +189,9 @@ tape('POST /annotations with bad password', function (test) {
             method: 'POST',
             port: port,
             auth: publisher + ':' + password,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             path: '/annotations'
           }
           http.request(options, function (response) {
@@ -221,6 +233,9 @@ tape('POST /annotations with form not in context', function (test) {
             method: 'POST',
             port: port,
             auth: publisher + ':' + password,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             path: '/annotations'
           }
           http.request(options, function (response) {
@@ -318,6 +333,9 @@ tape('POST /annotations with reply to nonexistent', function (test) {
             method: 'POST',
             port: port,
             path: '/annotations',
+            headers: {
+              'Content-Type': 'application/json'
+            },
             auth: publisher + ':' + password
           }
           http.request(options, function (response) {
@@ -370,6 +388,9 @@ tape('POST /annotations with mismatched context', function (test) {
             method: 'POST',
             path: '/annotations',
             port: port,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             auth: publisher + ':' + password
           }
           http.request(options, function (response) {
@@ -416,6 +437,9 @@ tape('POST /annotations with unknown context', function (test) {
       method: 'POST',
       path: '/annotations',
       port: port,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       auth: publisher + ':' + password
     }
     http.request(options, function (response) {
@@ -519,6 +543,9 @@ tape('DELETE /annotation/{uuid}', function (test) {
             method: 'DELETE',
             port: port,
             path: annotationLocation,
+            headers: {
+              'Content-Type': 'application/json'
+            },
             auth: publisher + ':' + password
           }
           http.request(options, function (response) {

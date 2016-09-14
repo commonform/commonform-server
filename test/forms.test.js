@@ -12,6 +12,9 @@ tape('POST /forms with invalid JSON', function (test) {
   server(function (port, done) {
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -37,6 +40,9 @@ tape('POST /forms with form', function (test) {
     var root = normalize(form).root
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -61,10 +67,12 @@ tape('POST /forms with oversized request body', function (test) {
     var body = sizedBuffer(256001, 'a', 'ascii')
     var options = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
-      port: port,
-      headers: {'Content-Length': Buffer.byteLength(body)}
+      port: port
     }
     http.request(options, function (response) {
       test.equal(response.statusCode, 413, 'responds 413')
@@ -101,6 +109,9 @@ tape('POST /forms with infinite request body', function (test) {
     })
     var options = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -125,6 +136,9 @@ tape('POST /forms without request body', function (test) {
   server(function (port, done) {
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -170,7 +184,10 @@ if (process.env.RUN_SLOW_TESTS) {
         auth: PUBLISHER + ':' + PASSWORD,
         method: 'POST',
         path: '/forms',
-        headers: {'Content-Length': Buffer.byteLength(json) + 1},
+        headers: {
+          'Content-Length': Buffer.byteLength(json) + 1,
+          'Content-Type': 'application/json'
+        },
         port: port
       }
       http.request(request, function (response) {
@@ -188,6 +205,9 @@ tape('POST /forms with invalid form', function (test) {
     var form = {invalid: 'form'}
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -238,6 +258,9 @@ tape('POST /forms/{digest}', function (test) {
     var digest = 'a'.repeat(64)
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms/' + digest,
       port: port
@@ -257,6 +280,9 @@ tape('GET /forms/{posted}', function (test) {
     var root = normalize(form).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -298,6 +324,9 @@ tape('GET /forms/{child_of_posted}', function (test) {
     var childDigest = normalize(child).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -331,6 +360,9 @@ tape('GET /forms/{great_grandchild_of_posted}', function (test) {
     var digest = normalize(greatgrandchild).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       method: 'POST',
       path: '/forms',
       port: port
@@ -357,6 +389,46 @@ tape('GET /forms/{great_grandchild_of_posted}', function (test) {
       }, 200)
     })
     .end(JSON.stringify(parent))
+  })
+})
+
+tape('POST /forms with charset=koi8-r', function (test) {
+  server(function (port, done) {
+    var request = {
+      method: 'POST',
+      auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'application/json; charset=koi8-r'
+      },
+      path: '/forms',
+      port: port
+    }
+    http.request(request, function (response) {
+      test.equal(response.statusCode, 415, 'responds 415')
+      done()
+      test.end()
+    })
+    .end('some text')
+  })
+})
+
+tape('POST /forms with text/plain', function (test) {
+  server(function (port, done) {
+    var request = {
+      method: 'POST',
+      auth: PUBLISHER + ':' + PASSWORD,
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      path: '/forms',
+      port: port
+    }
+    http.request(request, function (response) {
+      test.equal(response.statusCode, 415, 'responds 415')
+      done()
+      test.end()
+    })
+    .end('some text')
   })
 })
 

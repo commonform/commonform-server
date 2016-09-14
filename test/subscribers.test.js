@@ -25,8 +25,10 @@ var form = {content: ['The child']}
 var digest = normalize(form).root
 var annotation = {
   publisher: publisher,
-  form: digest, context: digest,
-  replyTo: [], text: 'Not good'
+  form: digest,
+  context: digest,
+  replyTo: [],
+  text: 'Not good'
 }
 var project = 'nda'
 var edition = '1e'

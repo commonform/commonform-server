@@ -5,6 +5,9 @@ module.exports = function (port, publisher, password, form, test) {
     var options = {
       auth: publisher + ':' + password,
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       path: '/forms',
       port: port
     }

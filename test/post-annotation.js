@@ -8,6 +8,9 @@ module.exports = function (
       method: 'POST',
       path: '/annotations',
       port: port,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       auth: publisher + ':' + password
     }
     http.request(options, function (response) {
