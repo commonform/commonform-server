@@ -1,5 +1,6 @@
 var entryToLevelUPBatch = require('./transforms')
 var migrateVersionedLog = require('migrate-versioned-log')
+var mitigateCSRF = require('./mitigate-csrf')
 var notFound = require('./routes/responses/not-found')
 var pump = require('pump')
 var through2 = require('through2')
@@ -88,20 +89,22 @@ module.exports = function (version, serverLog, level, dataLog) {
     )
 
     // Route the request.
-    var parsed = url.parse(request.url, true)
-    request.query = parsed.query
-    var route = routes.get(parsed.pathname)
-    if (route.handler) {
-      route.handler(
-        request,
-        response,
-        route.params,
-        serverLog,
-        level,
-        write
-      )
-    } else {
-      notFound(response)
-    }
+    mitigateCSRF(request, response, function () {
+      var parsed = url.parse(request.url, true)
+      request.query = parsed.query
+      var route = routes.get(parsed.pathname)
+      if (route.handler) {
+        route.handler(
+          request,
+          response,
+          route.params,
+          serverLog,
+          level,
+          write
+        )
+      } else {
+        notFound(response)
+      }
+    })
   }
 }
