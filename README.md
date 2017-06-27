@@ -48,7 +48,7 @@ You should firewall remote connections to 4444 and 8080 and configure
 1.  Redirect port 80 HTTP request to TLS on port 443 and set
     [Strict Transport Security][rfc6797] headers.
 
-2.  Terminate, TLS.
+2.  Terminate TLS.
     <https://api.commonform.org> uses [Let's Encrypt] via [Certbot].
 
 3.  Proxy requests to port 8080.
