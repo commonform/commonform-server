@@ -20,6 +20,6 @@ module.exports = function (
         callback()
       }
     })
-    .end()
+      .end()
   }
 }

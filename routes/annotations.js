@@ -55,15 +55,15 @@ function getAnnotations (request, response, parameters, log, level) {
               send(
                 multistream.obj(
                   Object.keys(contexts)
-                  .filter(function (digest) {
-                    return (
-                      // The form is query.form itself.
-                      digest === query.form ||
-                      // The form is a child of query.form.
-                      contexts[digest].indexOf(query.form) !== -1
-                    )
-                  })
-                  .map(annotationsStream)
+                    .filter(function (digest) {
+                      return (
+                        // The form is query.form itself.
+                        digest === query.form ||
+                        // The form is a child of query.form.
+                        contexts[digest].indexOf(query.form) !== -1
+                      )
+                    })
+                    .map(annotationsStream)
                 )
               )
             } else {
@@ -75,7 +75,7 @@ function getAnnotations (request, response, parameters, log, level) {
             send(
               multistream.obj(
                 Object.keys(contexts)
-                .map(annotationsStream)
+                  .map(annotationsStream)
               )
             )
           }
@@ -85,23 +85,23 @@ function getAnnotations (request, response, parameters, log, level) {
         var first = true
         response.write('[\n')
         stream
-        .on('data', function (item) {
-          var annotation = item.value
-          if (matchesContext(annotation, contexts)) {
-            response.write(
-              (first ? '' : ',') +
-              JSON.stringify(item.value) + '\n'
-            )
-            first = false
-          }
-        })
-        .once('error', /* istanbul ignore next */ function (error) {
-          log.error(error)
-          response.end('\n]')
-        })
-        .once('end', function () {
-          response.end('\n]')
-        })
+          .on('data', function (item) {
+            var annotation = item.value
+            if (matchesContext(annotation, contexts)) {
+              response.write(
+                (first ? '' : ',') +
+                JSON.stringify(item.value) + '\n'
+              )
+              first = false
+            }
+          })
+          .once('error', /* istanbul ignore next */ function (error) {
+            log.error(error)
+            response.end('\n]')
+          })
+          .once('end', function () {
+            response.end('\n]')
+          })
       }
     })
   }

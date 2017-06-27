@@ -11,15 +11,15 @@ module.exports = function (level, keys, callback) {
     keys: true,
     values: false
   })
-  .on('data', function (key) {
-    var decoded = decode(key)
-    var publisher = decoded[decoded.length - 1]
-    subscribers.push(publisher)
-  })
-  .once('error', /* istanbul ignore next */ function (error) {
-    callback(error)
-  })
-  .once('end', function () {
-    callback(null, subscribers.sort())
-  })
+    .on('data', function (key) {
+      var decoded = decode(key)
+      var publisher = decoded[decoded.length - 1]
+      subscribers.push(publisher)
+    })
+    .once('error', /* istanbul ignore next */ function (error) {
+      callback(error)
+    })
+    .once('end', function () {
+      callback(null, subscribers.sort())
+    })
 }

@@ -16,6 +16,6 @@ module.exports = function (
         callback(null, response.headers.location)
       }
     })
-    .end(JSON.stringify(annotation))
+      .end(JSON.stringify(annotation))
   }
 }

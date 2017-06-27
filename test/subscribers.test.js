@@ -25,8 +25,10 @@ var form = {content: ['The child']}
 var digest = normalize(form).root
 var annotation = {
   publisher: publisher,
-  form: digest, context: digest,
-  replyTo: [], text: 'Not good'
+  form: digest,
+  context: digest,
+  replyTo: [],
+  text: 'Not good'
 }
 var project = 'nda'
 var edition = '1e'
@@ -125,7 +127,7 @@ tape(
               test.equal(response.statusCode, 200, '200 as subscriber')
               done()
             })
-            .end()
+              .end()
           },
           function (done) {
             var options = {
@@ -140,7 +142,7 @@ tape(
               )
               done()
             })
-            .end()
+              .end()
           }
         ],
         function () {
@@ -173,7 +175,7 @@ tape(
               test.equal(response.statusCode, 404, '404 as subscriber')
               done()
             })
-            .end()
+              .end()
           },
           function (done) {
             var options = {
@@ -188,7 +190,7 @@ tape(
               )
               done()
             })
-            .end()
+              .end()
           }
         ],
         function () {
@@ -223,7 +225,7 @@ tape(
               test.equal(response.statusCode, 405, '405')
               done()
             })
-            .end()
+              .end()
           }
         ],
         function () {

@@ -3,4 +3,3 @@ module.exports = function (response) {
   response.setHeader('WWW-Authenticate', 'Basic realm="Common Form"')
   response.end()
 }
-

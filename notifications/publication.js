@@ -34,7 +34,7 @@ function notifySubscribers (keys, level, log, publication) {
         publication.publisher + ' published ' +
         publication.project + ' ' + spell(publication.edition)
       ]
-      .join('\n')
+        .join('\n')
     }
   })
 }

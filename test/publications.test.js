@@ -45,7 +45,7 @@ tape(
                 done()
               })
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -71,7 +71,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )

@@ -19,24 +19,24 @@ module.exports = function (namespace) {
         lt: encode([namespace, prefix + '~']),
         limit: query.limit
       })
-      .on('data', function (item) {
-        if (skip !== 0) {
-          skip--
-        } else {
-          response.write(
-            (first ? '' : ',') +
-            JSON.stringify(decode(item.key)[1]) + '\n'
-          )
-          first = false
-        }
-      })
-      .once('error', /* istanbul ignore next */ function (error) {
-        log.error(error)
-        response.end(']')
-      })
-      .once('end', function () {
-        response.end(']')
-      })
+        .on('data', function (item) {
+          if (skip !== 0) {
+            skip--
+          } else {
+            response.write(
+              (first ? '' : ',') +
+              JSON.stringify(decode(item.key)[1]) + '\n'
+            )
+            first = false
+          }
+        })
+        .once('error', /* istanbul ignore next */ function (error) {
+          log.error(error)
+          response.end(']')
+        })
+        .once('end', function () {
+          response.end(']')
+        })
     } else {
       methodNotAllowed(response)
     }

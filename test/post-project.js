@@ -35,6 +35,6 @@ module.exports = function (
         callback()
       }
     })
-    .end(JSON.stringify(body))
+      .end(JSON.stringify(body))
   }
 }

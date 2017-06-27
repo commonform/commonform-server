@@ -52,11 +52,13 @@ if (process.env.NODE_ENV === 'test') {
       } else {
         var buffers = []
         response
-        .on('data', function (buffer) { buffers.push(buffer) })
-        .once('end', function () {
-          var body = Buffer.concat(buffers).toString()
-          log.error({status: response.statusCode, body: body})
-        })
+          .on('data', function (buffer) {
+            buffers.push(buffer)
+          })
+          .once('end', function () {
+            var body = Buffer.concat(buffers).toString()
+            log.error({status: response.statusCode, body: body})
+          })
       }
     })
     form.pipe(request)

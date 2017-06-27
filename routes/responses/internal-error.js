@@ -4,4 +4,3 @@ module.exports = function (response, error) {
   response.statusCode = 500
   response.end()
 }
-

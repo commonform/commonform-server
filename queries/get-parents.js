@@ -11,17 +11,17 @@ module.exports = function (level, digest, callback) {
     gt: encode([PREFIX, digest, '']),
     lt: encode([PREFIX, digest, '~'])
   })
-  .on('data', function (item) {
-    var decoded = decode(item.key)
-    parents.push({
-      digest: decoded[2],
-      depth: parseInt(decoded[3])
+    .on('data', function (item) {
+      var decoded = decode(item.key)
+      parents.push({
+        digest: decoded[2],
+        depth: parseInt(decoded[3])
+      })
     })
-  })
-  .once('error', /* istanbul ignore next */ function (error) {
-    callback(error)
-  })
-  .once('end', function () {
-    callback(null, parents)
-  })
+    .once('error', /* istanbul ignore next */ function (error) {
+      callback(error)
+    })
+    .once('end', function () {
+      callback(null, parents)
+    })
 }

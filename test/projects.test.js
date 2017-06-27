@@ -40,7 +40,7 @@ tape(
               test.equal(response.headers.location, path, 'Location')
               done()
             })
-            .end(JSON.stringify({digest: digest}))
+              .end(JSON.stringify({digest: digest}))
           }
         ],
         function () {
@@ -79,7 +79,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -111,7 +111,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -145,7 +145,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -182,7 +182,7 @@ tape(
           test.end()
         }))
       })
-      .end(JSON.stringify({}))
+        .end(JSON.stringify({}))
     })
   }
 )
@@ -222,7 +222,7 @@ tape(
           test.end()
         }))
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -259,7 +259,7 @@ tape(
           test.end()
         }))
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -296,7 +296,7 @@ tape(
           test.end()
         }))
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -334,7 +334,7 @@ tape(
           test.end()
         }))
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -369,7 +369,7 @@ tape(
           test.end()
         }))
       })
-      .end('The form is ' + digest)
+        .end('The form is ' + digest)
     })
   }
 )
@@ -401,7 +401,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -434,7 +434,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({digest: digest}))
     })
   }
 )
@@ -475,7 +475,7 @@ tape(
               test.equal(response.statusCode, 409, 'Second POST 409')
               done()
             })
-            .end(JSON.stringify({digest: digest}))
+              .end(JSON.stringify({digest: digest}))
           }
         ],
         function finish () {
@@ -511,7 +511,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -553,7 +553,7 @@ tape(
                 done()
               }))
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -606,7 +606,7 @@ tape('GET /publishers/{publisher}/projects', function (test) {
               done()
             }))
           })
-          .end()
+            .end()
         }
       ],
       function finish () {
@@ -642,7 +642,7 @@ tape('PATCH /publishers/{publisher}/projects', function (test) {
             test.equal(response.statusCode, 405, 'PATCH 405')
             done()
           })
-          .end()
+            .end()
         }
       ],
       function finish () {
@@ -689,7 +689,7 @@ tape(
                 done()
               }))
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -738,7 +738,7 @@ tape(
                 done()
               }))
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -789,7 +789,7 @@ tape(
               )
               done()
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -825,7 +825,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -868,7 +868,7 @@ tape(
               )
               done()
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -918,7 +918,7 @@ tape(
               )
               done()
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -961,7 +961,7 @@ tape(
               test.equal(response.statusCode, 405, 'PATCH 405')
               done()
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -995,7 +995,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -1026,7 +1026,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -1086,13 +1086,15 @@ tape('GET /forms/{form}/publications', function (test) {
                     publisher: 'ana',
                     project: 'nda',
                     edition: '1e1d',
-                    root: true, digest: digest
+                    root: true,
+                    digest: digest
                   },
                   {
                     publisher: 'ana',
                     project: 'nda',
                     edition: '1e',
-                    root: true, digest: digest
+                    root: true,
+                    digest: digest
                   },
                   {
                     publisher: 'ana',
@@ -1114,7 +1116,7 @@ tape('GET /forms/{form}/publications', function (test) {
               done()
             }))
           })
-          .end()
+            .end()
         }
       ],
       function finish () {
@@ -1175,7 +1177,7 @@ tape('POST /forms/{form}/publications', function (test) {
             test.equal(response.statusCode, 405, 'POST 405')
             done()
           })
-          .end()
+            .end()
         }
       ],
       function finish () {
@@ -1229,7 +1231,7 @@ tape(
                 done()
               }))
             })
-            .end()
+              .end()
           }
         ],
         function finish () {
@@ -1284,10 +1286,10 @@ tape(
               test.equal(response.headers.location, path, 'Location')
               done()
             })
-            .end(JSON.stringify({
-              digest: digest,
-              signaturePages: signaturePages
-            }))
+              .end(JSON.stringify({
+                digest: digest,
+                signaturePages: signaturePages
+              }))
           }
         ],
         function () {
@@ -1334,10 +1336,10 @@ tape(
               test.equal(response.statusCode, 400, '400')
               done()
             })
-            .end(JSON.stringify({
-              digest: digest,
-              signaturePages: signaturePages
-            }))
+              .end(JSON.stringify({
+                digest: digest,
+                signaturePages: signaturePages
+              }))
           }
         ],
         function () {
@@ -1396,7 +1398,7 @@ tape(
                 done()
               }))
             })
-            .end()
+              .end()
           }
         ],
         function finish () {

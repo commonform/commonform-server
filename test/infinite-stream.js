@@ -7,8 +7,8 @@ module.exports = function () {
     setTimeout(function () {
       for (var i = 0; i < numberOfChunks; i++) {
         stream.push(Math.random()
-        .toString(32)
-        .repeat(32 * 4))
+          .toString(32)
+          .repeat(32 * 4))
       }
     }, 100)
   }

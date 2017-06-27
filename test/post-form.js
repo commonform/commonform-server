@@ -14,6 +14,6 @@ module.exports = function (port, publisher, password, form, test) {
         callback()
       }
     })
-    .end(JSON.stringify(form))
+      .end(JSON.stringify(form))
   }
 }

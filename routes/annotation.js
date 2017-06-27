@@ -100,16 +100,16 @@ function hasReply (level, annotation, callback) {
     keys: false,
     values: true
   })
-  .on('data', function (otherAnnotation) {
-    if (isReplyTo(otherAnnotation, annotation)) {
-      this.destroy()
-      callback(null, true)
-    }
-  })
-  .once('end', function () {
-    callback(null, false)
-  })
-  .once('error', /* istanbul ignore next */ function (error) {
-    callback(error)
-  })
+    .on('data', function (otherAnnotation) {
+      if (isReplyTo(otherAnnotation, annotation)) {
+        this.destroy()
+        callback(null, true)
+      }
+    })
+    .once('end', function () {
+      callback(null, false)
+    })
+    .once('error', /* istanbul ignore next */ function (error) {
+      callback(error)
+    })
 }

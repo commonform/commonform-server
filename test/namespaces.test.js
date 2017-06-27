@@ -32,7 +32,7 @@ tape('GET /digests', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -51,7 +51,7 @@ tape('POST /digests', function (test) {
       closeServer()
       test.end()
     })
-    .end()
+      .end()
   })
 })
 
@@ -81,7 +81,7 @@ tape('GET /headings', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -119,7 +119,7 @@ tape('GET /headings', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -156,7 +156,7 @@ tape('GET /terms', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -193,7 +193,7 @@ tape('GET /terms', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -230,7 +230,7 @@ tape('GET /projects', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -278,7 +278,7 @@ tape('GET /terms?prefix', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -326,7 +326,7 @@ tape('GET /headings?skip={index}&limit={count}', function (test) {
               done()
             })
           })
-          .end()
+            .end()
         }
       ],
       function () {
@@ -336,4 +336,3 @@ tape('GET /headings?skip={index}&limit={count}', function (test) {
     )
   })
 })
-

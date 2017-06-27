@@ -36,7 +36,7 @@ function setupServers (callback) {
   })
 }
 
-function setupHTTPServer (logServerPort, callback) {
+function setupHTTPServer (logServerPort, ready) {
   // Use an in-memory LevelUP storage back-end.
   var level = levelup('server', {db: memdown, valueEncoding: 'json'})
   //  Pipe log messages to nowhere.
@@ -47,7 +47,7 @@ function setupHTTPServer (logServerPort, callback) {
   // Start the HTTP server when the log client catches up with the log.
   .once('current', function () {
     server.listen(0, function () {
-      callback(this)
+      ready(this)
     })
   })
   // Created the HTTP server.
@@ -73,7 +73,7 @@ function setupHTTPServer (logServerPort, callback) {
 
 function noop () { }
 
-function setupLogServer (callback) {
+function setupLogServer (ready) {
   // Use an in-memory LevelUP storage back-end.
   var level = levelup('log', {db: memdown})
   var logs = new SimpleLog(level)
@@ -85,10 +85,10 @@ function setupLogServer (callback) {
   var handler = tcpLogServer(log, logs, blobs, emitter, sha256)
   // Starts the TCP server.
   net.createServer(handler)
-  .once('close', function () {
-    level.close()
-  })
-  .listen(0, function () {
-    callback(this)
-  })
+    .once('close', function () {
+      level.close()
+    })
+    .listen(0, function () {
+      ready(this)
+    })
 }

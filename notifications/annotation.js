@@ -32,7 +32,7 @@ function notifyPublicationSubscribers (level, log, annotation) {
                 ' has made a new annotation to ' +
                 publicationString
               ]
-              .join('\n')
+                .join('\n')
             }
           })
         })
@@ -58,7 +58,7 @@ function notifyFormSubscribers (level, log, annotation) {
               ' has made a new annotation to ' +
               annotation.form
             ]
-            .join('\n')
+              .join('\n')
           }
         })
       })
@@ -76,7 +76,7 @@ function notifyAnnotationSubscribers (level, log, annotation) {
         text: [
           annotation.publisher + ' has replied to annotation ' + parent
         ]
-        .join('\n')
+          .join('\n')
       }
     })
   })

@@ -18,23 +18,23 @@ module.exports = function (request, response, parameters, log, level) {
       lt: encode([PREFIX, digest, '~']),
       limit: query.limit
     })
-    .on('data', function (item) {
-      if (skip !== 0) {
-        skip--
-      } else {
-        var decoded = decode(item.key)
-        parents.push({
-          heading: decoded[2],
-          parent: decoded[3]
-        })
-      }
-    })
-    .once('error', /* istanbul ignore next */ function (error) {
-      internalError(response, error)
-    })
-    .once('end', function () {
-      sendJSON(response, parents)
-    })
+      .on('data', function (item) {
+        if (skip !== 0) {
+          skip--
+        } else {
+          var decoded = decode(item.key)
+          parents.push({
+            heading: decoded[2],
+            parent: decoded[3]
+          })
+        }
+      })
+      .once('error', /* istanbul ignore next */ function (error) {
+        internalError(response, error)
+      })
+      .once('end', function () {
+        sendJSON(response, parents)
+      })
   } else {
     methodNotAllowed(response)
   }

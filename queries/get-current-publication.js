@@ -12,9 +12,10 @@ module.exports = function (
         callback(error)
       } else {
         publications = publications
-        .filter(function isNotADraft (element) {
-          return !parseEdition(element.edition).hasOwnProperty('draft')
-        })
+          .filter(function isNotADraft (element) {
+            return !parseEdition(element.edition)
+              .hasOwnProperty('draft')
+          })
         callback(null, publications[publications.length - 1])
       }
     }

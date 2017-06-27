@@ -12,8 +12,8 @@ module.exports = function (handler, anyUser) {
       handler.apply(this, handlerArguments)
     }
     var publisher = parameters.hasOwnProperty('subscriber')
-    ? parameters.subscriber
-    : parameters.publisher
+      ? parameters.subscriber
+      : parameters.publisher
     var parsed = parseAuthorization(request)
     if (parsed === undefined) {
       unauthorized(response)

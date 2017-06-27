@@ -27,7 +27,7 @@ tape('POST /forms with invalid JSON', function (test) {
         test.end()
       }))
     })
-    .end('not valid json')
+      .end('not valid json')
   })
 })
 
@@ -51,7 +51,7 @@ tape('POST /forms with form', function (test) {
         done()
         test.end()
       })
-      .end(JSON.stringify(form))
+        .end(JSON.stringify(form))
     }, 100)
   })
 })
@@ -71,7 +71,7 @@ tape('POST /forms with oversized request body', function (test) {
       done()
       test.end()
     })
-    .end(body)
+      .end(body)
   })
 })
 
@@ -79,7 +79,7 @@ function sizedBuffer (size, fill, encoding) {
   if ('alloc' in Buffer) {
     return Buffer.alloc(size, fill, encoding)
   } else {
-    var buffer = Buffer(size)
+    var buffer = Buffer.alloc(size)
     buffer.fill(fill, encoding)
     return buffer
   }
@@ -134,7 +134,7 @@ tape('POST /forms without request body', function (test) {
       done()
       test.end()
     })
-    .end()
+      .end()
   })
 })
 
@@ -178,7 +178,7 @@ if (process.env.RUN_SLOW_TESTS) {
         done()
         test.end()
       })
-      .end(json)
+        .end(json)
     })
   })
 }
@@ -203,7 +203,7 @@ tape('POST /forms with invalid form', function (test) {
         test.end()
       }))
     })
-    .end(JSON.stringify(form))
+      .end(JSON.stringify(form))
   })
 })
 
@@ -216,7 +216,7 @@ tape('GET /forms/{not_a_digest}', function (test) {
       done()
       test.end()
     })
-    .end()
+      .end()
   })
 })
 
@@ -229,7 +229,7 @@ tape('GET /forms/{nonexistent}', function (test) {
       done()
       test.end()
     })
-    .end()
+      .end()
   })
 })
 
@@ -247,7 +247,7 @@ tape('POST /forms/{digest}', function (test) {
       done()
       test.end()
     })
-    .end()
+      .end()
   })
 })
 
@@ -285,9 +285,9 @@ tape('GET /forms/{posted}', function (test) {
           test.end()
         }))
       })
-      .end()
+        .end()
     })
-    .end(JSON.stringify(form))
+      .end(JSON.stringify(form))
   })
 })
 
@@ -316,9 +316,9 @@ tape('GET /forms/{child_of_posted}', function (test) {
           test.end()
         }))
       })
-      .end()
+        .end()
     })
-    .end(JSON.stringify(parent))
+      .end(JSON.stringify(parent))
   })
 })
 
@@ -353,10 +353,10 @@ tape('GET /forms/{great_grandchild_of_posted}', function (test) {
             test.end()
           }))
         })
-        .end()
+          .end()
       }, 200)
     })
-    .end(JSON.stringify(parent))
+      .end(JSON.stringify(parent))
   })
 })
 
@@ -368,6 +368,6 @@ tape('PUT /forms', function (test) {
       done()
       test.end()
     })
-    .end()
+      .end()
   })
 })

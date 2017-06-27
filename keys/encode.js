@@ -1,5 +1,5 @@
 module.exports = function (array) {
   return array
-  .map(encodeURIComponent)
-  .join('/')
+    .map(encodeURIComponent)
+    .join('/')
 }

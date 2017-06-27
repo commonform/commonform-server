@@ -8,16 +8,16 @@ module.exports = function (level, publisher, project, callback) {
     lt: encode(['projects', publisher, project, '~']),
     keys: false
   })
-  .on('data', function (value) {
-    publications.push(value)
-  })
-  .once('error', /* istanbul ignore next */ function (error) {
-    callback(error)
-  })
-  .once('end', function () {
-    publications.sort(function (a, b) {
-      return compareEdition(a.edition, b.edition)
+    .on('data', function (value) {
+      publications.push(value)
     })
-    callback(null, publications)
-  })
+    .once('error', /* istanbul ignore next */ function (error) {
+      callback(error)
+    })
+    .once('end', function () {
+      publications.sort(function (a, b) {
+        return compareEdition(a.edition, b.edition)
+      })
+      callback(null, publications)
+    })
 }

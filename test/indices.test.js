@@ -45,7 +45,7 @@ tape('GET /terms/{term}/definitions', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -100,7 +100,7 @@ tape(
                 })
               }
             )
-            .end()
+              .end()
           }
         ],
         function () {
@@ -143,7 +143,7 @@ tape('GET /terms/{term}/uses', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -187,7 +187,7 @@ tape('GET /terms/{term_with_space}/uses', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -244,7 +244,7 @@ tape('GET /forms/{digest}/parents', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -280,7 +280,7 @@ tape('POST /forms/{digest}/parents', function (test) {
               done()
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -327,7 +327,7 @@ tape('GET /headings/{heading}/forms', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -404,7 +404,7 @@ tape(
                 })
               }
             )
-            .end()
+              .end()
           }
         ],
         function () {
@@ -456,7 +456,7 @@ tape('GET /headings/{heading_with_space}/forms', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -491,7 +491,7 @@ tape('POST /headings/{heading}/forms', function (test) {
               done()
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -538,7 +538,7 @@ tape('GET /forms/{form}/headings', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -602,7 +602,7 @@ tape(
                 })
               }
             )
-            .end()
+              .end()
           }
         ],
         function () {
@@ -635,7 +635,7 @@ tape('POST /forms/{form}/headings', function (test) {
               done()
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -670,7 +670,7 @@ tape('GET /headings/{heading}/references', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -704,7 +704,7 @@ tape('GET /headings', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -742,7 +742,7 @@ tape('GET /projects/{project}/publishers', function (test) {
               })
             }
           )
-          .end()
+            .end()
         }
       ],
       function () {
@@ -752,4 +752,3 @@ tape('GET /projects/{project}/publishers', function (test) {
     )
   })
 })
-

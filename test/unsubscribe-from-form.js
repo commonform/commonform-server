@@ -14,6 +14,6 @@ module.exports = function (port, publisher, password, test, digest) {
         callback()
       }
     })
-    .end()
+      .end()
   }
 }

@@ -29,7 +29,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -56,7 +56,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -87,7 +87,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -109,7 +109,7 @@ tape(
         done()
         test.end()
       })
-      .end('null')
+        .end('null')
     })
   }
 )
@@ -162,9 +162,9 @@ tape(
             test.end()
           })
         })
-        .end()
+          .end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -179,7 +179,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -198,7 +198,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -213,7 +213,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )
@@ -240,7 +240,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -274,7 +274,7 @@ tape(
               test.equal(response.statusCode, 204, 'PUT 204')
               done()
             })
-            .end(JSON.stringify(body))
+              .end(JSON.stringify(body))
           },
           // Use updated password to post a project.
           postProject(
@@ -315,7 +315,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -342,7 +342,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -365,7 +365,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -391,17 +391,17 @@ tape(
         test.equal(response.statusCode, 400, 'PUT 400')
         var buffer = []
         response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.same(
-            Buffer.concat(buffer).toString(), 'invalid password',
-            'serves "invalid password"'
-          )
-          done()
-          test.end()
-        })
+          .on('data', function (chunk) { buffer.push(chunk) })
+          .once('end', function () {
+            test.same(
+              Buffer.concat(buffer).toString(), 'invalid password',
+              'serves "invalid password"'
+            )
+            done()
+            test.end()
+          })
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -426,7 +426,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -451,7 +451,7 @@ tape(
         done()
         test.end()
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -473,17 +473,17 @@ tape(
         test.equal(response.statusCode, 400, 'POST 400')
         var buffer = []
         response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+          .on('data', function (chunk) { buffer.push(chunk) })
+          .once('end', function () {
+            test.equal(
+              Buffer.concat(buffer).toString(), 'invalid publisher',
+              'responds "invalid publisher"'
+            )
+            done()
+            test.end()
+          })
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -505,17 +505,17 @@ tape(
         test.equal(response.statusCode, 400, 'POST 400')
         var buffer = []
         response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+          .on('data', function (chunk) { buffer.push(chunk) })
+          .once('end', function () {
+            test.equal(
+              Buffer.concat(buffer).toString(), 'invalid publisher',
+              'responds "invalid publisher"'
+            )
+            done()
+            test.end()
+          })
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -541,17 +541,17 @@ tape(
         test.equal(response.statusCode, 400, 'POST 400')
         var buffer = []
         response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.equal(
-            Buffer.concat(buffer).toString(), 'invalid publisher',
-            'responds "invalid publisher"'
-          )
-          done()
-          test.end()
-        })
+          .on('data', function (chunk) { buffer.push(chunk) })
+          .once('end', function () {
+            test.equal(
+              Buffer.concat(buffer).toString(), 'invalid publisher',
+              'responds "invalid publisher"'
+            )
+            done()
+            test.end()
+          })
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -577,17 +577,17 @@ tape(
         test.equal(response.statusCode, 400, 'POST 400')
         var buffer = []
         response
-        .on('data', function (chunk) { buffer.push(chunk) })
-        .once('end', function () {
-          test.same(
-            Buffer.concat(buffer).toString(), 'invalid password',
-            'serves "invalid password"'
-          )
-          done()
-          test.end()
-        })
+          .on('data', function (chunk) { buffer.push(chunk) })
+          .once('end', function () {
+            test.same(
+              Buffer.concat(buffer).toString(), 'invalid password',
+              'serves "invalid password"'
+            )
+            done()
+            test.end()
+          })
       })
-      .end(JSON.stringify(body))
+        .end(JSON.stringify(body))
     })
   }
 )
@@ -624,7 +624,7 @@ tape(
                 done()
               })
             })
-            .end()
+              .end()
           }
         ],
         function () {
@@ -646,7 +646,7 @@ tape(
         done()
         test.end()
       })
-      .end()
+        .end()
     })
   }
 )

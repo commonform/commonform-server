@@ -77,13 +77,13 @@ levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
       })
     }
     logClient
-    .on('error', function (error) {
-      tcpLogLog.error(error)
-    })
-    .on('fail', function () {
-      tcpLogLog.error({event: 'fail'})
-      server.close()
-    })
+      .on('error', function (error) {
+        tcpLogLog.error(error)
+      })
+      .on('fail', function () {
+        tcpLogLog.error({event: 'fail'})
+        server.close()
+      })
     logLogEvent('connect')
     logLogEvent('disconnect')
     logLogEvent('reconnect')
