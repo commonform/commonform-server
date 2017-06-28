@@ -6,6 +6,9 @@ var routes = module.exports = require('http-hash')()
 // Metadata
 routes.set('/', require('./metadata'))
 
+// JSON Web Tokens
+routes.set('/token', require('./token'))
+
 // Forms
 routes.set('/forms', require('./forms'))
 routes.set('/forms/:digest', require('./form'))
