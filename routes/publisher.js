@@ -95,6 +95,7 @@ function putPublisher (
                     }
                   }
                   write(entry, function (error) {
+                    unlock()
                     /* istanbul ignore if */
                     if (error) {
                       internalError(error, 'internal error')
