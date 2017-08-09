@@ -19,6 +19,7 @@ var sendJSON = require('./responses/send-json')
 var sendNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
 var validPublication = require('../validation/publication')
+var validSignaturePages = require('../validation/signature-pages')
 var validateDirections = require('commonform-validate-directions')
 
 module.exports = function (request, response) {
@@ -49,6 +50,11 @@ function postPublication (
         var digest = json.digest
         if (!validPublication(json)) {
           badRequest(response, 'invalid publication')
+        } else if (
+          json.signaturePages &&
+          !validSignaturePages(json.signaturePages)
+        ) {
+          badRequest(response, 'invalid signature pages')
         } else {
           var publicationKey = keyForPublication(
             publisher, project, edition
