@@ -119,6 +119,59 @@ tape(
 tape(
   'POST /publishers/{publisher}' +
   '/projects/{project}' +
+  '/publications/{edition} with release notes',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {
+      content: [
+        'This agreement is between ',
+        {blank: ''}, ' and ', {blank: ''}, '.'
+      ]
+    }
+    var notes = [
+      'See https://commonform.org.'
+    ]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      var request = {
+        auth: PUBLISHER + ':' + PASSWORD,
+        method: 'POST',
+        port: port,
+        path: path
+      }
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function putProject (done) {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 204, '204')
+              test.equal(response.headers.location, path, 'Location')
+              done()
+            })
+              .end(JSON.stringify({
+                digest: digest,
+                notes: notes
+              }))
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
   '/publications/{edition} with invalid directions',
   function (test) {
     var project = 'nda'
@@ -154,6 +207,56 @@ tape(
               .end(JSON.stringify({
                 digest: digest,
                 directions: directions
+              }))
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} with invalid release notes',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var form = {
+      content: [
+        'This agreement is between ',
+        {blank: ''}, ' and ', {blank: ''}, '.'
+      ]
+    }
+    var notes = [null]
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      var request = {
+        auth: PUBLISHER + ':' + PASSWORD,
+        method: 'POST',
+        port: port,
+        path: path
+      }
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function putProject (done) {
+            http.request(request, function (response) {
+              test.equal(response.statusCode, 400, '400')
+              done()
+            })
+              .end(JSON.stringify({
+                digest: digest,
+                notes: notes
               }))
           }
         ],

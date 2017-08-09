@@ -19,6 +19,7 @@ var sendJSON = require('./responses/send-json')
 var sendNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
 var validPublication = require('../validation/publication')
+var validReleaseNotes = require('../validation/release-notes')
 var validSignaturePages = require('../validation/signature-pages')
 var validateDirections = require('commonform-validate-directions')
 
@@ -55,6 +56,11 @@ function postPublication (
           !validSignaturePages(json.signaturePages)
         ) {
           badRequest(response, 'invalid signature pages')
+        } else if (
+          json.notes &&
+          !validReleaseNotes(json.notes)
+        ) {
+          badRequest(response, 'invalid release notes')
         } else {
           var publicationKey = keyForPublication(
             publisher, project, edition
@@ -75,7 +81,6 @@ function postPublication (
                     return badRequest(response, 'invalid directions')
                   }
                 }
-                // TODO: Validate signature pages
                 exists(
                   level, publicationKey,
                   function (error, publicationExists) {
@@ -92,10 +97,15 @@ function postPublication (
                             publisher: publisher,
                             project: project,
                             edition: edition,
-                            digest: digest,
-                            signaturePages: json.signaturePages
+                            digest: digest
                           }
                         }
+                        ;['signaturePages', 'notes', 'directions']
+                          .forEach(function (key) {
+                            if (json[key]) {
+                              entry.data[key] = json[key]
+                            }
+                          })
                         write(entry, function (error) {
                           /* istanbul ignore if */
                           if (error) {
