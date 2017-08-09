@@ -46,9 +46,11 @@
     "concat-stream": "^1.5.1",
     "depcheck": "^0.6.3",
     "dev-null": "^0.1.1",
+    "husky": "^0.14.3",
     "istanbul": "^0.4.3",
     "level-simple-log": "^2.0.0",
     "licensee": "^4.3.0",
+    "lint-staged": "^4.0.3",
     "memdown": "^1.2.0",
     "nsp": "^2.4.0",
     "sha256": "^0.2.0",
@@ -60,12 +62,16 @@
   "preferGlobal": true,
   "repository": "commonform/commonform-server",
   "scripts": {
-    "check": "depcheck",
+    "check": "depcheck --ignores husky",
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
     "nsp": "nsp check",
     "licenses": "licensee",
-    "lint": "standard"
+    "lint": "standard",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": "standard"
   }
 }
