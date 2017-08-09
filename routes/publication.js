@@ -1,8 +1,8 @@
 var badRequest = require('./responses/bad-request')
 var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
-var formKeyFor = require('../keys/form')
 var getCurrent = require('../queries/get-current-publication')
+var getForm = require('../queries/get-form')
 var getLatestPublication = require('../queries/get-latest-publication')
 var getPublication = require('../queries/get-publication')
 var internalError = require('./responses/internal-error')
@@ -19,6 +19,7 @@ var sendJSON = require('./responses/send-json')
 var sendNotifications = require('../notifications/publication')
 var validProject = require('../validation/project')
 var validPublication = require('../validation/publication')
+var validateDirections = require('commonform-validate-directions')
 
 module.exports = function (request, response) {
   var method = request.method
@@ -52,15 +53,23 @@ function postPublication (
           var publicationKey = keyForPublication(
             publisher, project, edition
           )
-          var formKey = formKeyFor(digest)
-          exists(level, formKey, function (error, formExists) {
+          getForm(level, digest, function (error, form) {
             /* istanbul ignore if */
             if (error) {
               internalError(response, error)
             } else {
-              if (!formExists) {
+              if (!form) {
                 badRequest(response, 'unknown form')
               } else {
+                if (json.hasOwnProperty('directions')) {
+                  var directionsErrors = validateDirections(
+                    form, json.directions
+                  )
+                  if (directionsErrors.length !== 0) {
+                    return badRequest(response, 'invalid directions')
+                  }
+                }
+                // TODO: Validate signature pages
                 exists(
                   level, publicationKey,
                   function (error, publicationExists) {

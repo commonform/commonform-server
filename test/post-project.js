@@ -3,7 +3,7 @@ var http = require('http')
 module.exports = function (
   publisher, password, port,
   project, edition,
-  digest, blanks, signaturePages,
+  digest, directions, signaturePages,
   test
 ) {
   return function (callback) {
@@ -23,8 +23,8 @@ module.exports = function (
     if (signaturePages) {
       body.signaturePages = signaturePages
     }
-    if (blanks) {
-      body.blanks = blanks
+    if (directions) {
+      body.directions = directions
     }
     http.request(options, function (response) {
       test.equal(

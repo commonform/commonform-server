@@ -14,6 +14,7 @@
     "cache-immutable": "^1.0.1",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^0.6.2",
+    "commonform-validate-directions": "^1.0.0",
     "do-not-cache": "^1.0.0",
     "ecb": "^1.0.0",
     "email-validator": "^1.0.4",
