@@ -88,7 +88,6 @@ levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
     logLogEvent('disconnect')
     logLogEvent('reconnect')
     logLogEvent('backoff')
-    logLogEvent('backoff')
     logLogEvent('ready')
     logLogEvent('current')
     logClient.connect()
