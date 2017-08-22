@@ -1,4 +1,10 @@
 {
   "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0 OR Unlicense OR CC-BY-3.0 OR WTFPL)",
-  "whitelist": {}
+  "whitelist": {
+    "email-validator": "1.0.7",
+    "function-bind": "1.1.0",
+    "http-hash": "2.0.0",
+    "jsonify": "0.0.0",
+    "precond": "0.2.3"
+  }
 }
