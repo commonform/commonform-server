@@ -67,7 +67,7 @@
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
     "nsp": "nsp check",
-    "licenses": "licensee",
+    "licenses": "licensee --errors-only",
     "lint": "standard",
     "precommit": "lint-staged"
   },
