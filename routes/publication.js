@@ -120,10 +120,12 @@ function postPublication (
                             /* istanbul ignore else */
                             if (mailgun) {
                               sendIncludedNotifications(
+                                request.configuration,
                                 publisher, project, edition, digest,
                                 log, level
                               )
                               sendNotifications(
+                                request.configuration,
                                 publisher, project, edition,
                                 log, level
                               )

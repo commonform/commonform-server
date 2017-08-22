@@ -1,15 +1,19 @@
-var publicationStringFor = require('../publication-string')
+var frontEndFormPath = require('../paths/front-end/form')
+var frontEndPublicationPath = require('../paths/front-end/publication')
 var getParents = require('../queries/get-parents')
 var getPublications = require('../queries/get-publications')
 var mailEachSubscriber = require('./mail-each-subscriber')
+var publicationStringFor = require('../publication-string')
 
-module.exports = function (annotation, log, level) {
-  notifyFormSubscribers(level, log, annotation)
-  notifyPublicationSubscribers(level, log, annotation)
-  notifyAnnotationSubscribers(level, log, annotation)
+module.exports = function (configuration, annotation, log, level) {
+  notifyFormSubscribers(configuration, level, log, annotation)
+  notifyPublicationSubscribers(configuration, level, log, annotation)
+  notifyAnnotationSubscribers(configuration, level, log, annotation)
 }
 
-function notifyPublicationSubscribers (level, log, annotation) {
+function notifyPublicationSubscribers (
+  configuration, level, log, annotation
+) {
   getPublications(
     level, annotation.context,
     function (error, projects) {
@@ -25,14 +29,24 @@ function notifyPublicationSubscribers (level, log, annotation) {
             'edition', project.edition
           ]
           mailEachSubscriber(level, log, keys, function () {
+            var text = [
+              annotation.publisher +
+              ' has made a new annotation to ' +
+              publicationString
+            ]
+            if (configuration.frontEnd) {
+              text.push(
+                frontEndPublicationPath(
+                  configuration,
+                  project.publisher,
+                  project.project,
+                  project.edition
+                )
+              )
+            }
             return {
               subject: 'Annotation to ' + publicationString,
-              text: [
-                annotation.publisher +
-                ' has made a new annotation to ' +
-                publicationString
-              ]
-                .join('\n')
+              text: text.join('\n\n')
             }
           })
         })
@@ -41,7 +55,9 @@ function notifyPublicationSubscribers (level, log, annotation) {
   )
 }
 
-function notifyFormSubscribers (level, log, annotation) {
+function notifyFormSubscribers (
+  configuration, level, log, annotation
+) {
   var digest = annotation.context
   getParents(level, digest, function (error, parents) {
     /* istanbul ignore if */
@@ -51,14 +67,17 @@ function notifyFormSubscribers (level, log, annotation) {
       [digest].concat(parents).forEach(function (context) {
         var keys = ['digest', context]
         mailEachSubscriber(level, log, keys, function () {
+          var text = [
+            annotation.publisher +
+            ' has made a new annotation to ' +
+            annotation.form
+          ]
+          if (configuration.frontEnd) {
+            text.push(frontEndFormPath(configuration, annotation.form))
+          }
           return {
             subject: 'Annotation to ' + annotation.digest,
-            text: [
-              annotation.publisher +
-              ' has made a new annotation to ' +
-              annotation.form
-            ]
-              .join('\n')
+            text: text.join('\n\n')
           }
         })
       })
@@ -66,17 +85,23 @@ function notifyFormSubscribers (level, log, annotation) {
   })
 }
 
-function notifyAnnotationSubscribers (level, log, annotation) {
+function notifyAnnotationSubscribers (
+  configuration, level, log, annotation
+) {
   var parents = annotation.replyTo
   parents.forEach(function (parent) {
     var keys = ['uuid', parent]
     mailEachSubscriber(level, log, keys, function () {
+      var text = [
+        annotation.publisher + ' has replied to annotation ' + parent +
+        ' to ' + annotation.form
+      ]
+      if (configuration.frontEnd) {
+        text.push(frontEndFormPath(configuration, annotation.form))
+      }
       return {
         subject: 'Reply to annotation to ' + annotation.digest,
-        text: [
-          annotation.publisher + ' has replied to annotation ' + parent
-        ]
-          .join('\n')
+        text: text.join('\n\n')
       }
     })
   })

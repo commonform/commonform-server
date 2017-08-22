@@ -165,7 +165,12 @@ function postAnnotation (
           response.end()
           /* istanbul ignore else */
           if (mailgun) {
-            sendAnnotationNotifications(annotation, log, level)
+            sendAnnotationNotifications(
+              request.configuration,
+              annotation,
+              log,
+              level
+            )
           }
         }
       })

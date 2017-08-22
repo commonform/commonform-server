@@ -46,7 +46,8 @@ levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
       }
     })
     var configuration = {
-      version: VERSION
+      version: VERSION,
+      frontEnd: process.env.FRONT_END || false
     }
     var handler = makeHandler(configuration, serverLog, level, logClient)
     var server = http.createServer(handler)
