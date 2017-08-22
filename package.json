@@ -7,6 +7,7 @@
     "commonform-server": "./server.js"
   },
   "dependencies": {
+    "ajv": "^5.2.2",
     "array-equal": "^1.0.0",
     "async-series": "0.0.1",
     "basic-auth": "^1.0.4",
@@ -38,7 +39,6 @@
     "signature-page-schema": "^1.0.1",
     "tcp-log-client": "^5.0.0",
     "through2": "^2.0.1",
-    "tv4": "^1.2.7",
     "uuid": "^2.0.2"
   },
   "devDependencies": {
