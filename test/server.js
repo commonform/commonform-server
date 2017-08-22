@@ -50,8 +50,11 @@ function setupHTTPServer (logServerPort, ready) {
       ready(this)
     })
   })
+  var configuration = {
+    version: VERSION
+  }
   // Created the HTTP server.
-  var handler = makeRequestHandler(VERSION, log, level, logClient)
+  var handler = makeRequestHandler(configuration, log, level, logClient)
   server = http.createServer(handler)
   .once('close', function () {
     level.close()

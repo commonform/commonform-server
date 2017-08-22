@@ -9,7 +9,7 @@ var uuid = require('uuid')
 var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 var migrations = require('./migrations')
 
-module.exports = function (version, serverLog, level, dataLog) {
+module.exports = function (configuration, serverLog, level, dataLog) {
   var pipelineLog = serverLog.child({log: 'pipeline'})
   pump(
     dataLog.readStream,
@@ -54,7 +54,7 @@ module.exports = function (version, serverLog, level, dataLog) {
   )
 
   var write = function (entry, callback) {
-    entry.version = version
+    entry.version = configuration.version
     dataLog.write(entry, function (error, index) {
       /* istanbul ignore if */
       if (error) {
@@ -86,6 +86,8 @@ module.exports = function (version, serverLog, level, dataLog) {
         response.end()
       }
     )
+
+    request.configuration = configuration
 
     // Route the request.
     var parsed = url.parse(request.url, true)

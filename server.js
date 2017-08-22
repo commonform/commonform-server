@@ -45,7 +45,10 @@ levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
         port: LOG_PORT
       }
     })
-    var handler = makeHandler(VERSION, serverLog, level, logClient)
+    var configuration = {
+      version: VERSION
+    }
+    var handler = makeHandler(configuration, serverLog, level, logClient)
     var server = http.createServer(handler)
     if (module.parent) {
       module.exports = server
