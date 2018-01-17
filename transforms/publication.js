@@ -1,6 +1,8 @@
 var encode = require('../keys/encode')
 var formKeyFor = require('../keys/form')
 var formToProjectKey = require('../keys/form-to-project')
+var hash = require('commonform-hash')
+var indexNames = require('commonform-index-names')
 var keyForPublication = require('../keys/publication')
 var normalize = require('commonform-normalize')
 
@@ -26,6 +28,13 @@ module.exports = function (entry, level, done) {
       done(error)
     } else {
       var normalized = normalize(form)
+      batch.push({
+        key: encode([
+          'shape-digest',
+          hash(indexNames(form)),
+          normalized.root
+        ])
+      })
       indexRelations(digest, normalized, batch)
       recurse(digest, normalized, batch, [
         indexDigest,

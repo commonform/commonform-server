@@ -119,3 +119,5 @@ relationships.forEach(function (relationship) {
 })
 
 routes.set('/headings/:heading/forms', require('./heading-forms'))
+
+routes.set('/shapes/:digest/forms', require('./shape-forms'))
