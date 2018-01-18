@@ -1,6 +1,7 @@
 var getSorted = require('../queries/get-sorted-publications')
 var internalError = require('./responses/internal-error')
 var methodNotAllowed = require('./responses/method-not-allowed')
+var notFound = require('./responses/not-found')
 var sendJSON = require('./responses/send-json')
 
 module.exports = function (request, response, parameters, log, level) {
@@ -17,7 +18,11 @@ module.exports = function (request, response, parameters, log, level) {
           var editionNumbers = publications.map(function (object) {
             return object.edition
           })
-          sendJSON(response, editionNumbers)
+          if (editionNumbers.length === 0) {
+            notFound(response)
+          } else {
+            sendJSON(response, editionNumbers)
+          }
         }
       }
     )

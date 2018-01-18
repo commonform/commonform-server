@@ -58,6 +58,25 @@ tape(
 )
 
 tape(
+  'GET /publishers/{publisher}/projects/{nonexistent}/publications',
+  function (test) {
+    server(function (port, closeServer) {
+      var options = {
+        method: 'GET',
+        port: port,
+        path: '/publishers/ana/projects/nonexistent/publications'
+      }
+      http.request(options, function (response) {
+        test.equal(response.statusCode, 404)
+        closeServer()
+        test.end()
+      })
+        .end()
+    })
+  }
+)
+
+tape(
   'PUT /publishers/{publisher}/projects/{project}/publications',
   function (test) {
     server(function (port, done) {
