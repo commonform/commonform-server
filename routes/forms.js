@@ -19,7 +19,7 @@ module.exports = function (
 
 function postForm (request, response, parameters, log, level, write) {
   readJSONBody(request, response, function (form) {
-    if (!validForm(form)) {
+    if (!validForm(form, {allowComponents: true})) {
       badRequest(response, 'invalid form')
     } else {
       var digest = normalize(form).root

@@ -56,6 +56,46 @@ tape('POST /forms with form', function (test) {
   })
 })
 
+tape('POST /forms with form with component', function (test) {
+  server(function (port, done) {
+    var form = {
+      content: [
+        {
+          heading: 'Test Component',
+          repository: 'api.commonform.org',
+          publisher: 'test',
+          project: 'test',
+          edition: '1e',
+          upgrade: 'yes',
+          substitutions: {
+            terms: {},
+            headings: {}
+          }
+        }
+      ]
+    }
+    var root = normalize(form).root
+    var request = {
+      auth: PUBLISHER + ':' + PASSWORD,
+      method: 'POST',
+      path: '/forms',
+      port: port
+    }
+    setTimeout(function () {
+      http.request(request, function (response) {
+        test.equal(response.statusCode, 204, 'responds 204')
+        test.equal(
+          response.headers.location, '/forms/' + root,
+          'sets location header'
+        )
+        done()
+        test.end()
+      })
+        .end(JSON.stringify(form))
+    }, 100)
+  })
+})
+
 tape('POST /forms with oversized request body', function (test) {
   server(function (port, done) {
     var body = sizedBuffer(256001, 'a', 'ascii')
