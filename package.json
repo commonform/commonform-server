@@ -36,6 +36,7 @@
     "reviewers-edition-compare": "^1.0.4",
     "reviewers-edition-parse": "^2.0.5",
     "reviewers-edition-spell": "^1.0.2",
+    "reviewers-edition-upgrade": "^1.0.2",
     "signature-page-schema": "^1.0.1",
     "tcp-log-client": "^5.0.0",
     "through2": "^2.0.1",

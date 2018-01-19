@@ -968,6 +968,64 @@ tape(
 )
 
 tape(
+  'GET /publishers/{publisher}/projects/{project}/publications?upgrade={edition}',
+  function (test) {
+    var project = 'nda'
+    var form1e = {content: ['A test form']}
+    var digest1e = normalize(form1e).root
+    var form1e1c = {content: ['A corrected form']}
+    var digest1e1c = normalize(form1e1c).root
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form1e, test),
+          postForm(port, PUBLISHER, PASSWORD, form1e1c, test),
+          postProject(
+            PUBLISHER, PASSWORD, port,
+            project, '1e',
+            digest1e, false, false,
+            test
+          ),
+          postProject(
+            PUBLISHER, PASSWORD, port,
+            project, '1e1c',
+            digest1e1c, false, false,
+            test
+          ),
+          function getProject (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: (
+                '/publishers/' + PUBLISHER +
+                '/projects/' + project +
+                '/publications' +
+                '?upgrade=1e'
+              )
+            }
+            http.request(options, function (response) {
+              response.pipe(concat(function (buffer) {
+                var responseBody = JSON.parse(buffer)
+                test.equal(
+                  responseBody.digest, digest1e1c,
+                  'GET project JSON'
+                )
+                done()
+              }))
+            })
+              .end()
+          }
+        ],
+        function finish () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
   'GET ' +
   '/publishers/{publisher}' +
   '/projects/{project}' +
