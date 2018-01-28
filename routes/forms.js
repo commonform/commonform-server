@@ -5,7 +5,7 @@ var methodNotAllowed = require('./responses/method-not-allowed')
 var normalize = require('commonform-normalize')
 var readJSONBody = require('./read-json-body')
 var requireAuthorization = require('./require-authorization')
-var validForm = require('commonform-validate').form
+var validForm = require('../validation/form')
 
 module.exports = function (
   request, response, parameters, log, level, write
@@ -19,7 +19,7 @@ module.exports = function (
 
 function postForm (request, response, parameters, log, level, write) {
   readJSONBody(request, response, function (form) {
-    if (!validForm(form, {allowComponents: true})) {
+    if (!validForm(form)) {
       badRequest(response, 'invalid form')
     } else {
       var digest = normalize(form).root
