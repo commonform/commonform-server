@@ -10,7 +10,7 @@
     "ajv": "^6.1.0",
     "array-equal": "^1.0.0",
     "async-series": "0.0.1",
-    "basic-auth": "^1.0.4",
+    "basic-auth": "^2.0.0",
     "bcrypt-password": "^1.0.2",
     "cache-immutable": "^1.0.1",
     "commonform-index-names": "^2.0.0",
