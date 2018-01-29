@@ -1135,9 +1135,9 @@
       "dev": true
     },
     "email-validator": {
-      "version": "1.0.7",
-      "resolved": "https://registry.npmjs.org/email-validator/-/email-validator-1.0.7.tgz",
-      "integrity": "sha1-RiHKMvx0HrgzrJjV+1VnC34FbJU="
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/email-validator/-/email-validator-1.1.1.tgz",
+      "integrity": "sha512-vkcJJZEb7JXDY883Nx1Lkmb6noM3j1SfSt8L9tVFhZPnPQiFq+Nkd5evc77+tRVS4ChTUSr34voThsglI/ja/A=="
     },
     "end-of-stream": {
       "version": "1.4.0",
