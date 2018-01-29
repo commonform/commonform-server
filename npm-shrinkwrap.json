@@ -4142,12 +4142,26 @@
       "integrity": "sha1-K5v5jkUKPR2yt4CHc9J4w1ki6lo="
     },
     "reviewers-edition-spell": {
-      "version": "1.0.3",
-      "resolved": "https://registry.npmjs.org/reviewers-edition-spell/-/reviewers-edition-spell-1.0.3.tgz",
-      "integrity": "sha1-ri6aP51UVTqPUO4T4lLBEsBRNgk=",
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/reviewers-edition-spell/-/reviewers-edition-spell-2.0.0.tgz",
+      "integrity": "sha512-Qj23IT7P83SNlOfa9u3K/CcNlrlNf+tDxFXoTQWZpkR6tHi37/FDYW4jMPLwQS/3DGTmDLUyf5mdcqLnriHk2A==",
       "requires": {
         "number-to-words": "1.2.3",
-        "reviewers-edition-parse": "2.0.6"
+        "pump": "1.0.3",
+        "reviewers-edition-parse": "2.0.6",
+        "split2": "2.1.1",
+        "through2": "2.0.3"
+      },
+      "dependencies": {
+        "pump": {
+          "version": "1.0.3",
+          "resolved": "https://registry.npmjs.org/pump/-/pump-1.0.3.tgz",
+          "integrity": "sha512-8k0JupWme55+9tCVE+FS5ULT3K6AbgqrGa58lTT49RpyfwwcGedHqaC5LlQNdEAumn/wFsu6aPwkuPMioy8kqw==",
+          "requires": {
+            "end-of-stream": "1.4.0",
+            "once": "1.4.0"
+          }
+        }
       }
     },
     "reviewers-edition-upgrade": {
