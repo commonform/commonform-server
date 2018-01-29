@@ -96,6 +96,26 @@ function indexContentElements (digest, normalized, batch) {
         push(['heading-for-form-in-form', name, childDigest, digest])
         push(['form-under-heading-in-form', childDigest, name, digest])
       }
+    } else if (element.hasOwnProperty('repository')) {
+      var component = [
+        element.repository,
+        element.publisher,
+        element.project,
+        element.edition
+      ]
+      if (element.hasOwnProperty('heading')) {
+        name = element.heading.toLowerCase()
+        push(['heading', name])
+        push(['heading-in-form', name, digest])
+        push(
+          ['heading-for-component-in-form', name]
+            .concat(component, digest)
+        )
+        push(
+          ['component-under-heading-in-form']
+            .concat(component, name, digest)
+        )
+      }
     }
   })
   function push (keyComponents) {
