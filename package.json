@@ -46,7 +46,7 @@
   "devDependencies": {
     "abstract-blob-store": "^3.2.0",
     "concat-stream": "^1.5.1",
-    "depcheck": "^0.6.3",
+    "depcheck": "^0.6.8",
     "dev-null": "^0.1.1",
     "husky": "^0.14.3",
     "istanbul": "^0.4.3",
