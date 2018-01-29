@@ -40,7 +40,7 @@
     "signature-page-schema": "^1.0.1",
     "tcp-log-client": "^5.0.0",
     "through2": "^2.0.1",
-    "uuid": "^2.0.2"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "abstract-blob-store": "^3.3.2",
