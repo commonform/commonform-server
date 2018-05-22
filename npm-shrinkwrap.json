@@ -11,9 +11,9 @@
       "dev": true
     },
     "abstract-blob-store": {
-      "version": "3.3.2",
-      "resolved": "https://registry.npmjs.org/abstract-blob-store/-/abstract-blob-store-3.3.2.tgz",
-      "integrity": "sha512-s65PsuV1sqf50qB7DiU1i//fwOn315KCUCH2lCK4TSlrXY2o2m0irsYEXTP1q4V8441ZuZQrqzQbBxUz2z4+VQ==",
+      "version": "3.3.4",
+      "resolved": "https://registry.npmjs.org/abstract-blob-store/-/abstract-blob-store-3.3.4.tgz",
+      "integrity": "sha512-TZoKFHJvYg+6sVPwEDjWOy19Pq/F5/RN4j/dm6AL18bS9IbR5mo/2mtRYu9A34D1heCHMX/Lj6d4naD9SIBmOA==",
       "dev": true,
       "requires": {
         "concat-stream": "^1.6.0",
