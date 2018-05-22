@@ -8,8 +8,8 @@ module.exports = function (namespace) {
     if (request.method === 'GET') {
       var first = true
       var prefix = request.query.prefix
-      ? request.query.prefix.toLowerCase()
-      : ''
+        ? request.query.prefix.toLowerCase()
+        : ''
       var query = parseQuery(request.query)
       var skip = query.skip
       response.setHeader('Content-Type', 'application/json')

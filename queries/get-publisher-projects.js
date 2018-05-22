@@ -14,13 +14,14 @@ module.exports = function (level, publisher, callback) {
       callback(error)
     })
     .once('end', function () {
-      var projectNames = keys.reduce(function (projectNames, key) {
-        var projectName = key[2]
-        return projectNames.indexOf(projectName) < 0
-          ? projectNames.concat(projectName)
-          : projectNames
-      }, [])
-      .sort()
+      var projectNames = keys
+        .reduce(function (projectNames, key) {
+          var projectName = key[2]
+          return projectNames.indexOf(projectName) < 0
+            ? projectNames.concat(projectName)
+            : projectNames
+        }, [])
+        .sort()
       callback(null, projectNames)
     })
 }

@@ -1327,25 +1327,25 @@ tape('GET /forms/{form}/publications', function (test) {
           'nda', '1e1d',
           digest, false, false,
           test
-          ),
+        ),
         postProject(
           'ana', 'ana\'s password', port,
           'nda', '1e',
           digest, false, false,
           test
-          ),
+        ),
         postProject(
           'ana', 'ana\'s password', port,
           'nondisclosure', '1e',
           digest, false, false,
           test
-          ),
+        ),
         postProject(
           'bob', 'bob\'s password', port,
           'conf', '3e',
           digest, false, false,
           test
-          ),
+        ),
         function getPublications (done) {
           var options = {
             port: port,

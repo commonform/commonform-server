@@ -45,21 +45,21 @@ function setupHTTPServer (logServerPort, ready) {
   // Create a client for the tcp-log-server.
   var logClient = new TCPLogClient({server: {port: logServerPort}})
   // Start the HTTP server when the log client catches up with the log.
-  .once('current', function () {
-    server.listen(0, function () {
-      ready(this)
+    .once('current', function () {
+      server.listen(0, function () {
+        ready(this)
+      })
     })
-  })
   var configuration = {
     version: VERSION
   }
   // Created the HTTP server.
   var handler = makeRequestHandler(configuration, log, level, logClient)
   server = http.createServer(handler)
-  .once('close', function () {
-    level.close()
-    logClient.destroy()
-  })
+    .once('close', function () {
+      level.close()
+      logClient.destroy()
+    })
   // Connect the log client.
   logClient.connect()
   // Create test publishers.

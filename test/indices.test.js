@@ -10,7 +10,7 @@ var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
 var postProject = require('./post-project')
-.bind(this, PUBLISHER, PASSWORD)
+  .bind(this, PUBLISHER, PASSWORD)
 
 tape('GET /terms/{term}/definitions', function (test) {
   var formA = {content: [{definition: 'Lots'}, ' means two.']}

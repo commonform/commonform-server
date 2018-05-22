@@ -132,13 +132,13 @@ tape('POST /forms with infinite request body', function (test) {
       test.end()
     }
     var infinite = makeInfiniteStream()
-    .once('error', function (error) {
-      test.assert(
-        error.message === 'write EPIPE' ||
-        error.message === 'write ECONNRESET'
-      )
-      finish()
-    })
+      .once('error', function (error) {
+        test.assert(
+          error.message === 'write EPIPE' ||
+          error.message === 'write ECONNRESET'
+        )
+        finish()
+      })
     var options = {
       auth: PUBLISHER + ':' + PASSWORD,
       method: 'POST',
@@ -146,17 +146,17 @@ tape('POST /forms with infinite request body', function (test) {
       port: port
     }
     var request = http.request(options)
-    .once('error', function (error) {
-      test.assert(
-        error.message === 'write EPIPE' ||
-        error.message === 'write ECONNRESET'
-      )
-      finish()
-    })
-    .once('response', function (response) {
-      test.equal(response.statusCode, 413, 'responds 413')
-      finish()
-    })
+      .once('error', function (error) {
+        test.assert(
+          error.message === 'write EPIPE' ||
+          error.message === 'write ECONNRESET'
+        )
+        finish()
+      })
+      .once('response', function (response) {
+        test.equal(response.statusCode, 413, 'responds 413')
+        finish()
+      })
     infinite.pipe(request)
   })
 })

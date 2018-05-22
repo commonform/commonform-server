@@ -54,7 +54,7 @@
     "lint-staged": "^7.1.2",
     "memdown": "^1.4.1",
     "sha256": "^0.2.0",
-    "standard": "^10.0.3",
+    "standard": "^11.0.1",
     "tape": "^4.9.0",
     "tcp-log-server": "^9.0.3"
   },
