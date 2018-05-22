@@ -53,7 +53,6 @@
     "licensee": "^4.5.0",
     "lint-staged": "^6.1.0",
     "memdown": "^1.4.1",
-    "nsp": "^3.1.0",
     "sha256": "^0.2.0",
     "standard": "^10.0.3",
     "tape": "^4.8.0",
@@ -67,7 +66,7 @@
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
-    "nsp": "nsp check",
+    "audit": "npm audit | tee audit.log",
     "licenses": "licensee --errors-only",
     "lint": "standard",
     "precommit": "lint-staged"
