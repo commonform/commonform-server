@@ -51,7 +51,7 @@
     "istanbul": "^0.4.3",
     "level-simple-log": "^2.0.0",
     "licensee": "^4.5.0",
-    "lint-staged": "^6.1.0",
+    "lint-staged": "^7.1.2",
     "memdown": "^1.4.1",
     "sha256": "^0.2.0",
     "standard": "^10.0.3",
