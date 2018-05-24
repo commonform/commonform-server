@@ -1,7 +1,6 @@
 ---
 language: "node_js"
-node_js: "node"
-env: [ "CXX=g++-4.8 RUN_SLOW_TESTS=true TEST_DELAY=100" ]
+node_js: "current"
 sudo: false
 script:
   - "npm run coverage"
@@ -9,7 +8,3 @@ script:
   - "npm run check"
   - "npm run nsp || true"
   - "npm run licenses || true"
-addons:
-  apt:
-    sources: [ "ubuntu-toolchain-r-test" ]
-    packages: [ "g++-4.8" ]
