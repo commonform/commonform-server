@@ -158,6 +158,10 @@ tape(
               !body.hasOwnProperty('password'),
               'does not serve password'
             )
+            test.assert(
+              body.hasOwnProperty('gravatar'),
+              'serves Gravatar URL'
+            )
             done()
             test.end()
           })

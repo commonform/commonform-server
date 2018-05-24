@@ -3,6 +3,7 @@ var bcrypt = require('bcrypt-password')
 var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
 var getPublisher = require('../queries/get-publisher')
+var gravatarURL = require('gravatar-url')
 var internalError = require('./responses/internal-error')
 var keyForPublisher = require('../keys/publisher')
 var lock = require('level-lock')
@@ -45,6 +46,7 @@ function handleGetPublisher (
         if (stored.hasOwnProperty('about')) {
           json.about = stored.about
         }
+        json.gravatar = gravatarURL(stored.email)
         sendJSON(response, json)
       }
     }

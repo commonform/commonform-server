@@ -2610,6 +2610,14 @@
       "integrity": "sha1-Dovf5NHduIVNZOBOp8AOKgJuVlg=",
       "dev": true
     },
+    "gravatar-url": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/gravatar-url/-/gravatar-url-2.0.0.tgz",
+      "integrity": "sha1-1o7Ns2Od3rQJ0dVMDocI86mwLbc=",
+      "requires": {
+        "md5-hex": "^2.0.0"
+      }
+    },
     "handlebars": {
       "version": "4.0.10",
       "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.0.10.tgz",
@@ -4622,6 +4630,19 @@
       "resolved": "https://registry.npmjs.org/math-random/-/math-random-1.0.1.tgz",
       "integrity": "sha1-izqsWIuKZuSXXjzepn97sylgH6w=",
       "dev": true
+    },
+    "md5-hex": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/md5-hex/-/md5-hex-2.0.0.tgz",
+      "integrity": "sha1-0FiOnxx0lUSS7NJKwKxs6ZfZLjM=",
+      "requires": {
+        "md5-o-matic": "^0.1.1"
+      }
+    },
+    "md5-o-matic": {
+      "version": "0.1.1",
+      "resolved": "https://registry.npmjs.org/md5-o-matic/-/md5-o-matic-0.1.1.tgz",
+      "integrity": "sha1-givM1l4RfFFPqxdrJZRdVBAKA8M="
     },
     "mem": {
       "version": "1.1.0",
