@@ -6,6 +6,7 @@ var levelup = require('levelup')
 var makeHandler = require('./')
 var memdown = require('memdown')
 var meta = require('./package.json')
+var os = require('os')
 var pino = require('pino')
 var uuid = require('uuid')
 
@@ -47,7 +48,8 @@ levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
     })
     var configuration = {
       version: VERSION,
-      frontEnd: process.env.FRONT_END || false
+      frontEnd: process.env.FRONT_END || false,
+      hostname: process.env.HOSTNAME || os.hostname()
     }
     var handler = makeHandler(configuration, serverLog, level, logClient)
     var server = http.createServer(handler)
