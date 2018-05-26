@@ -127,14 +127,27 @@ function indexContentElements (digest, normalized, batch) {
 function indexRelations (digest, normalized, batch) {
   childrenOf(digest, normalized).forEach(push)
   function push (relationship) {
-    batch.push({
-      key: encode([
-        'form-in-form',
-        relationship.child,
-        relationship.parent,
-        relationship.depth
-      ])
-    })
+    if (relationship.type === 'child') {
+      batch.push({
+        key: encode([
+          'form-in-form',
+          relationship.child,
+          relationship.parent,
+          relationship.depth
+        ])
+      })
+    } else if (relationship.type === 'component') {
+      batch.push({
+        key: encode(
+          ['component-in-form'].concat(
+            relationship.publisher,
+            relationship.project,
+            relationship.parent,
+            relationship.depth
+          )
+        )
+      })
+    }
   }
   return batch
 }
@@ -153,6 +166,7 @@ function recurseRelations (
       var childParents = [parentDigest].concat(parents)
       childParents.forEach(function (parent, depth) {
         relationships.push({
+          type: 'child',
           parent: parent,
           child: childDigest,
           depth: depth
@@ -161,6 +175,19 @@ function recurseRelations (
       recurseRelations(
         childDigest, normalized, childParents, relationships
       )
+    } else if (element.hasOwnProperty('repository')) {
+      // TODO: Check that repository is the same as our hostname.
+      if (element.repository !== 'api.commonform.org') return
+      var componentParents = [parentDigest].concat(parents)
+      componentParents.forEach(function (parent, depth) {
+        relationships.push({
+          type: 'component',
+          parent: parent,
+          publisher: element.publisher,
+          project: element.project,
+          depth: depth
+        })
+      })
     }
   })
   return relationships

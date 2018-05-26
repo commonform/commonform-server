@@ -44,6 +44,10 @@ routes.set(
   '/publishers/:publisher/projects/:project/subscribers/:subscriber',
   subscribers('project', subscriptionKeys.project)
 )
+routes.set(
+  '/publishers/:publisher/projects/:project/dependents',
+  require('./project-dependents')
+)
 
 // Publications
 routes.set(

@@ -94,3 +94,66 @@ tape(
     })
   }
 )
+
+tape(
+  'GET /publishers/{publisher}/projects/{project}/dependents',
+  function (test) {
+    var publisher = 'ana'
+    var password = 'ana\'s password'
+    var component = {content: ['A test form']}
+    var componentDigest = normalize(component).root
+    var dependent = {
+      content: [
+        {
+          repository: 'api.commonform.org',
+          publisher: publisher,
+          project: 'component',
+          edition: '1e',
+          substitutions: {terms: {}, headings: {}}
+        }
+      ]
+    }
+    var dependentDigest = normalize(dependent).root
+    server(function (port, closeServer) {
+      series(
+        [
+          postForm(port, publisher, password, component, test),
+          postProject(
+            publisher, password, port,
+            'component', '1e',
+            componentDigest, false, false,
+            test
+          ),
+          postForm(port, publisher, password, dependent, test),
+          postProject(
+            publisher, password, port,
+            'dependent', '1e',
+            dependentDigest, false, false,
+            test
+          ),
+          function (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: '/publishers/ana/projects/component/dependents'
+            }
+            http.request(options, function (response) {
+              concat(test, response, function (body) {
+                test.deepEqual(
+                  body, [{parent: dependentDigest, depth: 0}],
+                  'GET publications JSON'
+                )
+                done()
+              })
+            })
+              .end()
+          }
+        ],
+        function finish () {
+          closeServer()
+          test.end()
+        }
+      )
+    })
+  }
+)
