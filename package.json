@@ -13,6 +13,7 @@
     "basic-auth": "^2.0.0",
     "bcrypt-password": "^1.0.2",
     "cache-immutable": "^1.0.1",
+    "commonform-hash": "^0.5.0",
     "commonform-index-names": "^2.0.0",
     "commonform-normalize": "^0.5.2",
     "commonform-validate": "^1.0.0",
