@@ -64,7 +64,7 @@
   "preferGlobal": true,
   "repository": "commonform/commonform-server",
   "scripts": {
-    "check": "depcheck --ignores husky",
+    "check": "depcheck --ignores husky | tee depcheck.log",
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
