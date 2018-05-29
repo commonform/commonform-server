@@ -97,7 +97,8 @@ function postPublication (
                             publisher: publisher,
                             project: project,
                             edition: edition,
-                            digest: digest
+                            digest: digest,
+                            timestamp: new Date().toISOString()
                           }
                         }
                         ;['signaturePages', 'notes', 'directions']

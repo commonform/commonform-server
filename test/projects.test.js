@@ -767,6 +767,14 @@ tape(
                   responseBody.digest, digest,
                   'GET project JSON'
                 )
+                test.notEqual(
+                  Date.parse(responseBody.timestamp), NaN,
+                  'GET project timestamp'
+                )
+                test.assert(
+                  responseBody.timestamp.endsWith('Z'),
+                  'GET project timestamp UTC'
+                )
                 done()
               }))
             })
