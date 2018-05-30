@@ -1,5 +1,4 @@
-var frontEndFormPath = require('../paths/front-end/form')
-var frontEndPublicationPath = require('../paths/front-end/publication')
+var frontEndAnnotationPath = require('../paths/front-end/annotation')
 var getParents = require('../queries/get-parents')
 var getPublications = require('../queries/get-publications')
 var mailEachSubscriber = require('./mail-each-subscriber')
@@ -36,11 +35,8 @@ function notifyPublicationSubscribers (
             ]
             if (configuration.frontEnd) {
               text.push(
-                frontEndPublicationPath(
-                  configuration,
-                  project.publisher,
-                  project.project,
-                  project.edition
+                frontEndAnnotationPath(
+                  configuration, annotation.form, annotation.uuid
                 )
               )
             }
@@ -73,7 +69,11 @@ function notifyFormSubscribers (
             annotation.form
           ]
           if (configuration.frontEnd) {
-            text.push(frontEndFormPath(configuration, annotation.form))
+            text.push(
+              frontEndAnnotationPath(
+                configuration, annotation.form, annotation.uuid
+              )
+            )
           }
           return {
             subject: 'Annotation to ' + annotation.digest,
@@ -97,7 +97,11 @@ function notifyAnnotationSubscribers (
         ' to ' + annotation.form
       ]
       if (configuration.frontEnd) {
-        text.push(frontEndFormPath(configuration, annotation.form))
+        text.push(
+          frontEndAnnotationPath(
+            configuration, annotation.form, annotation.uuid
+          )
+        )
       }
       return {
         subject: 'Reply to annotation to ' + annotation.digest,
