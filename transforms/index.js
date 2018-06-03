@@ -5,7 +5,8 @@ var handlers = {
   publication: require('./publication'),
   publisher: require('./publisher'),
   subscription: require('./subscription'),
-  unsubscription: require('./unsubscription')
+  unsubscription: require('./unsubscription'),
+  description: require('./description')
 }
 
 module.exports = function (entry, level, done) {

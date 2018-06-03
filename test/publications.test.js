@@ -5,6 +5,7 @@ var postForm = require('./post-form')
 var postProject = require('./post-project')
 var series = require('./series')
 var server = require('./server')
+var setDescription = require('./set-description')
 var tape = require('tape')
 
 tape(
@@ -142,6 +143,162 @@ tape(
                 test.deepEqual(
                   body, [{digest: dependentDigest, depth: 0}],
                   'GET publications JSON'
+                )
+                done()
+              })
+            })
+              .end()
+          }
+        ],
+        function finish () {
+          closeServer()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'GET /publishers/{publisher}/projects/{project}/description',
+  function (test) {
+    var publisher = 'ana'
+    var password = 'ana\'s password'
+    var project = 'with-description'
+    var form = {content: ['A test form']}
+    var digest = normalize(form).root
+    server(function (port, closeServer) {
+      series(
+        [
+          postForm(port, publisher, password, form, test),
+          postProject(
+            publisher, password, port,
+            project, '1e',
+            digest, false, false,
+            test
+          ),
+          function (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: '/publishers/ana/projects/with-description/description'
+            }
+            http.request(options, function (response) {
+              concat(test, response, function (body) {
+                test.deepEqual(
+                  body, null,
+                  'GET description null'
+                )
+                done()
+              })
+            })
+              .end()
+          }
+        ],
+        function finish () {
+          closeServer()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}/projects/{project}/description',
+  function (test) {
+    var publisher = 'ana'
+    var password = 'ana\'s password'
+    var project = 'with-description'
+    var form = {content: ['A test form']}
+    var digest = normalize(form).root
+    var descriptionPath = '/publishers/ana/projects/with-description/description'
+    var description = 'test description'
+    server(function (port, closeServer) {
+      series(
+        [
+          postForm(port, publisher, password, form, test),
+          postProject(
+            publisher, password, port,
+            project, '1e',
+            digest, false, false,
+            test
+          ),
+          setDescription(
+            publisher, password, port,
+            project, description,
+            test
+          ),
+          function (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: descriptionPath
+            }
+            http.request(options, function (response) {
+              concat(test, response, function (body) {
+                test.deepEqual(
+                  body, description,
+                  'GET description'
+                )
+                done()
+              })
+            })
+              .end()
+          }
+        ],
+        function finish () {
+          closeServer()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}/projects/{project}/description twice',
+  function (test) {
+    var publisher = 'ana'
+    var password = 'ana\'s password'
+    var project = 'with-description'
+    var form = {content: ['A test form']}
+    var digest = normalize(form).root
+    var descriptionPath = '/publishers/ana/projects/with-description/description'
+    var firstDescription = 'first description'
+    var secondDescription = 'second description'
+    test.notEqual(firstDescription, secondDescription, 'descriptions not equal')
+    server(function (port, closeServer) {
+      series(
+        [
+          postForm(port, publisher, password, form, test),
+          postProject(
+            publisher, password, port,
+            project, '1e',
+            digest, false, false,
+            test
+          ),
+          setDescription(
+            publisher, password, port,
+            project, firstDescription,
+            test
+          ),
+          setDescription(
+            publisher, password, port,
+            project, secondDescription,
+            test
+          ),
+          function (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: descriptionPath
+            }
+            http.request(options, function (response) {
+              concat(test, response, function (body) {
+                test.deepEqual(
+                  body, secondDescription,
+                  'GET description'
                 )
                 done()
               })

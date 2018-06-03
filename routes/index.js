@@ -48,6 +48,10 @@ routes.set(
   '/publishers/:publisher/projects/:project/dependents',
   require('./project-dependents')
 )
+routes.set(
+  '/publishers/:publisher/projects/:project/description',
+  require('./project-description')
+)
 
 // Publications
 routes.set(
