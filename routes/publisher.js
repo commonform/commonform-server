@@ -134,7 +134,6 @@ function postPublisher (
       var unlock = lock(level, key, 'w')
       /* istanbul ignore if */
       if (!unlock) {
-        unlock()
         conflict(response, new Error('locked'))
       } else {
         exists(level, key, function (error, exists) {
