@@ -14,7 +14,7 @@ module.exports = function (level, publisher, project, callback) {
     .on('data', function (item) {
       var decoded = decode(item.key)
       parents.push({
-        parent: decoded[3],
+        digest: decoded[3],
         depth: parseInt(decoded[4])
       })
     })

@@ -140,7 +140,7 @@ tape(
             http.request(options, function (response) {
               concat(test, response, function (body) {
                 test.deepEqual(
-                  body, [{parent: dependentDigest, depth: 0}],
+                  body, [{digest: dependentDigest, depth: 0}],
                   'GET publications JSON'
                 )
                 done()
