@@ -1,5 +1,6 @@
-var publicationStringFor = require('../publication-string')
+var getDependents = require('../queries/get-dependents')
 var mailEachSubscriber = require('./mail-each-subscriber')
+var publicationStringFor = require('../publication-string')
 var spell = require('reviewers-edition-spell')
 
 module.exports = function (
@@ -12,6 +13,7 @@ module.exports = function (
   }
   notifyProjectSubscribers(configuration, level, log, publication)
   notifyPublisherSubscribers(configuration, level, log, publication)
+  notifyDependentFormSubscribers(configuration, level, log, publication)
 }
 
 function notifyProjectSubscribers (
@@ -44,5 +46,29 @@ function notifySubscribers (
       ]
         .join('\n')
     }
+  })
+}
+
+function notifyDependentFormSubscribers (
+  configuration, level, log, publication
+) {
+  var publicationString = publicationStringFor(publication)
+  getDependents(level, publication.publisher, publication.project, function (error, dependents) {
+    if (error) return log.error(error)
+    dependents.forEach(function (dependent) {
+      var digest = dependent.digest
+      var keys = ['digest', digest]
+      mailEachSubscriber(level, log, keys, function () {
+        return {
+          subject: 'New Edition of ' + publicationString,
+          text: [
+            publication.publisher + ' published ' +
+            publication.project + ' ' + spell(publication.edition) +
+            ', a component of ' +
+            digest
+          ].join('\n')
+        }
+      })
+    })
   })
 }
