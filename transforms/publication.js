@@ -108,11 +108,11 @@ function indexContentElements (digest, normalized, batch) {
         push(['heading', name])
         push(['heading-in-form', name, digest])
         push(
-          ['heading-for-component-in-form', name]
+          ['heading-for-component-in-publication', name]
             .concat(component, digest)
         )
         push(
-          ['component-under-heading-in-form']
+          ['component-under-heading-in-publication']
             .concat(component, name, digest)
         )
       }
