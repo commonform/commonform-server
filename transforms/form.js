@@ -5,11 +5,11 @@ var normalize = require('commonform-normalize')
 module.exports = function (entry, level, done) {
   var form = entry.data
   var normalized = normalize(form)
-  var batch = recurse(form, normalized.root, normalized, [])
+  var batch = recurse(form, normalized.root, normalized, [], [])
   done(null, batch)
 }
 
-function recurse (form, digest, normalized, batch) {
+function recurse (form, digest, normalized, batch, parents) {
   batch.push({
     key: formKeyFor(digest),
     value: form
@@ -22,6 +22,19 @@ function recurse (form, digest, normalized, batch) {
       // The normalized object, which has digests of child forms.
       var childDigest = normalized[digest].content[index].digest
       recurse(child, childDigest, normalized, batch)
+    } else if (element.hasOwnProperty('repository')) {
+      [digest].concat(parents).forEach(function (digest, depth) {
+        batch.push({
+          key: encode(
+            ['component-in-form'].concat(
+              element.publisher,
+              element.project,
+              digest,
+              depth
+            )
+          )
+        })
+      })
     }
   })
   return batch
