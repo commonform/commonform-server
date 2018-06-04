@@ -21,6 +21,7 @@ var validProject = require('../validation/project')
 var validPublication = require('../validation/publication')
 var validReleaseNotes = require('../validation/release-notes')
 var validSignaturePages = require('../validation/signature-pages')
+var validTitle = require('../validation/title')
 var validateDirections = require('commonform-validate-directions')
 
 module.exports = function (request, response) {
@@ -56,6 +57,11 @@ function postPublication (
           !validSignaturePages(json.signaturePages)
         ) {
           badRequest(response, 'invalid signature pages')
+        } else if (
+          json.title &&
+          !validTitle(json.title)
+        ) {
+          badRequest(response, 'invalid title')
         } else if (
           json.notes &&
           !validReleaseNotes(json.notes)
@@ -101,7 +107,7 @@ function postPublication (
                             timestamp: new Date().toISOString()
                           }
                         }
-                        ;['signaturePages', 'notes', 'directions']
+                        ;['title', 'signaturePages', 'notes', 'directions']
                           .forEach(function (key) {
                             if (json[key]) {
                               entry.data[key] = json[key]

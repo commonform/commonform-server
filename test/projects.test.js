@@ -1588,6 +1588,71 @@ tape(
   'POST /publishers/{publisher}' +
   '/projects/{project}' +
   '/publications/{edition} ' +
+  'with title',
+  function (test) {
+    var project = 'nda'
+    var edition = '1e'
+    var title = 'Test Title'
+    var form = {content: ['A test form']}
+    var digest = normalize(form).root
+    var path = (
+      '/publishers/' + PUBLISHER +
+      '/projects/' + project +
+      '/publications/' + edition
+    )
+    server(function (port, done) {
+      series(
+        [
+          postForm(port, PUBLISHER, PASSWORD, form, test),
+          function (done) {
+            var options = {
+              method: 'POST',
+              auth: PUBLISHER + ':' + PASSWORD,
+              port: port,
+              path: path
+            }
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 204, '204')
+              done()
+            })
+              .end(JSON.stringify({
+                digest: digest,
+                title: title
+              }))
+          },
+          function getProject (done) {
+            var options = {
+              method: 'GET',
+              port: port,
+              path: path
+            }
+            http.request(options, function (response) {
+              test.equal(response.statusCode, 200, 'GET 200')
+              response.pipe(concat(function (buffer) {
+                var responseBody = JSON.parse(buffer)
+                test.equal(
+                  responseBody.title, title,
+                  'GET project title'
+                )
+                done()
+              }))
+            })
+              .end()
+          }
+        ],
+        function () {
+          done()
+          test.end()
+        }
+      )
+    })
+  }
+)
+
+tape(
+  'POST /publishers/{publisher}' +
+  '/projects/{project}' +
+  '/publications/{edition} ' +
   'with invalid signature pages',
   function (test) {
     var project = 'nda'
