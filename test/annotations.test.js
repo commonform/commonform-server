@@ -1,5 +1,6 @@
 var concat = require('./concat')
 var http = require('http')
+var mailgun = require('../mailgun')
 var normalize = require('commonform-normalize')
 var postAnnotation = require('./post-annotation')
 var postForm = require('./post-form')
@@ -35,6 +36,46 @@ tape('POST /annotations', function (test) {
         done()
         test.end()
       }
+    )
+  })
+})
+
+tape('POST /annotations with @-mention', function (test) {
+  var publisher = 'ana'
+  var password = 'ana\'s password'
+  var form = {content: ['The form']}
+  var digest = normalize(form).root
+  var annotation = {
+    publisher: publisher,
+    form: digest,
+    context: digest,
+    replyTo: [],
+    text: 'Mentioning @bob!'
+  }
+  server(function (port, done) {
+    mailgun.events.once('message', function (message) {
+      test.equal(
+        message.to, 'bob@example.com',
+        'e-mail addressed to mentioned'
+      )
+      test.assert(
+        message.subject.toLowerCase().indexOf('mention') !== -1,
+        'e-mail subject includes "mention"'
+      )
+      test.assert(
+        message.text.indexOf(digest) !== -1,
+        'e-mail text includes digest'
+      )
+      mailgun.events.removeAllListeners()
+      done()
+      test.end()
+    })
+    series(
+      [
+        postForm(port, publisher, password, form, test),
+        postAnnotation(publisher, password, port, annotation, test)
+      ],
+      function () { /* pass */ }
     )
   })
 })
