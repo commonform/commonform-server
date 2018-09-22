@@ -1389,9 +1389,9 @@
       "dev": true
     },
     "email-validator": {
-      "version": "1.1.1",
-      "resolved": "https://registry.npmjs.org/email-validator/-/email-validator-1.1.1.tgz",
-      "integrity": "sha512-vkcJJZEb7JXDY883Nx1Lkmb6noM3j1SfSt8L9tVFhZPnPQiFq+Nkd5evc77+tRVS4ChTUSr34voThsglI/ja/A=="
+      "version": "2.0.4",
+      "resolved": "https://registry.npmjs.org/email-validator/-/email-validator-2.0.4.tgz",
+      "integrity": "sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ=="
     },
     "encoding": {
       "version": "0.1.12",
