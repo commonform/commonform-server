@@ -71,10 +71,14 @@
     "test": "NODE_ENV=test tape test/*.test.js",
     "audit": "npm audit | tee audit.log",
     "licenses": "licensee --errors-only | tee licenses.log",
-    "lint": "standard | tee lint.log",
-    "precommit": "lint-staged"
+    "lint": "standard | tee lint.log"
   },
   "lint-staged": {
     "*.js": "standard"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
