@@ -1,10 +1,10 @@
 ---
-language: "node_js"
-node_js: "current"
+language: node_js
+node_js: node
 sudo: false
 script:
-  - "npm run coverage"
-  - "npm run lint"
-  - "npm run deps"
-  - "npm run licenses"
-  - "npm audit"
+  - npm run coverage
+  - npm run lint
+  - npm run deps
+  - npm run licenses
+  - npm audit
