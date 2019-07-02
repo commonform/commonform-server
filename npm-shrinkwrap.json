@@ -701,12 +701,20 @@
       }
     },
     "commonform-analyze": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/commonform-analyze/-/commonform-analyze-1.0.0.tgz",
-      "integrity": "sha512-4ald09/PwbvT8mgXOLh2XXkpEpto7W/idsva+1Pkt1jMykSn+rc1/WvloV9Z51CsECdBIJEePio+a7oLxo8e2g==",
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/commonform-analyze/-/commonform-analyze-3.0.0.tgz",
+      "integrity": "sha512-Nj4qRJIHJi9dypwXkG9cgS4gqQXTPxjg9aeVt+bPejufcLUnef3ei81KwFcup45lT8RgAv4oENAgub6AfLBweQ==",
       "requires": {
         "array-find": "^1.0.0",
-        "commonform-predicate": "^0.4.0"
+        "commonform-predicate": "^2.0.0",
+        "stringify-clone": "^2.0.0"
+      },
+      "dependencies": {
+        "commonform-predicate": {
+          "version": "2.0.0",
+          "resolved": "https://registry.npmjs.org/commonform-predicate/-/commonform-predicate-2.0.0.tgz",
+          "integrity": "sha512-HqdTSpSusxkedHDRTiaqwXhNlspYHiioQLJPYE3PgbU/WaZGdgXI21Fjz2FRrhNdiolarQGANAK1E9y2ul1hBw=="
+        }
       }
     },
     "commonform-hash": {
@@ -782,11 +790,11 @@
       }
     },
     "commonform-validate-directions": {
-      "version": "1.0.0",
-      "resolved": "https://registry.npmjs.org/commonform-validate-directions/-/commonform-validate-directions-1.0.0.tgz",
-      "integrity": "sha512-G7CoU/xi1eOHsrEaGrMCEHiOOyyrzp7TYJ98urvt1KFeW6z5klzks0PDS2f5QQES+FhM5jcSXvk9aWV3yHYi8w==",
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/commonform-validate-directions/-/commonform-validate-directions-1.0.1.tgz",
+      "integrity": "sha512-xgOTPeLmW8k4wgUVG5HjC2XNns8o337g0dMVKR0K9gKQYn1VZIIdz3pA7aS/cUh2siGqUTWixtXbLtODdD29lA==",
       "requires": {
-        "commonform-analyze": "^1.0.0"
+        "commonform-analyze": "^3.0.0"
       }
     },
     "concat-map": {
@@ -4099,6 +4107,11 @@
       "requires": {
         "safe-buffer": "~5.1.0"
       }
+    },
+    "stringify-clone": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/stringify-clone/-/stringify-clone-2.0.1.tgz",
+      "integrity": "sha512-3C9Ri/ytPQdLDNtNDot9nhdajlp0pE3Xb9gd/c4/37UiU8/Qo0WFgTbT0g0ZXURE5YaE0yvIwI208fvLeGPrTw=="
     },
     "strip-ansi": {
       "version": "3.0.1",
