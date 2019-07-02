@@ -62,12 +62,12 @@
   "preferGlobal": true,
   "repository": "commonform/commonform-server",
   "scripts": {
-    "deps": "depcheck | tee depcheck.log",
+    "deps": "depcheck",
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
-    "audit": "npm audit | tee audit.log",
-    "licenses": "licensee --errors-only | tee licenses.log",
-    "lint": "standard | tee lint.log"
+    "audit": "npm audit",
+    "licenses": "licensee --errors-only",
+    "lint": "standard"
   }
 }
