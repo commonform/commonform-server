@@ -42,7 +42,7 @@
     "reviewers-edition-parse": "^2.0.5",
     "reviewers-edition-spell": "^2.0.0",
     "reviewers-edition-upgrade": "^1.0.2",
-    "signature-page-schema": "^1.0.1",
+    "signature-page-schema": "^2.0.0",
     "tcp-log-client": "^6.0.0",
     "through2": "^2.0.1",
     "uuid": "^3.3.2"

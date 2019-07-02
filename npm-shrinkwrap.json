@@ -3920,9 +3920,9 @@
       "integrity": "sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0="
     },
     "signature-page-schema": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/signature-page-schema/-/signature-page-schema-1.0.1.tgz",
-      "integrity": "sha1-aptwToa6ki9NICWqPcywR9RrSJ0="
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/signature-page-schema/-/signature-page-schema-2.0.0.tgz",
+      "integrity": "sha512-2h6qEiUmLY6vfQVwGmpUQp5Tvd/cZSW3vxG0DxLHP7LJ3CqGc/qZuP7ybSCscnaE9qqIVe21JFX4MsPVx+uztQ=="
     },
     "simple-concat": {
       "version": "1.0.0",
