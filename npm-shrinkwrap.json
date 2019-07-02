@@ -710,12 +710,23 @@
       }
     },
     "commonform-hash": {
-      "version": "0.5.0",
-      "resolved": "https://registry.npmjs.org/commonform-hash/-/commonform-hash-0.5.0.tgz",
-      "integrity": "sha512-Dp00SeCKiQ6jWAWP7XNrsz9EYldcrp+iPntNH+ElJVcgTCRsKY2PTAy+czlwrum8++oHMAULigEfPiJr+p7reg==",
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/commonform-hash/-/commonform-hash-1.0.0.tgz",
+      "integrity": "sha512-UWt+3e2neQLHy+mxT8MyiXyZtoGxPAz95wfuTOjD3uZ6RMs93Q5hoVw6OUSmTORFjGzEwsnAuo8X4XLB3urV5g==",
       "requires": {
-        "commonform-serialize": "^0.4.0",
+        "commonform-serialize": "^1.0.0",
         "sha.js": "^2.4.5"
+      },
+      "dependencies": {
+        "commonform-serialize": {
+          "version": "1.0.0",
+          "resolved": "https://registry.npmjs.org/commonform-serialize/-/commonform-serialize-1.0.0.tgz",
+          "integrity": "sha512-dlVKNxlxnCG+T4XJL8/skYuDVQpw+0hVRKkuFSJcZWEMRdTGHMQvSZtZE12Ksv83aVsgABEH1lgB2MGwLq/GPg==",
+          "requires": {
+            "is-array": "^1.0.1",
+            "is-object": "^1.0.1"
+          }
+        }
       }
     },
     "commonform-index-names": {
