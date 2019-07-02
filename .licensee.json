@@ -1,6 +1,17 @@
 {
-  "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0 OR Unlicense OR CC-BY-3.0 OR WTFPL)",
-  "whitelist": {
+  "licenses": {
+    "spdx": [
+      "MIT",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "ISC",
+      "Apache-2.0",
+      "Unlicense",
+      "CC-BY-3.0",
+      "WTFPL"
+    ]
+  },
+  "packages": {
     "array-unique": "0.2.1",
     "convert-hex": "0.1.0",
     "convert-string": "0.1.0",
