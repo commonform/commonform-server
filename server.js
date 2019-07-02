@@ -25,7 +25,7 @@ var store
 if (env.LEVELDB && env.LEVELDB.toLowerCase() === 'memory') {
   store = encode(memdown(), LEVEL_OPTIONS)
 } else {
-  store = leveldown(env.LEVELDB || NAME + '.leveldb', LEVEL_OPTIONS)
+  store = encode(leveldown(env.LEVELDB || NAME + '.leveldb'), LEVEL_OPTIONS)
 }
 
 levelup(store, function (error, level) {
