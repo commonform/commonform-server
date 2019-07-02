@@ -5,6 +5,6 @@ sudo: false
 script:
   - "npm run coverage"
   - "npm run lint"
-  - "npm run check"
-  - "npm run audit"
+  - "npm run deps"
   - "npm run licenses"
+  - "npm audit"
