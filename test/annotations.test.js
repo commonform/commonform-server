@@ -15,9 +15,9 @@ var PASSWORD = 'ana\'s password'
 tape('POST /annotations', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -43,7 +43,7 @@ tape('POST /annotations', function (test) {
 tape('POST /annotations with @-mention', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var form = {content: ['The form']}
+  var form = { content: ['The form'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: publisher,
@@ -83,7 +83,7 @@ tape('POST /annotations with @-mention', function (test) {
 tape('POST /annotations with invalid annotation', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var form = {content: ['The form']}
+  var form = { content: ['The form'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: publisher,
@@ -126,7 +126,7 @@ tape('POST /annotations with invalid annotation', function (test) {
 })
 
 tape('POST /annotations without authorization', function (test) {
-  var form = {content: ['The child']}
+  var form = { content: ['The child'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: 'bob',
@@ -163,9 +163,9 @@ tape('POST /annotations without authorization', function (test) {
 tape('POST /annotations for another publisher', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: 'bob',
@@ -203,7 +203,7 @@ tape('POST /annotations for another publisher', function (test) {
 tape('POST /annotations with bad password', function (test) {
   var publisher = 'ana'
   var password = 'not ana\'s password'
-  var form = {content: ['The form']}
+  var form = { content: ['The form'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: 'bob',
@@ -241,9 +241,9 @@ tape('POST /annotations with bad password', function (test) {
 tape('POST /annotations with form not in context', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var a = {content: ['A form']}
+  var a = { content: ['A form'] }
   var aDigest = normalize(a).root
-  var b = {content: ['Another form']}
+  var b = { content: ['Another form'] }
   var bDigest = normalize(b).root
   var annotation = {
     publisher: publisher,
@@ -294,9 +294,9 @@ tape('POST /annotations with form not in context', function (test) {
 tape('POST /annotations with reply', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -341,7 +341,7 @@ tape('POST /annotations with reply', function (test) {
 tape('POST /annotations with reply to nonexistent', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var form = {content: ['The child']}
+  var form = { content: ['The child'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: publisher,
@@ -379,9 +379,9 @@ tape('POST /annotations with reply to nonexistent', function (test) {
 tape('POST /annotations with mismatched context', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -443,7 +443,7 @@ tape('POST /annotations with mismatched context', function (test) {
 tape('POST /annotations with unknown context', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var form = {content: ['The child']}
+  var form = { content: ['The child'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: publisher,
@@ -480,9 +480,9 @@ tape('POST /annotations with unknown context', function (test) {
 tape('GET /annotation/{uuid}', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -507,7 +507,7 @@ tape('GET /annotation/{uuid}', function (test) {
           }
         },
         function (done) {
-          var options = {port: port, path: '/annotations/' + uuid}
+          var options = { port: port, path: '/annotations/' + uuid }
           http.request(options, function (response) {
             test.equal(response.statusCode, 200, 'GET 200')
             concat(test, response, function (body) {
@@ -529,9 +529,9 @@ tape('GET /annotation/{uuid}', function (test) {
 tape('DELETE /annotation/{uuid}', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -594,9 +594,9 @@ tape('DELETE /annotation/{uuid}', function (test) {
 tape('DELETE /annotation/{has reply}', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var child = {content: ['The child']}
+  var child = { content: ['The child'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{form: child}]}
+  var parent = { content: [{ form: child }] }
   var parentDigest = normalize(parent).root
   var annotation = {
     publisher: publisher,
@@ -680,7 +680,7 @@ tape('DELETE /annotation/{has reply}', function (test) {
 tape('PATCH /annotation/{uuid}', function (test) {
   var publisher = 'ana'
   var password = 'ana\'s password'
-  var form = {content: ['The form']}
+  var form = { content: ['The form'] }
   var digest = normalize(form).root
   var annotation = {
     publisher: publisher,
@@ -727,7 +727,7 @@ tape('PATCH /annotation/{uuid}', function (test) {
 
 tape('GET /annotation/{not_a_uuid}', function (test) {
   server(function (port, done) {
-    var options = {port: port, path: '/annotations/x'}
+    var options = { port: port, path: '/annotations/x' }
     http.request(options, function (response) {
       test.equal(response.statusCode, 404, '404')
       done()
@@ -739,7 +739,7 @@ tape('GET /annotation/{not_a_uuid}', function (test) {
 
 tape('GET /annotation/{nonexistent}', function (test) {
   server(function (port, done) {
-    var options = {port: port, path: '/annotations/' + uuid.v4()}
+    var options = { port: port, path: '/annotations/' + uuid.v4() }
     http.request(options, function (response) {
       test.equal(response.statusCode, 404, '404')
       done()
@@ -751,7 +751,7 @@ tape('GET /annotation/{nonexistent}', function (test) {
 
 tape('GET /annotations without query', function (test) {
   server(function (port, done) {
-    var options = {port: port, path: '/annotations'}
+    var options = { port: port, path: '/annotations' }
     http.request(options, function (response) {
       test.equal(response.statusCode, 400, 'GET 400')
       done()
@@ -763,7 +763,7 @@ tape('GET /annotations without query', function (test) {
 
 tape('DELETE /annotations', function (test) {
   server(function (port, done) {
-    var options = {method: 'DELETE', port: port, path: '/annotations'}
+    var options = { method: 'DELETE', port: port, path: '/annotations' }
     http.request(options, function (response) {
       test.equal(response.statusCode, 405, 'DELETE 405')
       done()
@@ -785,22 +785,22 @@ tape('GET /annotations?context={digest}', function (test) {
   //   +-E
   //   | +-F
   //   +-G
-  forms.g = {content: ['This is G']}
-  forms.f = {content: ['This is F']}
-  forms.e = {content: [{form: forms.f}]}
-  forms.d = {content: ['This is D']}
-  forms.c = {content: [{form: forms.d}]}
-  forms.b = {content: [{form: forms.c}]}
+  forms.g = { content: ['This is G'] }
+  forms.f = { content: ['This is F'] }
+  forms.e = { content: [{ form: forms.f }] }
+  forms.d = { content: ['This is D'] }
+  forms.c = { content: [{ form: forms.d }] }
+  forms.b = { content: [{ form: forms.c }] }
   forms.a = {
     content: [
-      {form: forms.b},
-      {form: forms.e},
-      {form: forms.g}
+      { form: forms.b },
+      { form: forms.e },
+      { form: forms.g }
     ]
   }
   //   X <<< not context
   //   +-D
-  forms.x = {content: ['This is X', {form: forms.d}]}
+  forms.x = { content: ['This is X', { form: forms.d }] }
   // Digests
   var digests = {}
   Object.keys(forms).forEach(function (key) {
@@ -809,11 +809,11 @@ tape('GET /annotations?context={digest}', function (test) {
   // Annotations
   var annotations = {};
   [
-    {form: 'd', context: 'b'},
-    {form: 'd', context: 'x'},
-    {form: 'd', context: 'a'},
-    {form: 'f', context: 'f'},
-    {form: 'a', context: 'a'}
+    { form: 'd', context: 'b' },
+    { form: 'd', context: 'x' },
+    { form: 'd', context: 'a' },
+    { form: 'f', context: 'f' },
+    { form: 'a', context: 'a' }
   ].forEach(function (element) {
     var form = element.form
     var context = element.context
@@ -932,22 +932,22 @@ tape(
     //   +-E
     //   | +-F
     //   +-G
-    forms.g = {content: ['This is G']}
-    forms.f = {content: ['This is F']}
-    forms.e = {content: [{form: forms.f}]}
-    forms.d = {content: ['This is D']}
-    forms.c = {content: [{form: forms.d}]}
-    forms.b = {content: [{form: forms.c}]}
+    forms.g = { content: ['This is G'] }
+    forms.f = { content: ['This is F'] }
+    forms.e = { content: [{ form: forms.f }] }
+    forms.d = { content: ['This is D'] }
+    forms.c = { content: [{ form: forms.d }] }
+    forms.b = { content: [{ form: forms.c }] }
     forms.a = {
       content: [
-        {form: forms.b},
-        {form: forms.e},
-        {form: forms.g}
+        { form: forms.b },
+        { form: forms.e },
+        { form: forms.g }
       ]
     }
     //   X <<< not context
     //   +-D
-    forms.x = {content: ['This is X', {form: forms.d}]}
+    forms.x = { content: ['This is X', { form: forms.d }] }
     // Digests
     var digests = {}
     Object.keys(forms).forEach(function (key) {
@@ -956,11 +956,11 @@ tape(
     // Annotations
     var annotations = {}
     ;[
-      {form: 'd', context: 'b'},
-      {form: 'd', context: 'x'},
-      {form: 'd', context: 'a'},
-      {form: 'f', context: 'f'},
-      {form: 'a', context: 'a'}
+      { form: 'd', context: 'b' },
+      { form: 'd', context: 'x' },
+      { form: 'd', context: 'a' },
+      { form: 'f', context: 'f' },
+      { form: 'a', context: 'a' }
     ].forEach(function (element) {
       var form = element.form
       var context = element.context
@@ -1056,8 +1056,8 @@ tape(
   function (test) {
     // Forms
     var forms = {}
-    forms.a = {content: ['This is A']}
-    forms.b = {content: ['This is B']}
+    forms.a = { content: ['This is A'] }
+    forms.b = { content: ['This is B'] }
     // Digests
     var digests = {}
     Object.keys(forms).forEach(function (key) {

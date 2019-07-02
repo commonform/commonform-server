@@ -21,7 +21,7 @@ var unsubscribeFromPublisher = require('./unsubscribe-from-publisher')
 var publisher = 'ana'
 var password = 'ana\'s password'
 var email = 'ana@example.com'
-var form = {content: ['The child']}
+var form = { content: ['The child'] }
 var digest = normalize(form).root
 var annotation = {
   publisher: publisher,

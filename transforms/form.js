@@ -14,7 +14,7 @@ function recurse (form, digest, normalized, batch, parents) {
     key: formKeyFor(digest),
     value: form
   })
-  batch.push({key: encode(['digest', digest])})
+  batch.push({ key: encode(['digest', digest]) })
   form.content.forEach(function (element, index) {
     if (element.hasOwnProperty('form')) {
       // The denormalized object, to be stored in LevelUP.

@@ -41,7 +41,7 @@ function handleGetPublisher (
       if (!stored) {
         notFound(response)
       } else {
-        var json = {publisher: publisher}
+        var json = { publisher: publisher }
         /* istanbul ignore else */
         if (stored.hasOwnProperty('about')) {
           json.about = stored.about

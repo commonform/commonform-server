@@ -20,8 +20,8 @@ module.exports = function (to, keys) {
 
   function makeRecord (type) {
     return function (request, response, parameters, log, level, write) {
-      var data = {to: to}
-      var entry = {type: type, data: data}
+      var data = { to: to }
+      var entry = { type: type, data: data }
       keys.forEach(function (key) {
         data[key] = parameters[key]
       })

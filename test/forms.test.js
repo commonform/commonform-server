@@ -33,7 +33,7 @@ tape('POST /forms with invalid JSON', function (test) {
 
 tape('POST /forms with form', function (test) {
   server(function (port, done) {
-    var form = {content: ['Just a test']}
+    var form = { content: ['Just a test'] }
     var root = normalize(form).root
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
@@ -104,7 +104,7 @@ tape('POST /forms with oversized request body', function (test) {
       method: 'POST',
       path: '/forms',
       port: port,
-      headers: {'Content-Length': Buffer.byteLength(body)}
+      headers: { 'Content-Length': Buffer.byteLength(body) }
     }
     http.request(options, function (response) {
       test.equal(response.statusCode, 413, 'responds 413')
@@ -204,13 +204,13 @@ tape('POST /forms without request body', function (test) {
 if (process.env.RUN_SLOW_TESTS) {
   tape('POST /forms with high Content-Length', function (test) {
     server(function (port, done) {
-      var form = {content: ['Just a test']}
+      var form = { content: ['Just a test'] }
       var json = JSON.stringify(form)
       var request = {
         auth: PUBLISHER + ':' + PASSWORD,
         method: 'POST',
         path: '/forms',
-        headers: {'Content-Length': Buffer.byteLength(json) + 1},
+        headers: { 'Content-Length': Buffer.byteLength(json) + 1 },
         port: port
       }
       http.request(request, function (response) {
@@ -225,7 +225,7 @@ if (process.env.RUN_SLOW_TESTS) {
 
 tape('POST /forms with invalid form', function (test) {
   server(function (port, done) {
-    var form = {invalid: 'form'}
+    var form = { invalid: 'form' }
     var request = {
       auth: PUBLISHER + ':' + PASSWORD,
       method: 'POST',
@@ -250,7 +250,7 @@ tape('POST /forms with invalid form', function (test) {
 tape('GET /forms/{not_a_digest}', function (test) {
   server(function (port, done) {
     var digest = 'blah'
-    var request = {path: '/forms/' + digest, port: port}
+    var request = { path: '/forms/' + digest, port: port }
     http.request(request, function (response) {
       test.equal(response.statusCode, 400, 'responds 404')
       done()
@@ -263,7 +263,7 @@ tape('GET /forms/{not_a_digest}', function (test) {
 tape('GET /forms/{nonexistent}', function (test) {
   server(function (port, done) {
     var digest = 'a'.repeat(64)
-    var request = {path: '/forms/' + digest, port: port}
+    var request = { path: '/forms/' + digest, port: port }
     http.request(request, function (response) {
       test.equal(response.statusCode, 404, 'responds 404')
       done()
@@ -293,7 +293,7 @@ tape('POST /forms/{digest}', function (test) {
 
 tape('GET /forms/{posted}', function (test) {
   server(function (port, done) {
-    var form = {content: ['Test form']}
+    var form = { content: ['Test form'] }
     var root = normalize(form).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
@@ -303,7 +303,7 @@ tape('GET /forms/{posted}', function (test) {
     }
     http.request(post, function (response) {
       test.equal(response.statusCode, 204, 'responds 204')
-      var get = {path: '/forms/' + root, port: port}
+      var get = { path: '/forms/' + root, port: port }
       http.request(get, function (response) {
         test.equal(response.statusCode, 200, '200')
         test.equal(
@@ -333,8 +333,8 @@ tape('GET /forms/{posted}', function (test) {
 
 tape('GET /forms/{child_of_posted}', function (test) {
   server(function (port, done) {
-    var child = {content: ['Child Form']}
-    var parent = {content: [{form: child}]}
+    var child = { content: ['Child Form'] }
+    var parent = { content: [{ form: child }] }
     var childDigest = normalize(child).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
@@ -344,7 +344,7 @@ tape('GET /forms/{child_of_posted}', function (test) {
     }
     http.request(post, function (response) {
       test.equal(response.statusCode, 204, 'responds 204')
-      var get = {path: '/forms/' + childDigest, port: port}
+      var get = { path: '/forms/' + childDigest, port: port }
       http.request(get, function (response) {
         test.equal(
           response.headers['content-type'], 'application/json',
@@ -364,10 +364,10 @@ tape('GET /forms/{child_of_posted}', function (test) {
 
 tape('GET /forms/{great_grandchild_of_posted}', function (test) {
   server(function (port, done) {
-    var greatgrandchild = {content: ['Great Grandchild']}
-    var grandchild = {content: [{form: greatgrandchild}]}
-    var child = {content: [{form: grandchild}]}
-    var parent = {content: [{form: child}]}
+    var greatgrandchild = { content: ['Great Grandchild'] }
+    var grandchild = { content: [{ form: greatgrandchild }] }
+    var child = { content: [{ form: grandchild }] }
+    var parent = { content: [{ form: child }] }
     var digest = normalize(greatgrandchild).root
     var post = {
       auth: PUBLISHER + ':' + PASSWORD,
@@ -378,7 +378,7 @@ tape('GET /forms/{great_grandchild_of_posted}', function (test) {
     http.request(post, function (response) {
       test.equal(response.statusCode, 204, 'responds 204')
       setTimeout(function checkGetRequest () {
-        var get = {path: '/forms/' + digest, port: port}
+        var get = { path: '/forms/' + digest, port: port }
         http.request(get, function (response) {
           test.equal(
             response.headers['content-type'], 'application/json',
@@ -402,7 +402,7 @@ tape('GET /forms/{great_grandchild_of_posted}', function (test) {
 
 tape('PUT /forms', function (test) {
   server(function (port, done) {
-    var request = {method: 'PUT', path: '/forms', port: port}
+    var request = { method: 'PUT', path: '/forms', port: port }
     http.request(request, function (response) {
       test.equal(response.statusCode, 405, 'responds 405')
       done()

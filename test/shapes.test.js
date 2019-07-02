@@ -13,7 +13,7 @@ var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
 tape('GET /shapes/:digest/forms', function (test) {
-  var form = {content: [{use: 'X'}]}
+  var form = { content: [{ use: 'X' }] }
   var digest = normalize(form).root
   var shape = hash(indexNames(form))
   server(function (port, closeServer) {
@@ -36,7 +36,7 @@ tape('GET /shapes/:digest/forms', function (test) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
               test.deepEqual(
-                body, [{digest: digest}],
+                body, [{ digest: digest }],
                 'serves publication digest'
               )
               done()

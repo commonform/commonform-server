@@ -42,7 +42,7 @@ function setupHTTPServer (logServerPort, ready) {
   var log = pino({}, devNull())
   var server
   // Create a client for the tcp-log-server.
-  var logClient = new TCPLogClient({server: {port: logServerPort}})
+  var logClient = new TCPLogClient({ server: { port: logServerPort } })
   // Start the HTTP server when the log client catches up with the log.
     .once('current', function () {
       server.listen(0, function () {

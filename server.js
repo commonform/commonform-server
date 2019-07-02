@@ -15,7 +15,7 @@ var VERSION = meta.version
 var NAME = meta.name
 
 var DESCRIPTION = NAME + '@' + VERSION + '#' + uuid.v4()
-var serverLog = pino({name: DESCRIPTION})
+var serverLog = pino({ name: DESCRIPTION })
 
 var env = process.env
 
@@ -29,13 +29,13 @@ if (env.LEVELDB && env.LEVELDB.toLowerCase() === 'memory') {
 
 levelup(store, function (error, level) {
   if (error) {
-    serverLog.fatal({event: 'level'}, error)
+    serverLog.fatal({ event: 'level' }, error)
     process.exit(1)
   } else {
-    serverLog.info({event: 'level'})
+    serverLog.info({ event: 'level' })
     var LOG_HOST = env.LOG_HOST || 'localhost'
     var LOG_PORT = env.LOG_PORT ? parseInt(env.LOG_PORT) : 4444
-    var tcpLogLog = serverLog.child({log: 'tcp-log'})
+    var tcpLogLog = serverLog.child({ log: 'tcp-log' })
     var logClient = new TCPLogClient({
       server: {
         host: LOG_HOST,
@@ -54,28 +54,28 @@ levelup(store, function (error, level) {
     } else {
       var cleanup = function () {
         level.close(function () {
-          serverLog.info({event: 'closed level'})
+          serverLog.info({ event: 'closed level' })
           server.close(function () {
-            serverLog.info({event: 'closed server'})
+            serverLog.info({ event: 'closed server' })
             process.exit(0)
           })
         })
       }
       var trap = function () {
-        serverLog.info({event: 'signal'})
+        serverLog.info({ event: 'signal' })
         cleanup()
       }
       process.on('SIGTERM', trap)
       process.on('SIGQUIT', trap)
       process.on('SIGINT', trap)
       process.on('uncaughtException', function (exception) {
-        serverLog.error({exception: exception})
+        serverLog.error({ exception: exception })
         cleanup()
       })
       var port = process.env.PORT || 8080
       server.listen(port, function () {
         var boundPort = this.address().port
-        serverLog.info({event: 'listening', port: boundPort})
+        serverLog.info({ event: 'listening', port: boundPort })
       })
     }
     logClient
@@ -83,7 +83,7 @@ levelup(store, function (error, level) {
         tcpLogLog.error(error)
       })
       .on('fail', function () {
-        tcpLogLog.error({event: 'fail'})
+        tcpLogLog.error({ event: 'fail' })
         server.close()
       })
     logLogEvent('connect')
@@ -96,7 +96,7 @@ levelup(store, function (error, level) {
   }
   function logLogEvent (event) {
     logClient.on(event, function () {
-      tcpLogLog.info({event: event})
+      tcpLogLog.info({ event: event })
     })
   }
 })

@@ -6,7 +6,7 @@ var tape = require('tape')
 
 tape('GET /', function (test) {
   server(function (port, done) {
-    var request = {path: '/', port: port}
+    var request = { path: '/', port: port }
     http.get(request, function (response) {
       test.equal(response.statusCode, 200, 'responds 200')
       test.equal(
@@ -18,7 +18,7 @@ tape('GET /', function (test) {
       response.pipe(concat(function (buffer) {
         test.same(
           JSON.parse(buffer),
-          {service: meta.name, version: meta.version},
+          { service: meta.name, version: meta.version },
           'serves JSON with service name and version'
         )
         done()
@@ -30,7 +30,7 @@ tape('GET /', function (test) {
 
 tape('POST /', function (test) {
   server(function (port, done) {
-    var request = {path: '/', method: 'POST', port: port}
+    var request = { path: '/', method: 'POST', port: port }
     http.get(request, function (response) {
       test.equal(response.statusCode, 405, 'responds 405')
       done()

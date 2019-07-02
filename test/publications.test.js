@@ -13,7 +13,7 @@ tape(
   function (test) {
     var publisher = 'ana'
     var password = 'ana\'s password'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, closeServer) {
       series(
@@ -101,7 +101,7 @@ tape(
   function (test) {
     var publisher = 'ana'
     var password = 'ana\'s password'
-    var component = {content: ['A test form']}
+    var component = { content: ['A test form'] }
     var componentDigest = normalize(component).root
     var dependent = {
       content: [
@@ -110,7 +110,7 @@ tape(
           publisher: publisher,
           project: 'component',
           edition: '1e',
-          substitutions: {terms: {}, headings: {}}
+          substitutions: { terms: {}, headings: {} }
         }
       ]
     }
@@ -141,7 +141,7 @@ tape(
             http.request(options, function (response) {
               concat(test, response, function (body) {
                 test.deepEqual(
-                  body, [{digest: dependentDigest, depth: 0}],
+                  body, [{ digest: dependentDigest, depth: 0 }],
                   'GET publications JSON'
                 )
                 done()
@@ -165,7 +165,7 @@ tape(
     var publisher = 'ana'
     var password = 'ana\'s password'
     var project = 'with-description'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, closeServer) {
       series(
@@ -210,7 +210,7 @@ tape(
     var publisher = 'ana'
     var password = 'ana\'s password'
     var project = 'with-description'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var descriptionPath = '/publishers/ana/projects/with-description/description'
     var description = 'test description'
@@ -262,7 +262,7 @@ tape(
     var publisher = 'ana'
     var password = 'ana\'s password'
     var project = 'with-description'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var descriptionPath = '/publishers/ana/projects/with-description/description'
     var firstDescription = 'first description'

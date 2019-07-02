@@ -8,6 +8,6 @@ module.exports = function (entry, level, done) {
       key: publisherKeyFor(publisher.name),
       value: publisher
     },
-    {key: encode(['publisher', publisher.name])}
+    { key: encode(['publisher', publisher.name]) }
   ])
 }

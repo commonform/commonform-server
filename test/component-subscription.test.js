@@ -16,7 +16,7 @@ tape(
     var BOB_EMAIL = 'bob@example.com'
     var BOB_PASSWORD = 'bob\'s password'
     var PROJECT = 'apple'
-    var original = {content: ['first edition']}
+    var original = { content: ['first edition'] }
     var dependent = {
       content: [
         {
@@ -24,11 +24,11 @@ tape(
           publisher: ANA,
           project: PROJECT,
           edition: '1e',
-          substitutions: {terms: {}, headings: {}}
+          substitutions: { terms: {}, headings: {} }
         }
       ]
     }
-    var upgrade = {content: ['second edition']}
+    var upgrade = { content: ['second edition'] }
     server(function (port, done) {
       mailgun.events.once('message', function (message) {
         test.equal(message.to, BOB_EMAIL, 'to')

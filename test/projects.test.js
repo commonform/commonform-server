@@ -17,7 +17,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var path = (
       '/publishers/' + PUBLISHER +
@@ -40,7 +40,7 @@ tape(
               test.equal(response.headers.location, path, 'Location')
               done()
             })
-              .end(JSON.stringify({digest: digest}))
+              .end(JSON.stringify({ digest: digest }))
           }
         ],
         function () {
@@ -62,7 +62,7 @@ tape(
     var form = {
       content: [
         'This agreement is between ',
-        {blank: ''}, ' and ', {blank: ''}, '.'
+        { blank: '' }, ' and ', { blank: '' }, '.'
       ]
     }
     var directions = [
@@ -126,7 +126,7 @@ tape(
     var form = {
       content: [
         'This agreement is between ',
-        {blank: ''}, ' and ', {blank: ''}, '.'
+        { blank: '' }, ' and ', { blank: '' }, '.'
       ]
     }
     var notes = [
@@ -179,7 +179,7 @@ tape(
     var form = {
       content: [
         'This agreement is between ',
-        {blank: ''}, ' and ', {blank: ''}, '.'
+        { blank: '' }, ' and ', { blank: '' }, '.'
       ]
     }
     var directions = null
@@ -229,7 +229,7 @@ tape(
     var form = {
       content: [
         'This agreement is between ',
-        {blank: ''}, ' and ', {blank: ''}, '.'
+        { blank: '' }, ' and ', { blank: '' }, '.'
       ]
     }
     var notes = [null]
@@ -296,7 +296,7 @@ tape(
         done()
         test.end()
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -328,7 +328,7 @@ tape(
         done()
         test.end()
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -362,7 +362,7 @@ tape(
         done()
         test.end()
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -439,7 +439,7 @@ tape(
           test.end()
         }))
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -476,7 +476,7 @@ tape(
           test.end()
         }))
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -513,7 +513,7 @@ tape(
           test.end()
         }))
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -551,7 +551,7 @@ tape(
           test.end()
         }))
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -618,7 +618,7 @@ tape(
         done()
         test.end()
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -651,7 +651,7 @@ tape(
         done()
         test.end()
       })
-        .end(JSON.stringify({digest: digest}))
+        .end(JSON.stringify({ digest: digest }))
     })
   }
 )
@@ -664,7 +664,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var path = (
       '/publishers/' + PUBLISHER +
@@ -692,7 +692,7 @@ tape(
               test.equal(response.statusCode, 409, 'Second POST 409')
               done()
             })
-              .end(JSON.stringify({digest: digest}))
+              .end(JSON.stringify({ digest: digest }))
           }
         ],
         function finish () {
@@ -740,7 +740,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var path = (
       '/publishers/' + PUBLISHER +
@@ -758,7 +758,7 @@ tape(
             test
           ),
           function getProject (done) {
-            var options = {method: 'GET', port: port, path: path}
+            var options = { method: 'GET', port: port, path: path }
             http.request(options, function (response) {
               test.equal(response.statusCode, 200, 'GET 200')
               response.pipe(concat(function (buffer) {
@@ -792,7 +792,7 @@ tape(
 
 tape('GET /publishers/{publisher}/projects', function (test) {
   var project = 'nda'
-  var form = {content: ['A test form']}
+  var form = { content: ['A test form'] }
   var digest = normalize(form).root
   server(function (port, done) {
     series(
@@ -845,7 +845,7 @@ tape('GET /publishers/{publisher}/projects', function (test) {
 tape('PATCH /publishers/{publisher}/projects', function (test) {
   var project = 'nda'
   var edition = '1e'
-  var form = {content: ['A test form']}
+  var form = { content: ['A test form'] }
   var digest = normalize(form).root
   server(function (port, done) {
     series(
@@ -883,7 +883,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '2e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -931,7 +931,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '2e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -979,9 +979,9 @@ tape(
   'GET /publishers/{publisher}/projects/{project}/publications?upgrade={edition}',
   function (test) {
     var project = 'nda'
-    var form1e = {content: ['A test form']}
+    var form1e = { content: ['A test form'] }
     var digest1e = normalize(form1e).root
-    var form1e1c = {content: ['A corrected form']}
+    var form1e1c = { content: ['A corrected form'] }
     var digest1e1c = normalize(form1e1c).root
     server(function (port, done) {
       series(
@@ -1041,7 +1041,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -1121,7 +1121,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -1171,7 +1171,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -1218,7 +1218,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -1315,9 +1315,9 @@ tape(
 )
 
 tape('GET /forms/{form}/publications', function (test) {
-  var form = {content: ['A test form']}
+  var form = { content: ['A test form'] }
   var digest = normalize(form).root
-  var otherForm = {content: ['Another test form']}
+  var otherForm = { content: ['Another test form'] }
   var otherDigest = normalize(otherForm).root
   server(function (port, done) {
     series(
@@ -1411,9 +1411,9 @@ tape('GET /forms/{form}/publications', function (test) {
 })
 
 tape('POST /forms/{form}/publications', function (test) {
-  var form = {content: ['A test form']}
+  var form = { content: ['A test form'] }
   var digest = normalize(form).root
-  var otherForm = {content: ['Another test form']}
+  var otherForm = { content: ['Another test form'] }
   var otherDigest = normalize(otherForm).root
   server(function (port, done) {
     series(
@@ -1476,8 +1476,8 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var child = {content: ['A test form']}
-    var parent = {content: [{form: child}]}
+    var child = { content: ['A test form'] }
+    var parent = { content: [{ form: child }] }
     var parentDigest = normalize(parent).root
     var childDigest = normalize(child).root
     server(function (port, done) {
@@ -1534,7 +1534,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var signaturePages = [
       {
         header: 'This is a page header.',
@@ -1593,7 +1593,7 @@ tape(
     var project = 'nda'
     var edition = '1e'
     var title = 'Test Title'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     var path = (
       '/publishers/' + PUBLISHER +
@@ -1657,7 +1657,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var signaturePages = [
       {
         invalid: 'page'
@@ -1707,7 +1707,7 @@ tape(
   function (test) {
     var project = 'nda'
     var edition = '1e'
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var signaturePages = [
       {
         header: 'Signature page header.'
@@ -1730,7 +1730,7 @@ tape(
             test
           ),
           function getProject (done) {
-            var options = {method: 'GET', port: port, path: path}
+            var options = { method: 'GET', port: port, path: path }
             http.request(options, function (response) {
               test.equal(response.statusCode, 200, 'GET 200')
               response.pipe(concat(function (buffer) {

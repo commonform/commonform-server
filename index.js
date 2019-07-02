@@ -10,7 +10,7 @@ var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
 var migrations = require('./migrations')
 
 module.exports = function (configuration, serverLog, level, dataLog) {
-  var pipelineLog = serverLog.child({log: 'pipeline'})
+  var pipelineLog = serverLog.child({ log: 'pipeline' })
   pump(
     dataLog.readStream,
     through2.obj(function pullOutVersion (chunk, _, done) {
@@ -60,7 +60,7 @@ module.exports = function (configuration, serverLog, level, dataLog) {
       if (error) {
         callback(error)
       } else {
-        serverLog.info({event: 'logged', index: index, entry: entry})
+        serverLog.info({ event: 'logged', index: index, entry: entry })
         callback()
       }
     })
@@ -70,7 +70,7 @@ module.exports = function (configuration, serverLog, level, dataLog) {
   return function requestHandler (request, response) {
     // Create a Pino child log for this HTTP response, marked with a
     // random UUID.
-    response.log = serverLog.child({log: uuid.v4()})
+    response.log = serverLog.child({ log: uuid.v4() })
     response.log.info(request)
     response.on('finish', function () {
       response.log.info(response)
@@ -80,7 +80,7 @@ module.exports = function (configuration, serverLog, level, dataLog) {
       TIMEOUT,
       /* istanbul ignore next */
       function () {
-        response.log.error({event: 'timeout'})
+        response.log.error({ event: 'timeout' })
         response.statusCode = 408
         response.removeAllListeners()
         response.end()

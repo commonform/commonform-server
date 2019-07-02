@@ -11,7 +11,7 @@ var PUBLISHER = 'ana'
 var PASSWORD = 'ana\'s password'
 
 tape('GET /digests', function (test) {
-  var form = {content: ['Blah blah blah.']}
+  var form = { content: ['Blah blah blah.'] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -24,7 +24,7 @@ tape('GET /digests', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/digests'}
+          var options = { method: 'GET', port: port, path: '/digests' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -45,7 +45,7 @@ tape('GET /digests', function (test) {
 
 tape('POST /digests', function (test) {
   server(function (port, closeServer) {
-    var options = {method: 'POST', port: port, path: '/digests'}
+    var options = { method: 'POST', port: port, path: '/digests' }
     http.request(options, function (response) {
       test.equal(response.statusCode, 405, 'POST 405')
       closeServer()
@@ -57,7 +57,7 @@ tape('POST /digests', function (test) {
 
 tape('GET /headings', function (test) {
   var heading = 'X'
-  var form = {content: [{reference: heading}]}
+  var form = { content: [{ reference: heading }] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -70,7 +70,7 @@ tape('GET /headings', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/headings'}
+          var options = { method: 'GET', port: port, path: '/headings' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -94,8 +94,8 @@ tape('GET /headings', function (test) {
 
 tape('GET /headings', function (test) {
   var heading = 'X'
-  var child = {content: ['Some content']}
-  var parent = {content: [{heading: heading, form: child}]}
+  var child = { content: ['Some content'] }
+  var parent = { content: [{ heading: heading, form: child }] }
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
@@ -108,7 +108,7 @@ tape('GET /headings', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/headings'}
+          var options = { method: 'GET', port: port, path: '/headings' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -132,7 +132,7 @@ tape('GET /headings', function (test) {
 
 tape('GET /terms', function (test) {
   var term = 'Admission'
-  var form = {content: [{use: term}]}
+  var form = { content: [{ use: term }] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -145,7 +145,7 @@ tape('GET /terms', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/terms'}
+          var options = { method: 'GET', port: port, path: '/terms' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -169,7 +169,7 @@ tape('GET /terms', function (test) {
 
 tape('GET /terms', function (test) {
   var term = 'Admission'
-  var form = {content: [{definition: term}]}
+  var form = { content: [{ definition: term }] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -182,7 +182,7 @@ tape('GET /terms', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/terms'}
+          var options = { method: 'GET', port: port, path: '/terms' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -206,7 +206,7 @@ tape('GET /terms', function (test) {
 
 tape('GET /projects', function (test) {
   var project = 'superform'
-  var form = {content: ['Super content']}
+  var form = { content: ['Super content'] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -219,7 +219,7 @@ tape('GET /projects', function (test) {
           test
         ),
         function (done) {
-          var options = {method: 'GET', port: port, path: '/projects'}
+          var options = { method: 'GET', port: port, path: '/projects' }
           http.request(options, function (response) {
             concat(test, response, function (body) {
               test.assert(Array.isArray(body), 'serves a JSON array')
@@ -244,10 +244,10 @@ tape('GET /projects', function (test) {
 tape('GET /terms?prefix', function (test) {
   var form = {
     content: [
-      {use: 'Seller Name'},
-      {use: 'Seller Jurisdiction'},
-      {use: 'Buyer Name'},
-      {use: 'Buyer Jurisdiction'}
+      { use: 'Seller Name' },
+      { use: 'Seller Jurisdiction' },
+      { use: 'Buyer Name' },
+      { use: 'Buyer Jurisdiction' }
     ]
   }
   var digest = normalize(form).root
@@ -292,11 +292,11 @@ tape('GET /terms?prefix', function (test) {
 tape('GET /headings?skip={index}&limit={count}', function (test) {
   var form = {
     content: [
-      {reference: 'a'},
-      {reference: 'b'},
-      {reference: 'c'},
-      {reference: 'd'},
-      {reference: 'e'}
+      { reference: 'a' },
+      { reference: 'b' },
+      { reference: 'c' },
+      { reference: 'd' },
+      { reference: 'e' }
     ]
   }
   var digest = normalize(form).root

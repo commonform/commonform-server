@@ -17,9 +17,9 @@ module.exports = function (entry, level, done) {
       key: keyForPublication(publisher, project, edition),
       value: entry.data
     },
-    {key: encode(['publisher', publisher])},
-    {key: encode(['project', project])},
-    {key: encode(['publisher-published-project', project, publisher])}
+    { key: encode(['publisher', publisher]) },
+    { key: encode(['project', project]) },
+    { key: encode(['publisher-published-project', project, publisher]) }
   ]
   var formKey = formKeyFor(digest)
   level.get(formKey, function (error, form) {
@@ -69,7 +69,7 @@ function recurse (digest, normalized, batch, indexers) {
 }
 
 function indexDigest (digest, normalized, batch) {
-  batch.push({key: encode(['digest', digest])})
+  batch.push({ key: encode(['digest', digest]) })
 }
 
 function indexContentElements (digest, normalized, batch) {
@@ -119,7 +119,7 @@ function indexContentElements (digest, normalized, batch) {
     }
   })
   function push (keyComponents) {
-    batch.push({key: encode(keyComponents)})
+    batch.push({ key: encode(keyComponents) })
   }
   return batch
 }

@@ -138,7 +138,7 @@ tape(
           location, '/publishers/charlie',
           'Location'
         )
-        var options = {port: port, path: location}
+        var options = { port: port, path: location }
         http.request(options, function (response) {
           test.equal(response.statusCode, 200, 'GET 200')
           concat(test, response, function (body) {
@@ -177,7 +177,7 @@ tape(
   'GET /publishers/{publisher} for nonexistent',
   function (test) {
     server(function (port, done) {
-      var options = {port: port, path: '/publishers/david'}
+      var options = { port: port, path: '/publishers/david' }
       http.request(options, function (response) {
         test.equal(response.statusCode, 404, 'GET 404')
         done()
@@ -211,7 +211,7 @@ tape(
   'GET /publishers/{publisher} nonexistent',
   function (test) {
     server(function (port, done) {
-      var options = {port: port, path: '/publishers/charlie'}
+      var options = { port: port, path: '/publishers/charlie' }
       http.request(options, function (response) {
         test.equal(response.statusCode, 404, 'GET 404')
         done()
@@ -260,7 +260,7 @@ tape(
       about: 'Ana the test publisher',
       password: newPassword
     }
-    var form = {content: ['Just a test form']}
+    var form = { content: ['Just a test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -356,7 +356,7 @@ tape(
   function (test) {
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
-    var body = {invalid: 'nonsense'}
+    var body = { invalid: 'nonsense' }
     server(function (port, done) {
       var options = {
         auth: user + ':' + password,
@@ -423,7 +423,7 @@ tape(
         method: 'POST',
         port: port,
         path: '/publishers/charlie',
-        headers: {Authorization: 'blah'}
+        headers: { Authorization: 'blah' }
       }
       http.request(options, function (response) {
         test.equal(response.statusCode, 401, 'POST 401')
@@ -448,7 +448,7 @@ tape(
         method: 'PUT',
         port: port,
         path: '/publishers/ana',
-        headers: {Authorization: 'blah'}
+        headers: { Authorization: 'blah' }
       }
       http.request(options, function (response) {
         test.equal(response.statusCode, 401, 'POST 401')
@@ -463,7 +463,7 @@ tape(
 tape(
   'POST /publishers/{publisher} without password',
   function (test) {
-    var body = {email: 'charlie@example.com', about: ''}
+    var body = { email: 'charlie@example.com', about: '' }
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
     server(function (port, done) {
@@ -495,7 +495,7 @@ tape(
 tape(
   'POST /publishers/{publisher} without e-mail',
   function (test) {
-    var body = {password: 'evil mastdon hoary cup', about: ''}
+    var body = { password: 'evil mastdon hoary cup', about: '' }
     var user = 'administrator'
     var password = process.env.ADMINISTRATOR_PASSWORD
     server(function (port, done) {
@@ -599,7 +599,7 @@ tape(
 tape(
   'GET /publishers',
   function (test) {
-    var form = {content: ['A test form']}
+    var form = { content: ['A test form'] }
     var digest = normalize(form).root
     server(function (port, done) {
       series(
@@ -618,7 +618,7 @@ tape(
             test
           ),
           function (done) {
-            var options = {port: port, path: '/publishers'}
+            var options = { port: port, path: '/publishers' }
             http.request(options, function (response) {
               concat(test, response, function (body) {
                 test.deepEqual(
@@ -644,7 +644,7 @@ tape(
   'POST /publishers',
   function (test) {
     server(function (port, done) {
-      var options = {method: 'POST', port: port, path: '/publishers'}
+      var options = { method: 'POST', port: port, path: '/publishers' }
       http.request(options, function (response) {
         test.equal(response.statusCode, 405, 'POST 405')
         done()

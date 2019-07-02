@@ -31,7 +31,7 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   var from = 'notifications@' + env.DOMAIN
   module.exports = function (message, log) {
-    log = log.child({log: 'mail'})
+    log = log.child({ log: 'mail' })
     var form = new FormData()
     form.append('from', from)
     form.append('to', message.to)
@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === 'test') {
     request.once('response', function (response) {
       var status = response.statusCode
       if (status === 200) {
-        log.info({event: 'sent'})
+        log.info({ event: 'sent' })
       } else {
         var buffers = []
         response
@@ -57,7 +57,7 @@ if (process.env.NODE_ENV === 'test') {
           })
           .once('end', function () {
             var body = Buffer.concat(buffers).toString()
-            log.error({status: response.statusCode, body: body})
+            log.error({ status: response.statusCode, body: body })
           })
       }
     })

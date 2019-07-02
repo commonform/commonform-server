@@ -13,9 +13,9 @@ var postProject = require('./post-project')
   .bind(this, PUBLISHER, PASSWORD)
 
 tape('GET /terms/{term}/definitions', function (test) {
-  var formA = {content: [{definition: 'Lots'}, ' means two.']}
+  var formA = { content: [{ definition: 'Lots' }, ' means two.'] }
   var digestA = normalize(formA).root
-  var formB = {content: [{definition: 'Lots'}, ' means three.']}
+  var formB = { content: [{ definition: 'Lots' }, ' means three.'] }
   var digestB = normalize(formB).root
   server(function (port, closeServer) {
     series(
@@ -60,13 +60,13 @@ tape(
   'GET /terms/{term}/definitions?skip={count}&limit={count}',
   function (test) {
     // a22fe84dae7784c67051143ece0cc7759525f5100bf044b3de65d4b9332d7366
-    var formA = {content: [{definition: 'Lots'}, ' means two.']}
+    var formA = { content: [{ definition: 'Lots' }, ' means two.'] }
     var digestA = normalize(formA).root
     // aab61f68086c23b6a13754d931229c8094e63ae1e348df4bda5903f993eb9830
-    var formB = {content: [{definition: 'Lots'}, ' means three.']}
+    var formB = { content: [{ definition: 'Lots' }, ' means three.'] }
     var digestB = normalize(formB).root
     // b045e9519fccb19c2b8318ce054312ff74b183bd6f3aefdac31d656eae109ac8
-    var formC = {content: [{definition: 'Lots'}, ' means four.']}
+    var formC = { content: [{ definition: 'Lots' }, ' means four.'] }
     var digestC = normalize(formC).root
     server(function (port, closeServer) {
       series(
@@ -113,9 +113,9 @@ tape(
 )
 
 tape('GET /terms/{term}/uses', function (test) {
-  var formA = {content: ['Give us ', {use: 'Lots'}]}
+  var formA = { content: ['Give us ', { use: 'Lots' }] }
   var digestA = normalize(formA).root
-  var formB = {content: ['Give me ', {use: 'Lots'}]}
+  var formB = { content: ['Give me ', { use: 'Lots' }] }
   var digestB = normalize(formB).root
   server(function (port, closeServer) {
     series(
@@ -127,7 +127,7 @@ tape('GET /terms/{term}/uses', function (test) {
         ),
         function getDefinitions (done) {
           http.request(
-            {method: 'GET', port: port, path: '/terms/Lots/uses'},
+            { method: 'GET', port: port, path: '/terms/Lots/uses' },
             function (response) {
               concat(test, response, function (body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
@@ -155,9 +155,9 @@ tape('GET /terms/{term}/uses', function (test) {
 })
 
 tape('GET /terms/{term_with_space}/uses', function (test) {
-  var formA = {content: ['Give us ', {use: 'More Money'}]}
+  var formA = { content: ['Give us ', { use: 'More Money' }] }
   var digestA = normalize(formA).root
-  var formB = {content: ['Give me ', {use: 'More Money'}]}
+  var formB = { content: ['Give me ', { use: 'More Money' }] }
   var digestB = normalize(formB).root
   server(function (port, closeServer) {
     series(
@@ -199,11 +199,11 @@ tape('GET /terms/{term_with_space}/uses', function (test) {
 })
 
 tape('GET /forms/{digest}/parents', function (test) {
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: ['Hooray!', {form: child}]}
+  var parent = { content: ['Hooray!', { form: child }] }
   var parentDigest = normalize(parent).root
-  var grandparent = {content: ['More!', {form: parent}]}
+  var grandparent = { content: ['More!', { form: parent }] }
   var grandparentDigest = normalize(grandparent).root
   server(function (port, closeServer) {
     series(
@@ -256,10 +256,10 @@ tape('GET /forms/{digest}/parents', function (test) {
 })
 
 tape('POST /forms/{digest}/parents', function (test) {
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: ['Hooray!', {form: child}]}
-  var grandparent = {content: ['More!', {form: parent}]}
+  var parent = { content: ['Hooray!', { form: child }] }
+  var grandparent = { content: ['More!', { form: parent }] }
   var grandparentDigest = normalize(grandparent).root
   server(function (port, closeServer) {
     series(
@@ -293,9 +293,9 @@ tape('POST /forms/{digest}/parents', function (test) {
 
 tape('GET /headings/{heading}/forms', function (test) {
   var heading = 'X'
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{heading: heading, form: child}]}
+  var parent = { content: [{ heading: heading, form: child }] }
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
@@ -343,20 +343,20 @@ tape(
   function (test) {
     var heading = 'X'
     // 173c0e94d52801a01ae3f0547abb082c24c64c06369e56e568fa12574d0e0712
-    var firstChild = {content: ['first content']}
+    var firstChild = { content: ['first content'] }
     var firstChildDigest = normalize(firstChild).root
-    var firstParent = {content: [{heading: heading, form: firstChild}]}
+    var firstParent = { content: [{ heading: heading, form: firstChild }] }
     var firstParentDigest = normalize(firstParent).root
     // 0a74d5003a8f69ce2e6a565f31a2c94841a49f297d4a832da191003e81d2189f
-    var secondChild = {content: ['second content']}
+    var secondChild = { content: ['second content'] }
     var secondParent = {
-      content: [{heading: heading, form: secondChild}]
+      content: [{ heading: heading, form: secondChild }]
     }
     var secondParentDigest = normalize(secondParent).root
     // 3dbe096ac455d2ae0a1b18c43a4c8c7202d44a5c297aae678f66932b4e781b87
-    var thirdChild = {content: ['third content']}
+    var thirdChild = { content: ['third content'] }
     var thirdChildDigest = normalize(thirdChild).root
-    var thirdParent = {content: [{heading: heading, form: thirdChild}]}
+    var thirdParent = { content: [{ heading: heading, form: thirdChild }] }
     var thirdParentDigest = normalize(thirdParent).root
     server(function (port, closeServer) {
       series(
@@ -418,9 +418,9 @@ tape(
 
 tape('GET /headings/{heading_with_space}/forms', function (test) {
   var heading = 'X Heading'
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{heading: heading, form: child}]}
+  var parent = { content: [{ heading: heading, form: child }] }
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
@@ -469,8 +469,8 @@ tape('GET /headings/{heading_with_space}/forms', function (test) {
 
 tape('POST /headings/{heading}/forms', function (test) {
   var heading = 'X'
-  var child = {content: ['Some content']}
-  var parent = {content: [{heading: heading, form: child}]}
+  var child = { content: ['Some content'] }
+  var parent = { content: [{ heading: heading, form: child }] }
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
@@ -504,9 +504,9 @@ tape('POST /headings/{heading}/forms', function (test) {
 
 tape('GET /forms/{form}/headings', function (test) {
   var heading = 'X'
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{heading: heading, form: child}]}
+  var parent = { content: [{ heading: heading, form: child }] }
   var parentDigest = normalize(parent).root
   server(function (port, closeServer) {
     series(
@@ -552,13 +552,13 @@ tape('GET /forms/{form}/headings', function (test) {
 tape(
   'GET /forms/{form}/headings?skip={count}&limit={count}',
   function (test) {
-    var child = {content: ['Some content']}
+    var child = { content: ['Some content'] }
     var childDigest = normalize(child).root
-    var firstParent = {content: [{heading: 'a', form: child}]}
+    var firstParent = { content: [{ heading: 'a', form: child }] }
     var firstParentDigest = normalize(firstParent).root
-    var secondParent = {content: [{heading: 'b', form: child}]}
+    var secondParent = { content: [{ heading: 'b', form: child }] }
     var secondParentDigest = normalize(secondParent).root
-    var thirdParent = {content: [{heading: 'c', form: child}]}
+    var thirdParent = { content: [{ heading: 'c', form: child }] }
     var thirdParentDigest = normalize(thirdParent).root
     server(function (port, closeServer) {
       series(
@@ -593,8 +593,8 @@ tape(
                   test.deepEqual(
                     body,
                     [
-                      {heading: 'b', parent: secondParentDigest},
-                      {heading: 'c', parent: thirdParentDigest}
+                      { heading: 'b', parent: secondParentDigest },
+                      { heading: 'c', parent: thirdParentDigest }
                     ],
                     'serves heading in parent'
                   )
@@ -616,9 +616,9 @@ tape(
 
 tape('POST /forms/{form}/headings', function (test) {
   var heading = 'X'
-  var child = {content: ['Some content']}
+  var child = { content: ['Some content'] }
   var childDigest = normalize(child).root
-  var parent = {content: [{heading: heading, form: child}]}
+  var parent = { content: [{ heading: heading, form: child }] }
   server(function (port, closeServer) {
     series(
       [
@@ -648,7 +648,7 @@ tape('POST /forms/{form}/headings', function (test) {
 
 tape('GET /headings/{heading}/references', function (test) {
   var heading = 'X'
-  var form = {content: [{reference: heading}]}
+  var form = { content: [{ reference: heading }] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -683,7 +683,7 @@ tape('GET /headings/{heading}/references', function (test) {
 
 tape('GET /headings', function (test) {
   var heading = 'X'
-  var form = {content: [{reference: heading}]}
+  var form = { content: [{ reference: heading }] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(
@@ -692,7 +692,7 @@ tape('GET /headings', function (test) {
         postProject(port, 'parent', '1e', digest, false, false, test),
         function getHeadings (done) {
           http.request(
-            {method: 'GET', port: port, path: '/headings'},
+            { method: 'GET', port: port, path: '/headings' },
             function (response) {
               concat(test, response, function (body) {
                 test.assert(Array.isArray(body), 'serves a JSON array')
@@ -717,7 +717,7 @@ tape('GET /headings', function (test) {
 
 tape('GET /projects/{project}/publishers', function (test) {
   var project = 'superduper'
-  var form = {content: ['super duper content']}
+  var form = { content: ['super duper content'] }
   var digest = normalize(form).root
   server(function (port, closeServer) {
     series(

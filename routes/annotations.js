@@ -149,7 +149,7 @@ function postAnnotation (
 ) {
   readJSONBody(request, response, function (annotation) {
     var put = function (unlock) {
-      var entry = {type: 'annotation', data: annotation}
+      var entry = { type: 'annotation', data: annotation }
       write(entry, function (error) {
         if (unlock) {
           unlock()
@@ -186,7 +186,7 @@ function postAnnotation (
       }
     } else {
       annotation.uuid = uuid.v4()
-      response.log.info({event: 'uuid', uuid: annotation.uuid})
+      response.log.info({ event: 'uuid', uuid: annotation.uuid })
       annotation.timestamp = Date.now().toString()
       // Does the server have the context form?
       getForm(level, annotation.context, function (error, context) {
