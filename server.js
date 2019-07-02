@@ -19,9 +19,8 @@ var serverLog = pino({name: DESCRIPTION})
 
 var env = process.env
 
-var LEVEL_OPTIONS = { valueEncoding: 'json' }
-
 var store
+var LEVEL_OPTIONS = { valueEncoding: 'json' }
 if (env.LEVELDB && env.LEVELDB.toLowerCase() === 'memory') {
   store = encode(memdown(), LEVEL_OPTIONS)
 } else {
