@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 var TCPLogClient = require('tcp-log-client')
+var encode = require('encoding-down')
 var http = require('http')
 var leveldown = require('leveldown')
 var levelup = require('levelup')
@@ -18,25 +19,21 @@ var serverLog = pino({name: DESCRIPTION})
 
 var env = process.env
 
-var LEVEL_PATH
-var LEVEL_OPTIONS = {
-  valueEncoding: 'json'
-}
+var LEVEL_OPTIONS = { valueEncoding: 'json' }
 
+var store
 if (env.LEVELDB && env.LEVELDB.toLowerCase() === 'memory') {
-  LEVEL_OPTIONS.db = memdown
-  LEVEL_PATH = 'memdown'
+  store = encode(memdown(), LEVEL_OPTIONS)
 } else {
-  LEVEL_OPTIONS.db = leveldown
-  LEVEL_PATH = env.LEVELDB || NAME + '.leveldb'
+  store = leveldown(env.LEVELDB || NAME + '.leveldb', LEVEL_OPTIONS)
 }
 
-levelup(LEVEL_PATH, LEVEL_OPTIONS, function (error, level) {
+levelup(store, function (error, level) {
   if (error) {
     serverLog.fatal({event: 'level'}, error)
     process.exit(1)
   } else {
-    serverLog.info({event: 'level', directory: LEVEL_PATH})
+    serverLog.info({event: 'level'})
     var LOG_HOST = env.LOG_HOST || 'localhost'
     var LOG_PORT = env.LOG_PORT ? parseInt(env.LOG_PORT) : 4444
     var tcpLogLog = serverLog.child({log: 'tcp-log'})

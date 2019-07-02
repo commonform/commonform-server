@@ -5,6 +5,7 @@ var EventEmitter = require('events').EventEmitter
 var SimpleLog = require('level-simple-log')
 var TCPLogClient = require('tcp-log-client')
 var devNull = require('dev-null')
+var encode = require('encoding-down')
 var http = require('http')
 var levelup = require('levelup')
 var makeRequestHandler = require('../')
@@ -20,8 +21,6 @@ var PUBLISHERS = require('./publishers.json')
 module.exports = setupServers
 
 function setupServers (callback) {
-  // Clear LevelUP in-memory storage back-end for each test.
-  memdown.clearGlobalStore()
   // Start a tcp-log-server.
   setupLogServer(function (logServer) {
     var port = logServer.address().port
@@ -38,7 +37,7 @@ function setupServers (callback) {
 
 function setupHTTPServer (logServerPort, ready) {
   // Use an in-memory LevelUP storage back-end.
-  var level = levelup('server', {db: memdown, valueEncoding: 'json'})
+  var level = levelup(encode(memdown(), { valueEncoding: 'json' }))
   //  Pipe log messages to nowhere.
   var log = pino({}, devNull())
   var server
@@ -78,7 +77,7 @@ function noop () { }
 
 function setupLogServer (ready) {
   // Use an in-memory LevelUP storage back-end.
-  var level = levelup('log', {db: memdown})
+  var level = levelup(encode(memdown(), { valueEncoding: 'json' }))
   var logs = new SimpleLog(level)
   // Use an in-memory blob store.
   var blobs = new AbstractBlobStore()
