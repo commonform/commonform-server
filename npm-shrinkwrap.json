@@ -2898,12 +2898,32 @@
       "dev": true
     },
     "multistream": {
-      "version": "2.1.1",
-      "resolved": "https://registry.npmjs.org/multistream/-/multistream-2.1.1.tgz",
-      "integrity": "sha512-xasv76hl6nr1dEy3lPvy7Ej7K/Lx3O/FCvwge8PeVJpciPPoNCbaANcNiBug3IpdvTveZUcAV0DJzdnUDMesNQ==",
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/multistream/-/multistream-3.0.0.tgz",
+      "integrity": "sha512-v1Fx9uhHEpTB725/Kj8YpRCvrLhb20LeABFLw+0dkBkKUUAbDCY6CUUNzGQsJ94ji/p50wBPsRjIQXN1iOwZYA==",
       "requires": {
         "inherits": "^2.0.1",
-        "readable-stream": "^2.0.5"
+        "readable-stream": "^3.4.0"
+      },
+      "dependencies": {
+        "readable-stream": {
+          "version": "3.4.0",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-3.4.0.tgz",
+          "integrity": "sha512-jItXPLmrSR8jmTRmRWJXCnGJsfy85mB3Wd/uINMXA65yrnFo0cPClFIUWzo2najVNSl+mx7/4W8ttlLWJe99pQ==",
+          "requires": {
+            "inherits": "^2.0.3",
+            "string_decoder": "^1.1.1",
+            "util-deprecate": "^1.0.1"
+          }
+        },
+        "string_decoder": {
+          "version": "1.2.0",
+          "resolved": "https://registry.npmjs.org/string_decoder/-/string_decoder-1.2.0.tgz",
+          "integrity": "sha512-6YqyX6ZWEYguAxgZzHGL7SsCeGx3V2TtOTqZz1xSTSWnqsbWwbptafNyvf/ACquZUXV3DANr5BDIwNYe1mN42w==",
+          "requires": {
+            "safe-buffer": "~5.1.0"
+          }
+        }
       }
     },
     "mute-stream": {
