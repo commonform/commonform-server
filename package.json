@@ -52,11 +52,9 @@
     "concat-stream": "^1.6.2",
     "depcheck": "^0.8.1",
     "dev-null": "^0.1.1",
-    "husky": "^1.0.0-rc.15",
     "istanbul": "^0.4.3",
     "level-simple-log": "^2.0.0",
     "licensee": "^5.0.0",
-    "lint-staged": "^7.3.0",
     "sha256": "^0.2.0",
     "standard": "^11.0.1",
     "tape": "^4.9.1",
@@ -66,20 +64,12 @@
   "preferGlobal": true,
   "repository": "commonform/commonform-server",
   "scripts": {
-    "check": "depcheck --ignores husky | tee depcheck.log",
+    "check": "depcheck --ignores | tee depcheck.log",
     "coverage": "istanbul check-coverage coverage/coverage.json",
     "precoverage": "NODE_ENV=test istanbul cover -- tape test/*.test.js",
     "test": "NODE_ENV=test tape test/*.test.js",
     "audit": "npm audit | tee audit.log",
     "licenses": "licensee --errors-only | tee licenses.log",
     "lint": "standard | tee lint.log"
-  },
-  "lint-staged": {
-    "*.js": "standard"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
