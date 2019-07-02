@@ -44,7 +44,7 @@
     "reviewers-edition-upgrade": "^1.0.2",
     "signature-page-schema": "^2.0.0",
     "tcp-log-client": "^6.0.0",
-    "through2": "^2.0.1",
+    "through2": "^3.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
