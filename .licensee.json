@@ -1,14 +1,8 @@
 {
   "licenses": {
+    "blueOak": "bronze",
     "spdx": [
-      "MIT",
-      "BSD-2-Clause",
-      "BSD-3-Clause",
-      "ISC",
-      "Apache-2.0",
-      "Unlicense",
-      "CC-BY-3.0",
-      "WTFPL"
+      "CC-BY-3.0"
     ]
   },
   "packages": {
@@ -19,7 +13,7 @@
     "dev-null": "0.1.1",
     "docopt": "0.6.2",
     "doctrine": "1.5.0",
-    "email-validator": "1.1.1 || 1.0.7",
+    "email-validator": "1.1.1 || 1.0.7 || 2.0.4",
     "estraverse": "1.9.3",
     "esutils": "2.0.2",
     "for-each": "0.3.2",
