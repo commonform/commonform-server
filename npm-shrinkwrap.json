@@ -5682,30 +5682,24 @@
       }
     },
     "tcp-log-client": {
-      "version": "5.0.0",
-      "resolved": "https://registry.npmjs.org/tcp-log-client/-/tcp-log-client-5.0.0.tgz",
-      "integrity": "sha1-FDKsam+xNv7/yWb3obeJ9ZvE2vs=",
+      "version": "6.0.0",
+      "resolved": "https://registry.npmjs.org/tcp-log-client/-/tcp-log-client-6.0.0.tgz",
+      "integrity": "sha512-VNXjO6pJB0Rt7R+Ty/n2SjUawi9BnHWw4qBBGK+Hw1OMcFLlcTUzMsynSX/j6iGpRm9lUkyFEqgb2q9WyO3BTg==",
       "requires": {
         "ndjson": "^1.4.3",
-        "pump": "^1.0.1",
+        "pump": "^3.0.0",
         "reconnect-core": "^1.3.0",
-        "through2": "^2.0.1",
-        "uuid": "^2.0.2"
+        "through2": "^3.0.1",
+        "uuid": "^3.3.2"
       },
       "dependencies": {
-        "pump": {
-          "version": "1.0.3",
-          "resolved": "https://registry.npmjs.org/pump/-/pump-1.0.3.tgz",
-          "integrity": "sha512-8k0JupWme55+9tCVE+FS5ULT3K6AbgqrGa58lTT49RpyfwwcGedHqaC5LlQNdEAumn/wFsu6aPwkuPMioy8kqw==",
+        "through2": {
+          "version": "3.0.1",
+          "resolved": "https://registry.npmjs.org/through2/-/through2-3.0.1.tgz",
+          "integrity": "sha512-M96dvTalPT3YbYLaKaCuwu+j06D/8Jfib0o/PxbVt6Amhv3dUAtW6rTV1jPgJSBG83I/e04Y6xkVdVhSRhi0ww==",
           "requires": {
-            "end-of-stream": "^1.1.0",
-            "once": "^1.3.1"
+            "readable-stream": "2 || 3"
           }
-        },
-        "uuid": {
-          "version": "2.0.3",
-          "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz",
-          "integrity": "sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho="
         }
       }
     },
