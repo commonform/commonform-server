@@ -11,7 +11,7 @@
     "array-equal": "^1.0.0",
     "async-series": "0.0.1",
     "basic-auth": "^2.0.1",
-    "bcrypt-password": "^1.0.2",
+    "bcrypt-password": "^2.0.0",
     "cache-immutable": "^1.0.1",
     "commonform-hash": "^0.5.0",
     "commonform-index-names": "^2.0.0",
