@@ -1,6 +1,7 @@
 var encode = require('../keys/encode')
 var formKeyFor = require('../keys/form')
 var formToProjectKey = require('../keys/form-to-project')
+var has = require('has')
 var hash = require('commonform-hash')
 var indexNames = require('commonform-index-names')
 var keyForPublication = require('../keys/publication')
@@ -61,7 +62,7 @@ function recurse (digest, normalized, batch, indexers) {
     indexer(digest, normalized, batch)
   })
   normalized[digest].content.forEach(function (element, index) {
-    if (element.hasOwnProperty('digest')) {
+    if (has(element, 'digest')) {
       recurse(element.digest, normalized, batch, indexers)
     }
   })
@@ -75,35 +76,35 @@ function indexDigest (digest, normalized, batch) {
 function indexContentElements (digest, normalized, batch) {
   normalized[digest].content.forEach(function (element) {
     var name
-    if (element.hasOwnProperty('definition')) {
+    if (has(element, 'definition')) {
       name = element.definition.toLowerCase()
       push(['term', name])
       push(['term-defined-in-form', name, digest])
-    } else if (element.hasOwnProperty('use')) {
+    } else if (has(element, 'use')) {
       name = element.use.toLowerCase()
       push(['term', name])
       push(['term-used-in-form', name, digest])
-    } else if (element.hasOwnProperty('reference')) {
+    } else if (has(element, 'reference')) {
       name = element.reference.toLowerCase()
       push(['heading', name])
       push(['heading-referenced-in-form', name, digest])
-    } else if (element.hasOwnProperty('digest')) {
+    } else if (has(element, 'digest')) {
       var childDigest = element.digest
-      if (element.hasOwnProperty('heading')) {
+      if (has(element, 'heading')) {
         name = element.heading.toLowerCase()
         push(['heading', name])
         push(['heading-in-form', name, digest])
         push(['heading-for-form-in-form', name, childDigest, digest])
         push(['form-under-heading-in-form', childDigest, name, digest])
       }
-    } else if (element.hasOwnProperty('repository')) {
+    } else if (has(element, 'repository')) {
       var component = [
         element.repository,
         element.publisher,
         element.project,
         element.edition
       ]
-      if (element.hasOwnProperty('heading')) {
+      if (has(element, 'heading')) {
         name = element.heading.toLowerCase()
         push(['heading', name])
         push(['heading-in-form', name, digest])
@@ -161,7 +162,7 @@ function recurseRelations (
 ) {
   var form = normalized[parentDigest]
   form.content.forEach(function (element) {
-    if (element.hasOwnProperty('digest')) {
+    if (has(element, 'digest')) {
       var childDigest = element.digest
       var childParents = [parentDigest].concat(parents)
       childParents.forEach(function (parent, depth) {
@@ -175,7 +176,7 @@ function recurseRelations (
       recurseRelations(
         childDigest, normalized, childParents, relationships
       )
-    } else if (element.hasOwnProperty('repository')) {
+    } else if (has(element, 'repository')) {
       // TODO: Check that repository is the same as our hostname.
       if (element.repository !== 'api.commonform.org') return
       var componentParents = [parentDigest].concat(parents)

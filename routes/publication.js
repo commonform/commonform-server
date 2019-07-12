@@ -5,6 +5,7 @@ var getCurrent = require('../queries/get-current-publication')
 var getForm = require('../queries/get-form')
 var getLatestPublication = require('../queries/get-latest-publication')
 var getPublication = require('../queries/get-publication')
+var has = require('has')
 var internalError = require('./responses/internal-error')
 var keyForPublication = require('../keys/publication')
 var mailgun = require('../mailgun')
@@ -48,7 +49,7 @@ function postPublication (
     badRequest(response, 'invalid project name')
   } else {
     readJSONBody(request, response, function (json) {
-      if (json.hasOwnProperty('digest')) {
+      if (has(json, 'digest')) {
         var digest = json.digest
         if (!validPublication(json)) {
           badRequest(response, 'invalid publication')
@@ -79,7 +80,7 @@ function postPublication (
               if (!form) {
                 badRequest(response, 'unknown form')
               } else {
-                if (json.hasOwnProperty('directions')) {
+                if (has(json, 'directions')) {
                   var directionsErrors = validateDirections(
                     form, json.directions
                   )

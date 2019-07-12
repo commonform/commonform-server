@@ -1,4 +1,5 @@
 var isEMail = require('email-validator').validate
+var has = require('has')
 
 var requiredKeys = ['name', 'about', 'email', 'password']
 
@@ -10,25 +11,25 @@ module.exports = function (argument) {
   var keys = Object.keys(argument)
   return (
     // Name
-    has('name') &&
+    hasProperty('name') &&
     validPublisherName(argument.name) &&
     // About
-    has('about') &&
+    hasProperty('about') &&
     typeof argument.about === 'string' &&
     argument.about.length < 256 &&
     // E-Mail
-    has('email') &&
+    hasProperty('email') &&
     isEMail(argument.email) &&
     // Password
-    has('password') &&
+    hasProperty('password') &&
     typeof argument.about === 'string' &&
     argument.password.length > 0 &&
     argument.password.length < 256 &&
     // No extra keys
     keys.length === requiredKeys.length
   )
-  function has (key) {
-    return argument.hasOwnProperty(key)
+  function hasProperty (key) {
+    return has(argument, key)
   }
 }
 

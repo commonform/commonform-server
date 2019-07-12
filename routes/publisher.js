@@ -4,6 +4,7 @@ var conflict = require('./responses/conflict')
 var exists = require('../queries/exists')
 var getPublisher = require('../queries/get-publisher')
 var gravatarURL = require('gravatar-url')
+var has = require('has')
 var internalError = require('./responses/internal-error')
 var keyForPublisher = require('../keys/publisher')
 var lock = require('level-lock')
@@ -43,7 +44,7 @@ function handleGetPublisher (
       } else {
         var json = { publisher: publisher }
         /* istanbul ignore else */
-        if (stored.hasOwnProperty('about')) {
+        if (has(stored, 'about')) {
           json.about = stored.about
         }
         json.gravatar = gravatarURL(stored.email)

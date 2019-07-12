@@ -1,9 +1,9 @@
+var parseURL = require('url-parse')
 var entryToLevelUPBatch = require('./transforms')
 var migrateVersionedLog = require('migrate-versioned-log')
 var notFound = require('./routes/responses/not-found')
 var pump = require('pump')
 var through2 = require('through2')
-var url = require('url')
 var uuid = require('uuid')
 
 var TIMEOUT = parseInt(process.env.TIMEOUT) || 5000
@@ -90,7 +90,7 @@ module.exports = function (configuration, serverLog, level, dataLog) {
     request.configuration = configuration
 
     // Route the request.
-    var parsed = url.parse(request.url, true)
+    var parsed = parseURL(request.url, true)
     request.query = parsed.query
     var route = routes.get(parsed.pathname)
     if (route.handler) {

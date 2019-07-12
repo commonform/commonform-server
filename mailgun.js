@@ -3,10 +3,7 @@ var https = require('https')
 
 var env = process.env
 /* istanbul ignore next */
-var haveCredentials = (
-  env.hasOwnProperty('MAILGUN_KEY') &&
-  env.hasOwnProperty('DOMAIN')
-)
+var haveCredentials = env.MAILGUN_KEY && env.DOMAIN
 
 // Rather than require a mocking library, detect when we're testing and:
 //

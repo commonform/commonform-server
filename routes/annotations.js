@@ -15,10 +15,10 @@ var methodNotAllowed = require('./responses/method-not-allowed')
 var multistream = require('multistream')
 var normalize = require('commonform-normalize')
 var notFound = require('./responses/not-found')
+var parseURL = require('url-parse')
 var readJSONBody = require('./read-json-body')
 var sendAnnotationNotifications = require('../notifications/annotation')
 var unauthorized = require('./responses/unauthorized')
-var url = require('url')
 var uuid = require('uuid')
 var validAnnotation = require('../validation/annotation')
 
@@ -35,7 +35,7 @@ module.exports = function (request, response) {
 }
 
 function getAnnotations (request, response, parameters, log, level) {
-  var query = url.parse(request.url, true).query
+  var query = parseURL(request.url, true).query
   var hasContext = 'context' in query && isDigest(query.context)
   var hasForm = 'form' in query && isDigest(query.form)
   if (!hasContext) {

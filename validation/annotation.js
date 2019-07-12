@@ -1,3 +1,4 @@
+var has = require('has')
 var isDigest = require('is-sha-256-hex-digest')
 var isUUID = require('./uuid')
 
@@ -18,7 +19,7 @@ module.exports = function (argument) {
 
 function hasProperty (object, key, predicate) {
   return (
-    object.hasOwnProperty(key) &&
+    has(object, key) &&
     predicate(object[key])
   )
 }

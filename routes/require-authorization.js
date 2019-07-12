@@ -1,5 +1,6 @@
 var checkPassword = require('./check-password')
 var forbidden = require('./responses/forbidden')
+var has = require('has')
 var internalError = require('./responses/internal-error')
 var isAdministrator = require('./is-administrator')
 var parseAuthorization = require('basic-auth')
@@ -11,7 +12,7 @@ module.exports = function (handler, anyUser) {
     function allow () {
       handler.apply(this, handlerArguments)
     }
-    var publisher = parameters.hasOwnProperty('subscriber')
+    var publisher = has(parameters, 'subscriber')
       ? parameters.subscriber
       : parameters.publisher
     var parsed = parseAuthorization(request)

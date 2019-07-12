@@ -1,5 +1,6 @@
 var getSortedPublications = require('./get-sorted-publications')
 var parseEdition = require('reviewers-edition-parse')
+var has = require('has')
 
 module.exports = function (
   level, publisher, project, callback
@@ -13,8 +14,7 @@ module.exports = function (
       } else {
         publications = publications
           .filter(function isNotADraft (element) {
-            return !parseEdition(element.edition)
-              .hasOwnProperty('draft')
+            return !has(parseEdition(element.edition), 'draft')
           })
         callback(null, publications[publications.length - 1])
       }

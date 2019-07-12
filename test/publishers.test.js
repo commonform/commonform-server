@@ -1,4 +1,5 @@
 var concat = require('./concat')
+var has = require('has')
 var http = require('http')
 var normalize = require('commonform-normalize')
 var postForm = require('./post-form')
@@ -151,15 +152,15 @@ tape(
               'serves about'
             )
             test.assert(
-              !body.hasOwnProperty('email'),
+              !has(body, 'email'),
               'does not serve e-mail'
             )
             test.assert(
-              !body.hasOwnProperty('password'),
+              !has(body, 'password'),
               'does not serve password'
             )
             test.assert(
-              body.hasOwnProperty('gravatar'),
+              has(body, 'gravatar'),
               'serves Gravatar URL'
             )
             done()
