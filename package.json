@@ -5,7 +5,7 @@
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "bin": "./server.js",
   "dependencies": {
-    "ajv": "^6.10.0",
+    "ajv": "^6.10.1",
     "array-equal": "^1.0.0",
     "async-series": "0.0.1",
     "basic-auth": "^2.0.1",
