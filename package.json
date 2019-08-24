@@ -57,7 +57,7 @@
     "level-simple-log": "^3.0.0",
     "licensee": "^7.0.2",
     "sha256": "^0.2.0",
-    "standard": "^13.0.2",
+    "standard": "^14.0.2",
     "tape": "^4.11.0",
     "tcp-log-server": "^10.0.0"
   },

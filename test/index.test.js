@@ -13,8 +13,8 @@ tape('GET /', function (test) {
         response.headers['cache-control'],
         'no-cache, no-store, must-revalidate'
       )
-      test.equal(response.headers['pragma'], 'no-cache')
-      test.equal(response.headers['expires'], '0')
+      test.equal(response.headers.pragma, 'no-cache')
+      test.equal(response.headers.expires, '0')
       response.pipe(concat(function (buffer) {
         test.same(
           JSON.parse(buffer),
