@@ -150,9 +150,9 @@
       "integrity": "sha1-kbR5JYinc4wl813W9jdSovh3YTU="
     },
     "abstract-blob-store": {
-      "version": "3.3.4",
-      "resolved": "https://registry.npmjs.org/abstract-blob-store/-/abstract-blob-store-3.3.4.tgz",
-      "integrity": "sha512-TZoKFHJvYg+6sVPwEDjWOy19Pq/F5/RN4j/dm6AL18bS9IbR5mo/2mtRYu9A34D1heCHMX/Lj6d4naD9SIBmOA==",
+      "version": "3.3.5",
+      "resolved": "https://registry.npmjs.org/abstract-blob-store/-/abstract-blob-store-3.3.5.tgz",
+      "integrity": "sha512-LMxiWKn5/cM4e022wYHCnXNdWBkVRuePx4aL5y2FsOyN48J9wksVodyrJGELnnUbgor5bqeEIW7l6gQAiWYjAg==",
       "dev": true,
       "requires": {
         "concat-stream": "^1.6.0",

@@ -49,7 +49,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "abstract-blob-store": "^3.3.4",
+    "abstract-blob-store": "^3.3.5",
     "concat-stream": "^2.0.0",
     "depcheck": "^0.8.3",
     "dev-null": "^0.1.1",
