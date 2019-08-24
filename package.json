@@ -14,7 +14,7 @@
     "commonform-hash": "^1.0.0",
     "commonform-index-names": "^2.0.0",
     "commonform-normalize": "^0.5.2",
-    "commonform-validate": "^1.0.1",
+    "commonform-validate": "^2.0.0",
     "commonform-validate-directions": "^1.0.1",
     "do-not-cache": "^1.0.0",
     "ecb": "^1.0.0",
